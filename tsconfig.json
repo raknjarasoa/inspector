@@ -1,0 +1,16 @@
+{
+    "include": [
+        "src/**/*.ts"
+    ],
+    "compilerOptions": {
+        "types": [
+            "chrome"
+        ],
+        "noImplicitAny": true,
+        "target": "es5",
+        "lib": [
+            "es2018",
+            "dom"
+        ]
+    }
+}
