@@ -17,6 +17,8 @@
 
 > A chrome extension to inspect and change Angular component properties.
 
+![](chrome-ext-ng-properties.gif)
+
 ## Development
 
 ```bash
