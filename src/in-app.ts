@@ -170,7 +170,7 @@ function listenForEmit(): void {
   const emitButtonList = document.getElementsByClassName(
     APP_EXT_PROP_EMIT_BUTTON_CLASS
   );
-  for (let i = 0; i++; i < emitButtonList.length) {
+  for (let i = 0; i < emitButtonList.length; i++) {
     const emitButton = emitButtonList.item(i);
     if (emitButton) {
       emitButton.addEventListener("click", (event) => {
