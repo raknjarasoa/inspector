@@ -91,3 +91,7 @@ chrome.runtime.onConnect.addListener((port) => {
     }
   });
 });
+
+window.addEventListener("load", () => {
+  chrome.storage.sync.clear();
+});
