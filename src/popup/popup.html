@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles/bootstrap.min.css" />
+  </head>
+  <body style="width: 300px;">
+    <div class="container-fluid p-3">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <img
+            src="../assets/images/ngneat_128.png"
+            class="d-inline-block"
+            alt="ngneat logo"
+            height="50"
+          />
+        </div>
+        <div class="col">
+          <h5>
+            ngneat inspector
+          </h5>
+          <small class="text-muted"><i>v0.1.0</i></small>
+        </div>
+        <div class="col-12">
+          <small class="text-muted">
+            A chrome extension to inspect and change Angular component
+            properties, by ngneat.
+          </small>
+        </div>
+      </div>
+      <hr />
+      <p id="status">
+        You can enable this extension only in an Angular application.
+      </p>
+      <div class="custom-control custom-switch">
+        <input
+          type="checkbox"
+          class="custom-control-input"
+          id="enablerSwitch"
+        />
+        <label class="custom-control-label" for="enablerSwitch">Enable</label>
+      </div>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>

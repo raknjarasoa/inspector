@@ -1,16 +1,16 @@
 {
   "manifest_version": 2,
-  "name": "Angular Properties",
-  "description": "A chrome extension to inspect and change Angular component properties.",
-  "version": "1.0.0",
+  "name": "ngneat-inspector",
+  "description": "A chrome extension to inspect and change Angular component properties, by ngneat.",
+  "version": "0.1.0",
   "permissions": ["storage", "declarativeContent", "activeTab"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
   },
   "page_action": {
-    "default_title": "Open Popup!",
-    "default_popup": "popup.html"
+    "default_title": "Start inspecting with ng-neat/inspector",
+    "default_popup": "popup/popup.html"
   },
   "content_scripts": [
     {
@@ -20,5 +20,11 @@
     }
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "web_accessible_resources": ["in-app.js", "constants.js", "ng-check.js"]
+  "web_accessible_resources": ["in-app.js", "constants.js", "ng-check.js"],
+  "icons": {
+    "16": "assets/images/ngneat_16.png",
+    "32": "assets/images/ngneat_32.png",
+    "48": "assets/images/ngneat_48.png",
+    "128": "assets/images/ngneat_128.png"
+  }
 }
