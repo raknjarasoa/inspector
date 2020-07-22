@@ -12,17 +12,17 @@ var buffer = require("vinyl-buffer");
 var sourcemaps = require("gulp-sourcemaps");
 
 const paths = {
-  pages: ["src/**/*.html", "src/**/*.css"],
+  pages: ["src/*.html"],
   dist: "dist",
-  assets: ["src/manifest.json", "src/static/**/*.*"],
+  assets: ["src/manifest.json"],
   files: [
     "src/background.ts",
     "src/content-script.ts",
+    "src/popup.ts",
     "src/in-app.ts",
     "src/ng-check.ts",
-    "src/constants.ts",
+    "src/constants.ts"
   ],
-  popup: ["src/popup/popup.ts"],
 };
 
 gulp.task("clean-dist", () => {
@@ -38,40 +38,39 @@ gulp.task("copy-pages", () => {
 });
 
 gulp.task("ts", async () => {
-  const tasks = (path = paths.files, dirname = ".") =>
-    path.map((entry) => {
-      return browserify({
-        basedir: ".",
-        debug: true,
-        entries: [entry],
-        cache: {},
-        packageCache: {},
-      })
-        .plugin(tsify)
-        .bundle()
-        .pipe(source(entry))
-        .pipe(
-          rename({
-            dirname: dirname,
-            extname: ".js",
-          })
-        )
-        .pipe(buffer())
-        .pipe(sourcemaps.init({ loadMaps: true }))
-        .pipe(uglify())
-        .pipe(sourcemaps.write("./"))
-        .pipe(gulp.dest("dist"));
-    });
-  return eventStream.merge.apply(null, tasks(), tasks(paths.popup, "popup"));
+  const tasks = paths.files.map((entry) => {
+    return browserify({
+      basedir: ".",
+      debug: true,
+      entries: [entry],
+      cache: {},
+      packageCache: {},
+    })
+      .plugin(tsify)
+      .bundle()
+      .pipe(source(entry))
+      .pipe(
+        rename({
+          dirname: ".",
+          extname: ".js",
+        })
+      )
+      .pipe(buffer())
+      .pipe(sourcemaps.init({ loadMaps: true }))
+      .pipe(uglify())
+      .pipe(sourcemaps.write("./"))
+      .pipe(gulp.dest("dist"));
+  });
+  return eventStream.merge.apply(null, tasks);
 });
 
 gulp.task(
-  "build",
+  "main",
   gulp.series("clean-dist", gulp.parallel("copy-assets", "copy-pages", "ts"))
 );
 
 gulp.task("watch", function () {
-  gulp.watch("src/**/*.*", gulp.series("build"));
+  gulp.watch("src/**/*.*", gulp.series("main"));
 });
 
-gulp.task("default", gulp.series("build", "watch"));
+gulp.task("default", gulp.series("main", "watch"));

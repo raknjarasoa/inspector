@@ -1,7 +1,7 @@
 {
-  "name": "ngneat-inspector",
-  "description": "A chrome extension to inspect and change Angular component properties, by ngneat.",
-  "version": "0.1.0",
+  "name": "chrome-ext-ng-props",
+  "version": "1.0.0",
+  "description": "A chrome extension to inspect and change Angular component properties.",
   "scripts": {
     "build": "gulp main",
     "changelog:current": "conventional-changelog -p angular -i CHANGELOG.md -s",
