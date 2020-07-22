@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles/bootstrap.min.css" />
+  </head>
+  <body style="width: 300px;">
+    <div class="container-fluid p-3">
+      <div class="row no-gutters">
+        <div class="col-auto pr-2 text-center mb-1">
+          <img
+            src="../assets/images/ngneat_128.png"
+            class="d-block"
+            alt="ngneat logo"
+            height="70"
+          />
+          <p class="mb-1"><span class="badge badge-secondary">v0.1.0</span></p>
+        </div>
+        <div class="col mb-1">
+          <h5 class="mb-1">
+            ngneat inspector
+          </h5>
+          <small class="text-muted">
+            A chrome extension to inspect and change Angular component
+            properties, by ngneat.
+          </small>
+        </div>
+      </div>
+      <p id="status" class="mb-1">
+        Checking if you're running an Angular application...
+      </p>
+    </div>
+    <div class="p-3 bg-light border-top" id="switch-parent">
+      <div class="custom-control custom-switch">
+        <input
+          type="checkbox"
+          class="custom-control-input"
+          id="enablerSwitch"
+        />
+        <label class="custom-control-label" for="enablerSwitch">Enable</label>
+      </div>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>
