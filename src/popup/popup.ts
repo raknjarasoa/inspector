@@ -23,6 +23,7 @@ function initPopup(): void {
               if (ngStatusResponse.message === "checking-ng-status") {
                 chrome.runtime.onMessage.addListener(
                   (message, sender, sendResponse) => {
+                    sendResponse();
                     if (message.command === "get-ng-status") {
                       isAngular = message.status;
                       enablerSwitch.disabled = !isAngular;
@@ -32,8 +33,17 @@ function initPopup(): void {
                       chrome.storage.sync.get(["status"], (result) => {
                         isStarted = result.status === "started";
                         enablerSwitch.checked = isStarted;
+                        chrome.tabs.sendMessage(
+                          tabs[0].id,
+                          { command: "start" },
+                          (startResponse) => {
+                            if (startResponse.message === "started") {
+                              chrome.storage.sync.set({ status: "started" });
+                              isStarted = true;
+                            }
+                          }
+                        );
                       });
-                      sendResponse();
                       enablerSwitch.addEventListener("change", (event) => {
                         if ((event.target as HTMLInputElement).checked) {
                           chrome.tabs.sendMessage(

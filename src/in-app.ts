@@ -12,7 +12,7 @@ declare const ng: any;
 declare const tippy: any;
 
 export let activePopovers: Instance[] = [];
-let currentTarget: Element = null;
+let activeTarget: Element = null;
 let activeNgComponent: any = null;
 export const singletonInstance = createSingleton(activePopovers, {
   moveTransition: "transform 0.3s ease-in-out",
@@ -34,60 +34,66 @@ function init(): void {
   document.addEventListener("mouseover", (ev: MouseEvent) => {
     if (!destroy) {
       const element = ev.target as Element;
-      const { nGComponent, element: activeElement } = getNgComponent(element);
-      const isPopoverActive = parseInt(element.getAttribute(APP_EXT_CONST));
-      currentTarget = activeElement;
-      if (nGComponent) {
-        if (isNaN(isPopoverActive)) {
-          const tippyInstance = tippy(element, {
-            allowHTML: true,
-            arrow: false,
-            theme: "light-border",
-            interactive: true,
-            onShown: () => {
-              listenForEmit();
-              listenForValueChange();
-              activeNgComponent = nGComponent;
-            },
-            onHidden: () => {
-              activeNgComponent = null;
-            },
-          });
-          const properties = getProperties(nGComponent);
-          let html = `<h4><strong>Component:</strong>${nGComponent.constructor.name}</h4>`;
-          html += `<h4><strong>Selector:</strong>${nGComponent.constructor.decorators[0].args[0].selector}</h4>`;
-          html += "<hr/>";
-          html += "<table><tbody>";
-          for (const prop in properties) {
-            html +=
-              "<tr><th>" +
-              prop +
-              "</th><td>" +
-              getPropertyHTML(prop, properties[prop], nGComponent) +
-              "</td></tr>";
+      if (element !== activeTarget) {
+        activeTarget = element;
+        const { nGComponent } = getNgComponent(element);
+        const isPopoverActive = parseInt(element.getAttribute(APP_EXT_CONST));
+        if (nGComponent) {
+          if (isNaN(isPopoverActive)) {
+            const properties = getProperties(nGComponent);
+            let html = `<h4><strong>Component:</strong>${nGComponent.constructor.name}</h4>`;
+            html += `<h4><strong>Selector:</strong>${nGComponent.constructor.decorators[0].args[0].selector}</h4>`;
+            html += "<hr/>";
+            html += "<table><tbody>";
+            for (const prop in properties) {
+              html +=
+                "<tr><th>" +
+                prop +
+                "</th><td>" +
+                getPropertyHTML(prop, properties[prop], nGComponent) +
+                "</td></tr>";
+            }
+            html += "</tbody></table>";
+            const tippyInstance = tippy(element, {
+              content: html,
+              allowHTML: true,
+              arrow: false,
+              theme: "light-border",
+              interactive: true,
+              onShown: () => {
+                listenForEmit();
+                listenForValueChange();
+                activeNgComponent = nGComponent;
+              },
+              onHidden: () => {
+                activeNgComponent = null;
+              },
+            });
+            activePopovers.push(tippyInstance);
+            singletonInstance.setInstances(activePopovers);
+            element.setAttribute(APP_EXT_CONST, activePopovers.length - 1 + "");
+          } else if (isPopoverActive) {
+            if (activePopovers[isPopoverActive]) {
+              const properties = getProperties(nGComponent);
+              let html = `<h4><strong>Component:</strong>${nGComponent.constructor.name}</h4>`;
+              html += `<h4><strong>Selector:</strong>${nGComponent.constructor.decorators[0].args[0].selector}</h4>`;
+              html += "<hr/>";
+              html += "<table><tbody>";
+              for (const prop in properties) {
+                html +=
+                  "<tr><th>" +
+                  prop +
+                  "</th><td>" +
+                  getPropertyHTML(prop, properties[prop], nGComponent) +
+                  "</td></tr>";
+              }
+              html += "</tbody></table>";
+              activePopovers[isPopoverActive].setProps({
+                content: html,
+              });
+              singletonInstance.setInstances(activePopovers);
+            }
           }
-          html += "</tbody></table>";
-          tippyInstance.setProps({ content: html });
-          activePopovers.push(tippyInstance);
-          singletonInstance.setInstances(activePopovers);
-          element.setAttribute(APP_EXT_CONST, activePopovers.length - 1 + "");
-        } else {
-          const properties = getProperties(nGComponent);
-          let html = `<h4><strong>Component:</strong>${nGComponent.constructor.name}</h4>`;
-          html += `<h4><strong>Selector:</strong>${nGComponent.constructor.decorators[0].args[0].selector}</h4>`;
-          html += "<hr/>";
-          html += "<table><tbody>";
-          for (const prop in properties) {
-            html +=
-              "<tr><th>" +
-              prop +
-              "</th><td>" +
-              getPropertyHTML(prop, properties[prop], nGComponent) +
-              "</td></tr>";
-          }
-          html += "</tbody></table>";
-          activePopovers[isPopoverActive].setProps({ content: html });
-          singletonInstance.setInstances(activePopovers);
         }
       }
     }
@@ -170,22 +176,24 @@ function listenForEmit(): void {
   const emitButtonList = document.getElementsByClassName(
     APP_EXT_PROP_EMIT_BUTTON_CLASS
   );
-  for (let i = 0; i < emitButtonList.length; i++) {
-    const emitButton = emitButtonList.item(i);
-    if (emitButton) {
-      emitButton.addEventListener("click", (event) => {
-        const prop = (event.target as Element).getAttribute(
-          APP_EXT_BUTTON_PROP
-        );
-        if (activeNgComponent) {
-          const inputValue = ((event.target as Element)
-            .previousElementSibling as HTMLInputElement).value;
-          if (inputValue) {
-            activeNgComponent[prop].emit(inputValue);
+  if (emitButtonList.length) {
+    for (let i = 0; i < emitButtonList.length; i++) {
+      const emitButton = emitButtonList.item(i);
+      if (emitButton) {
+        emitButton.addEventListener("click", (event) => {
+          const prop = (event.target as Element).getAttribute(
+            APP_EXT_BUTTON_PROP
+          );
+          if (activeNgComponent) {
+            const inputValue = ((event.target as Element)
+              .previousElementSibling as HTMLInputElement).value;
+            if (inputValue) {
+              activeNgComponent[prop].emit(inputValue);
+            }
+          } else {
           }
-        } else {
-        }
-      });
+        });
+      }
     }
   }
 }
@@ -199,35 +207,37 @@ function listenForValueChange(): void {
   const valueButtonList = document.getElementsByClassName(
     APP_EXT_PROP_VALUE_BUTTON_CLASS
   );
-  for (let i = 0; i < valueButtonList.length; i++) {
-    const valueButton = valueButtonList.item(i);
-    if (valueButton) {
-      valueButton.addEventListener("click", (event) => {
-        if (valueButton.innerHTML !== "✏️") {
-          const prop = (event.target as Element).getAttribute(
-            APP_EXT_BUTTON_PROP
-          );
-          if (activeNgComponent) {
-            const inputValue = ((event.target as Element)
-              .previousElementSibling as HTMLInputElement).value;
-            if (inputValue) {
-              activeNgComponent[prop] = inputValue;
-              ng.applyChanges(activeNgComponent);
+  if (valueButtonList.length) {
+    for (let i = 0; i < valueButtonList.length; i++) {
+      const valueButton = valueButtonList.item(i);
+      if (valueButton) {
+        valueButton.addEventListener("click", (event) => {
+          if (valueButton.innerHTML !== "✏️") {
+            const prop = (event.target as Element).getAttribute(
+              APP_EXT_BUTTON_PROP
+            );
+            if (activeNgComponent) {
+              const inputValue = ((event.target as Element)
+                .previousElementSibling as HTMLInputElement).value;
+              if (inputValue) {
+                activeNgComponent[prop] = inputValue;
+                ng.applyChanges(activeNgComponent);
+              } else {
+              }
             } else {
             }
           } else {
+            valueButton.innerHTML = "Update";
+            (document
+              .getElementsByClassName(APP_EXT_PROP_VALUE_INPUT_CLASS)
+              .item(i) as HTMLElement).style.display = "inline-block";
+            (document
+              .getElementsByClassName(APP_EXT_PROP_VALUE_SPAN_CLASS)
+              .item(i) as HTMLElement).style.display = "none";
           }
-        } else {
-          valueButton.innerHTML = "Update";
-          (document
-            .getElementsByClassName(APP_EXT_PROP_VALUE_INPUT_CLASS)
-            .item(i) as HTMLElement).style.display = "inline-block";
-          (document
-            .getElementsByClassName(APP_EXT_PROP_VALUE_SPAN_CLASS)
-            .item(i) as HTMLElement).style.display = "none";
-        }
-      });
-    } else {
+        });
+      } else {
+      }
     }
   }
 }

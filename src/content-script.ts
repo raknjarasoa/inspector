@@ -53,15 +53,15 @@ function injectCustomStyle(): void {
 }
 
 function destroy(): void {
-  scriptElements.forEach((script) => {
-    document.documentElement.removeChild(script);
-  });
-  styleElements.forEach((style) => {
-    document.head.removeChild(style);
-  });
-  customStyleElements.forEach((style) => {
-    document.head.removeChild(style);
-  });
+  // scriptElements.forEach((script) => {
+  //   document.documentElement.removeChild(script);
+  // });
+  // styleElements.forEach((style) => {
+  //   document.head.removeChild(style);
+  // });
+  // customStyleElements.forEach((style) => {
+  //   document.head.removeChild(style);
+  // });
 }
 
 const ngCheckScriptPath = chrome.runtime.getURL("ng-check.js");

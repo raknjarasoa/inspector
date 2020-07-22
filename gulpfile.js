@@ -15,13 +15,13 @@ const purgecss = require("gulp-purgecss");
 const paths = {
   pages: ["src/**/*.html"],
   dist: "dist",
-  assets: ["src/manifest.json"],
+  assets: ["src/manifest.json", "src/static/**/*.*"],
   files: [
     "src/background.ts",
     "src/content-script.ts",
     "src/in-app.ts",
     "src/ng-check.ts",
-    "src/constants.ts"
+    "src/constants.ts",
   ],
   popup: ["src/popup/popup.ts"],
   css: ["src/**/*.css"],
@@ -51,30 +51,31 @@ gulp.task("css", () => {
 });
 
 gulp.task("ts", async () => {
-  const tasks = paths.files.map((entry) => {
-    return browserify({
-      basedir: ".",
-      debug: true,
-      entries: [entry],
-      cache: {},
-      packageCache: {},
-    })
-      .plugin(tsify)
-      .bundle()
-      .pipe(source(entry))
-      .pipe(
-        rename({
-          dirname: ".",
-          extname: ".js",
-        })
-      )
-      .pipe(buffer())
-      .pipe(sourcemaps.init({ loadMaps: true }))
-      .pipe(uglify())
-      .pipe(sourcemaps.write("./"))
-      .pipe(gulp.dest("dist"));
-  });
-  return eventStream.merge.apply(null, tasks);
+  const tasks = (path = paths.files, dirname = ".") =>
+    path.map((entry) => {
+      return browserify({
+        basedir: ".",
+        debug: true,
+        entries: [entry],
+        cache: {},
+        packageCache: {},
+      })
+        .plugin(tsify)
+        .bundle()
+        .pipe(source(entry))
+        .pipe(
+          rename({
+            dirname: dirname,
+            extname: ".js",
+          })
+        )
+        .pipe(buffer())
+        .pipe(sourcemaps.init({ loadMaps: true }))
+        .pipe(uglify())
+        .pipe(sourcemaps.write("./"))
+        .pipe(gulp.dest("dist"));
+    });
+  return eventStream.merge.apply(null, tasks(), tasks(paths.popup, "popup"));
 });
 
 gulp.task(
