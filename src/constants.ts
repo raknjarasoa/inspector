@@ -8,3 +8,4 @@ export const APP_EXT_PROP_VALUE_INPUT_CLASS =
   "chrome-ext-ng-properties-prop-input-value";
 export const APP_EXT_PROP_VALUE_BUTTON_CLASS =
   "chrome-ext-ng-properties-value-btn";
+export const ACTIVE_TAB_QUERY = { active: true, currentWindow: true };

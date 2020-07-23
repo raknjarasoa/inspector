@@ -7,6 +7,7 @@ import {
   APP_EXT_PROP_VALUE_INPUT_CLASS,
   APP_EXT_PROP_VALUE_BUTTON_CLASS,
 } from "./constants";
+import { isAngularAppRunning } from "./ng-check";
 
 declare const ng: any;
 declare const tippy: any;
@@ -19,10 +20,53 @@ export const singletonInstance = createSingleton(activePopovers, {
   allowHTML: true,
   arrow: false,
   theme: "light-border",
+  interactive: true,
   appendTo: () => document.body,
-  overrides: ["interactive", "onShown", "onHidden", "content"],
+  overrides: ["onShown", "onHidden", "content"],
 });
-let destroy = false;
+const inAppMethods = { enabled: false };
+
+initInAppScript();
+
+function initInAppScript(): void {
+  window.addEventListener("message", (event) => {
+    if (event.source != window) {
+      return;
+    }
+    if (event.data.command === "destroy") {
+      disableInAppMethods();
+    } else if (
+      event.data.command === "start-ng-check" ||
+      event.data.command === "start"
+    ) {
+      if (isAngularAppRunning()) {
+        enableInAppMethods(event.data.command === "start");
+      } else {
+        window.postMessage({ type: "ng-check-status", isAngular: false }, "*");
+      }
+    }
+  });
+}
+
+function disableInAppMethods() {
+  if (inAppMethods.enabled) {
+    document.removeEventListener("mouseover", handleMouseOver(), true);
+    destroyTippy();
+    window.postMessage({ response: "destroyed" }, "*");
+    inAppMethods.enabled = false;
+  }
+}
+
+function enableInAppMethods(startingAgain: boolean) {
+  if (!inAppMethods.enabled) {
+    singletonInstance.enable();
+    startDocumentOverListen();
+    inAppMethods.enabled = true;
+  }
+  if (!startingAgain) {
+    window.postMessage({ type: "ng-check-status", isAngular: true }, "*");
+  }
+}
 
 /**
  * Start listening to `mouseover` of `document`. Fetch the hovered target and find the Angular component
@@ -30,16 +74,46 @@ let destroy = false;
  * component's properties and show a popover with all controls.
  *
  */
-function init(): void {
-  document.addEventListener("mouseover", (ev: MouseEvent) => {
-    if (!destroy) {
-      const element = ev.target as Element;
-      if (element !== activeTarget) {
-        activeTarget = element;
-        const { nGComponent } = getNgComponent(element);
-        const isPopoverActive = parseInt(element.getAttribute(APP_EXT_CONST));
-        if (nGComponent) {
-          if (isNaN(isPopoverActive)) {
+function startDocumentOverListen(): void {
+  document.addEventListener("mouseover", handleMouseOver(), true);
+}
+
+function handleMouseOver(): (this: Document, ev: MouseEvent) => any {
+  return (ev: MouseEvent) => {
+    const element = ev.target as Element;
+    if (element !== activeTarget) {
+      activeTarget = element;
+      const { nGComponent } = getNgComponent(element);
+      const isPopoverActive = parseInt(element.getAttribute(APP_EXT_CONST));
+      if (nGComponent) {
+        if (isNaN(isPopoverActive)) {
+          const properties = getProperties(nGComponent);
+          let html = `<h4><strong>Component:</strong>${nGComponent.constructor.name}</h4>`;
+          html += `<h4><strong>Selector:</strong>${nGComponent.constructor.decorators[0].args[0].selector}</h4>`;
+          html += "<hr/>";
+          html += "<table><tbody>";
+          for (const prop in properties) {
+            html +=
+              "<tr><th>" +
+              prop +
+              "</th><td>" +
+              getPropertyHTML(prop, properties[prop], nGComponent) +
+              "</td></tr>";
+          }
+          html += "</tbody></table>";
+          const tippyInstance = tippy(element, {
+            content: html,
+            onShown: () => {
+              listenForEmit();
+              listenForValueChange();
+            },
+          });
+          activePopovers.push(tippyInstance);
+          singletonInstance.setInstances(activePopovers);
+          element.setAttribute(APP_EXT_CONST, activePopovers.length - 1 + "");
+          activeNgComponent = nGComponent;
+        } else if (isPopoverActive) {
+          if (activePopovers[isPopoverActive]) {
             const properties = getProperties(nGComponent);
             let html = `<h4><strong>Component:</strong>${nGComponent.constructor.name}</h4>`;
             html += `<h4><strong>Selector:</strong>${nGComponent.constructor.decorators[0].args[0].selector}</h4>`;
@@ -54,50 +128,15 @@ function init(): void {
                 "</td></tr>";
             }
             html += "</tbody></table>";
-            const tippyInstance = tippy(element, {
+            activePopovers[isPopoverActive].setProps({
               content: html,
-              allowHTML: true,
-              arrow: false,
-              theme: "light-border",
-              interactive: true,
-              onShown: () => {
-                listenForEmit();
-                listenForValueChange();
-                activeNgComponent = nGComponent;
-              },
-              onHidden: () => {
-                activeNgComponent = null;
-              },
             });
-            activePopovers.push(tippyInstance);
             singletonInstance.setInstances(activePopovers);
-            element.setAttribute(APP_EXT_CONST, activePopovers.length - 1 + "");
-          } else if (isPopoverActive) {
-            if (activePopovers[isPopoverActive]) {
-              const properties = getProperties(nGComponent);
-              let html = `<h4><strong>Component:</strong>${nGComponent.constructor.name}</h4>`;
-              html += `<h4><strong>Selector:</strong>${nGComponent.constructor.decorators[0].args[0].selector}</h4>`;
-              html += "<hr/>";
-              html += "<table><tbody>";
-              for (const prop in properties) {
-                html +=
-                  "<tr><th>" +
-                  prop +
-                  "</th><td>" +
-                  getPropertyHTML(prop, properties[prop], nGComponent) +
-                  "</td></tr>";
-              }
-              html += "</tbody></table>";
-              activePopovers[isPopoverActive].setProps({
-                content: html,
-              });
-              singletonInstance.setInstances(activePopovers);
-            }
           }
         }
       }
     }
-  });
+  };
 }
 
 /**
@@ -242,22 +281,6 @@ function listenForValueChange(): void {
   }
 }
 
-// let's start
-init();
-
-window.addEventListener("message", (event) => {
-  if (event.data.command === "destroy") {
-    destroy = true;
-    destroyTippy();
-    window.postMessage({ response: "destroyed" }, "*");
-  }
-});
-
 function destroyTippy(): void {
-  for (let i = 0; i < activePopovers.length; i++) {
-    activePopovers[i].destroy();
-  }
-  activePopovers = [];
-  singletonInstance.setInstances([]);
-  singletonInstance.destroy();
+  singletonInstance.disable();
 }
