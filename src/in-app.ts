@@ -13,10 +13,10 @@ declare const ng: any;
 declare const tippy: any;
 declare const Popper: any;
 
-export let activePopovers: Instance[] = [];
+let activePopovers: Instance[] = [];
 let activeTarget: Element = null;
 let activeNgComponent: any = null;
-export const singletonInstance = createSingleton(activePopovers, {
+const singletonInstance = createSingleton(activePopovers, {
   moveTransition: "transform 0.3s ease-in-out",
   allowHTML: true,
   arrow: false,
@@ -94,48 +94,23 @@ function handleMouseOver(): (this: Document, ev: MouseEvent) => any {
       const { nGComponent } = getNgComponent(element);
       const isPopoverActive = parseInt(element.getAttribute(APP_EXT_CONST));
       if (nGComponent) {
+        activeNgComponent = nGComponent;
         if (isNaN(isPopoverActive)) {
-          const properties = getProperties(nGComponent);
-          let html = `<h4><strong>Component:</strong>${nGComponent.constructor.name}</h4>`;
-          html += `<h4><strong>Selector:</strong>${nGComponent.constructor.decorators[0].args[0].selector}</h4>`;
-          html += "<hr/>";
-          html += "<table><tbody>";
-          for (const prop in properties) {
-            html +=
-              "<tr><th>" +
-              prop +
-              "</th><td>" +
-              getPropertyHTML(prop, properties[prop], nGComponent) +
-              "</td></tr>";
-          }
-          html += "</tbody></table>";
+          let html = buildHTML(nGComponent, activePopovers.length + 1 + "");
           const tippyInstance = tippy(element, {
             content: html,
             onShown: () => {
-              listenForEmit();
-              listenForValueChange();
+              listenForSelect();
+              // listenForEmit();
+              // listenForValueChange();
             },
           });
           activePopovers.push(tippyInstance);
           singletonInstance.setInstances(activePopovers);
           element.setAttribute(APP_EXT_CONST, activePopovers.length - 1 + "");
-          activeNgComponent = nGComponent;
         } else if (isPopoverActive) {
           if (activePopovers[isPopoverActive]) {
-            const properties = getProperties(nGComponent);
-            let html = `<h4><strong>Component:</strong>${nGComponent.constructor.name}</h4>`;
-            html += `<h4><strong>Selector:</strong>${nGComponent.constructor.decorators[0].args[0].selector}</h4>`;
-            html += "<hr/>";
-            html += "<table><tbody>";
-            for (const prop in properties) {
-              html +=
-                "<tr><th>" +
-                prop +
-                "</th><td>" +
-                getPropertyHTML(prop, properties[prop], nGComponent) +
-                "</td></tr>";
-            }
-            html += "</tbody></table>";
+            let html = buildHTML(nGComponent, isPopoverActive + "");
             activePopovers[isPopoverActive].setProps({
               content: html,
             });
@@ -145,6 +120,23 @@ function handleMouseOver(): (this: Document, ev: MouseEvent) => any {
       }
     }
   };
+}
+
+function buildHTML(nGComponent: any, attrValue: string) {
+  const properties = getProperties(nGComponent);
+  let html = `<h4><strong>Component:</strong>${nGComponent.constructor.name}</h4>`;
+  html += `<h4><strong>Selector:</strong>${nGComponent.constructor.decorators[0].args[0].selector}</h4>`;
+  html += "<hr/>";
+
+  html += `<select class="select-class" ${APP_EXT_CONST}="${attrValue}">
+          <option value="">--Please choose a property--</option>`;
+  for (const prop in properties) {
+    html += `<option value="${prop}">${prop}</option>`;
+  }
+  html += "</select>";
+
+  html += "<div class='select-next-div'></div>";
+  return html;
 }
 
 /**
@@ -212,6 +204,41 @@ function getPropertyHTML(prop: any, value: any, nGComponent: any): string {
       break;
   }
   return html;
+}
+
+function listenForSelect(): void {
+  const selectList = document.getElementsByClassName("select-class");
+  if (selectList.length) {
+    for (let i = 0; i < selectList.length; i++) {
+      const selectElement = selectList.item(i);
+      selectElement.addEventListener("change", (event) => {
+        const properties = getProperties(activeNgComponent);
+        const activeProp = (event.target as any).value;
+
+        const selectNextDiv = selectElement.nextElementSibling;
+
+        let html = "<table><tbody>";
+
+        if (activeProp) {
+          html +=
+            "<tr><th>" +
+            activeProp +
+            "</th><td>" +
+            getPropertyHTML(
+              activeProp,
+              properties[activeProp],
+              activeNgComponent
+            ) +
+            "</td></tr>";
+        }
+
+        html += "</tbody></table>";
+        selectNextDiv.innerHTML = html;
+        listenForEmit();
+        listenForValueChange();
+      });
+    }
+  }
 }
 
 /**

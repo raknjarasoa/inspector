@@ -56,10 +56,15 @@ function injectCustomStyle(): void {
   const style = document.createElement("style");
   style.innerText = `.tippy-box {
           font-family: Arial, Helvetica, sans-serif;
+          padding: 8px;
         }
         .tippy-box table td,
         .tippy-box table th {
           text-align: left;
+        }
+        .tippy-box select, .tippy-box .select-next-div {
+          margin-top: 8px;
+          margin-bottom: 8px;
         }
         .chrome-ext-ng-properties-prop-input-value {
           display: none;
