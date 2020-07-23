@@ -1,21 +1,35 @@
+import { MESSAGES } from "./constants";
+
 const scriptElements: HTMLScriptElement[] = [];
 const styleElements: HTMLLinkElement[] = [];
 const customStyleElements: HTMLStyleElement[] = [];
+let errorData: { error: string; type: string; message: string };
 
-injectScriptsAndStyles();
+initContentScript();
+
+function initContentScript(): void {
+  injectScriptsAndStyles();
+  const ngCheckScriptPath = chrome.runtime.getURL("ng-check.js");
+  injectScript(ngCheckScriptPath);
+  startListeningForConnectionMessage();
+  startListeningForErrorMessage();
+  window.addEventListener("load", () => {
+    chrome.storage.sync.clear();
+  });
+}
 
 function injectScriptsAndStyles(): void {
   const scriptPath = [
-    "https://unpkg.com/@popperjs/core@2",
-    "https://unpkg.com/tippy.js@6",
+    chrome.runtime.getURL("assets/lib/js/popper.min.js"),
+    chrome.runtime.getURL("assets/lib/js/tippy-bundle.umd.min.js"),
     chrome.runtime.getURL("in-app.js"),
   ];
 
   scriptPath.forEach((p) => injectScript(p));
 
   const stylePath = [
-    "https://unpkg.com/tippy.js@6/dist/tippy.css",
-    "https://unpkg.com/tippy.js@6/themes/light-border.css",
+    chrome.runtime.getURL("assets/lib/css/tippy.css"),
+    chrome.runtime.getURL("assets/lib/css/light-border.css"),
   ];
 
   stylePath.forEach((p) => injectStyle(p));
@@ -54,15 +68,15 @@ function injectCustomStyle(): void {
   customStyleElements.push(style);
 }
 
-const ngCheckScriptPath = chrome.runtime.getURL("ng-check.js");
-injectScript(ngCheckScriptPath);
-startListeningForConnectionMessage();
-
 function startListeningForConnectionMessage(): void {
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.command === "check-connection") {
       sendResponse({ message: "connection-established" });
-      startListeningForNgStatusMessage();
+      if (errorData) {
+        chrome.runtime.sendMessage(errorData, (response) => {});
+      } else {
+        startListeningForNgStatusMessage();
+      }
     }
   });
 }
@@ -77,13 +91,13 @@ function startListeningForNgStatusMessage(): void {
           return;
         }
         if (event.data.type === "ng-check-status") {
+          const isAngular = event.data.isAngular;
           chrome.runtime.sendMessage(
             {
               command: "get-ng-status",
               status: event.data.isAngular,
             },
             () => {
-              chrome.storage.sync.set({ isAngular: event.data.isAngular });
               startListeningForAppMessage();
             }
           );
@@ -112,6 +126,17 @@ function startListeningForAppMessage(): void {
   });
 }
 
-window.addEventListener("load", () => {
-  chrome.storage.sync.clear();
-});
+function startListeningForErrorMessage(): void {
+  window.addEventListener("message", (event) => {
+    if (event.source != window) {
+      return;
+    }
+    if (event.data.type === "error") {
+      errorData = {
+        type: "error",
+        error: event.data.error,
+        message: MESSAGES[event.data.error],
+      };
+    }
+  });
+}

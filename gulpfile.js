@@ -13,7 +13,7 @@ const uncss = require("postcss-uncss");
 const purgecss = require("gulp-purgecss");
 
 const paths = {
-  pages: ["src/**/*.html"],
+  appHTML: ["src/app/**/*.html"],
   dist: "dist",
   assets: ["src/manifest.json", "src/static/**/*.*"],
   files: [
@@ -23,8 +23,8 @@ const paths = {
     "src/ng-check.ts",
     "src/constants.ts",
   ],
-  popup: ["src/popup/popup.ts"],
-  css: ["src/**/*.css"],
+  appTS: ["src/app/popup/popup.ts"],
+  appCSS: ["src/app/**/*.css"],
 };
 
 gulp.task("clean-dist", () => {
@@ -36,15 +36,15 @@ gulp.task("copy-assets", () => {
 });
 
 gulp.task("copy-pages", () => {
-  return gulp.src(paths.pages).pipe(gulp.dest(paths.dist));
+  return gulp.src(paths.appHTML).pipe(gulp.dest(paths.dist));
 });
 
 gulp.task("css", () => {
   return gulp
-    .src(paths.css[0])
+    .src(paths.appCSS[0])
     .pipe(
       purgecss({
-        content: [paths.pages[0]],
+        content: [paths.appHTML[0]],
       })
     )
     .pipe(gulp.dest(paths.dist));
@@ -75,7 +75,7 @@ gulp.task("ts", async () => {
         .pipe(sourcemaps.write("./"))
         .pipe(gulp.dest("dist"));
     });
-  return eventStream.merge.apply(null, tasks(), tasks(paths.popup, "popup"));
+  return eventStream.merge.apply(null, tasks(), tasks(paths.appTS, "popup"));
 });
 
 gulp.task(

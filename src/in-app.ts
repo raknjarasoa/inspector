@@ -11,6 +11,7 @@ import { isAngularAppRunning } from "./ng-check";
 
 declare const ng: any;
 declare const tippy: any;
+declare const Popper: any;
 
 export let activePopovers: Instance[] = [];
 let activeTarget: Element = null;
@@ -29,23 +30,30 @@ const inAppMethods = { enabled: false };
 initInAppScript();
 
 function initInAppScript(): void {
-  window.addEventListener("message", (event) => {
-    if (event.source != window) {
-      return;
-    }
-    if (event.data.command === "destroy") {
-      disableInAppMethods();
-    } else if (
-      event.data.command === "start-ng-check" ||
-      event.data.command === "start"
-    ) {
-      if (isAngularAppRunning()) {
-        enableInAppMethods(event.data.command === "start");
-      } else {
-        window.postMessage({ type: "ng-check-status", isAngular: false }, "*");
+  if (typeof tippy !== "undefined" && typeof Popper !== "undefined") {
+    window.addEventListener("message", (event) => {
+      if (event.source != window) {
+        return;
       }
-    }
-  });
+      if (event.data.command === "destroy") {
+        disableInAppMethods();
+      } else if (
+        event.data.command === "start-ng-check" ||
+        event.data.command === "start"
+      ) {
+        if (isAngularAppRunning()) {
+          enableInAppMethods(event.data.command === "start");
+        } else {
+          window.postMessage(
+            { type: "ng-check-status", isAngular: false },
+            "*"
+          );
+        }
+      }
+    });
+  } else {
+    window.postMessage({ type: "error", error: "tippy-popper-not-found" }, "*");
+  }
 }
 
 function disableInAppMethods() {
