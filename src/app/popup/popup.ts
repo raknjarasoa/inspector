@@ -1,4 +1,4 @@
-import { APP_EXT_CONST_STORAGE_KEY_PREFIX } from "../../constants";
+import { APP_EXT_CONST_STORAGE_KEY_PREFIX } from "../../shared/constants";
 
 let isStarted = false;
 let isAngular = false;

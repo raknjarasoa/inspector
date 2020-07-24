@@ -1,4 +1,4 @@
-import { MESSAGES } from "./constants";
+import { MESSAGES } from "./shared/constants";
 
 const scriptElements: HTMLScriptElement[] = [];
 const styleElements: HTMLLinkElement[] = [];
@@ -9,7 +9,7 @@ initContentScript();
 
 function initContentScript(): void {
   injectScriptsAndStyles();
-  const ngCheckScriptPath = chrome.runtime.getURL("ng-check.js");
+  const ngCheckScriptPath = chrome.runtime.getURL("inject/ng-check.js");
   injectScript(ngCheckScriptPath);
   startListeningForConnectionMessage();
   startListeningForErrorMessage();
@@ -22,7 +22,7 @@ function injectScriptsAndStyles(): void {
   const scriptPath = [
     chrome.runtime.getURL("assets/lib/js/popper.min.js"),
     chrome.runtime.getURL("assets/lib/js/tippy-bundle.umd.min.js"),
-    chrome.runtime.getURL("in-app.js"),
+    chrome.runtime.getURL("inject/in-app.js"),
   ];
 
   scriptPath.forEach((p) => injectScript(p));

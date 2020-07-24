@@ -6,7 +6,7 @@ import {
   APP_EXT_PROP_VALUE_SPAN_CLASS,
   APP_EXT_PROP_VALUE_INPUT_CLASS,
   APP_EXT_PROP_VALUE_BUTTON_CLASS,
-} from "./constants";
+} from "../shared/constants";
 import { isAngularAppRunning } from "./ng-check";
 
 declare const ng: any;
@@ -101,8 +101,6 @@ function handleMouseOver(): (this: Document, ev: MouseEvent) => any {
             content: html,
             onShown: () => {
               listenForSelect();
-              // listenForEmit();
-              // listenForValueChange();
             },
           });
           activePopovers.push(tippyInstance);

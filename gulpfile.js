@@ -8,64 +8,98 @@ const eventStream = require("event-stream");
 const rename = require("gulp-rename");
 const buffer = require("vinyl-buffer");
 const sourcemaps = require("gulp-sourcemaps");
-const postcss = require("gulp-postcss");
-const uncss = require("postcss-uncss");
 const purgecss = require("gulp-purgecss");
 
 const paths = {
-  appHTML: ["src/app/**/*.html"],
+  html: [{ url: "src/app/popup/*.html", dir: "app/popup" }],
   dist: "dist",
-  assets: ["src/manifest.json", "src/static/**/*.*"],
-  files: [
-    "src/background.ts",
-    "src/content-script.ts",
-    "src/in-app.ts",
-    "src/ng-check.ts",
-    "src/constants.ts",
+  assets: [
+    { url: "src/manifest.json", dir: "." },
+    { url: "src/assets/images/*.*", dir: "assets/images" },
+    { url: "src/assets/lib/css/*.*", dir: "assets/lib/css" },
+    { url: "src/assets/lib/js/*.*", dir: "assets/lib/js" },
   ],
-  appTS: ["src/app/popup/popup.ts"],
-  appCSS: ["src/app/**/*.css"],
+  typescript: [
+    { url: "src/background.ts", dir: "." },
+    { url: "src/content-script.ts", dir: "." },
+    { url: "src/inject/in-app.ts", dir: "inject" },
+    { url: "src/inject/ng-check.ts", dir: "inject" },
+    { url: "src/shared/constants.ts", dir: "shared" },
+    { url: "src/app/popup/popup.ts", dir: "app/popup" },
+  ],
+  css: [
+    {
+      url: "src/app/styles/*.css",
+      dir: "app/styles",
+    },
+  ],
 };
 
 gulp.task("clean-dist", () => {
   return gulp.src(paths.dist, { read: false, allowEmpty: true }).pipe(clean());
 });
 
-gulp.task("copy-assets", () => {
-  return gulp.src(paths.assets).pipe(gulp.dest(paths.dist));
+gulp.task("copy-assets", async () => {
+  const tasks = () => {
+    paths.assets.map((entry) => {
+      return gulp
+        .src(entry.url)
+        .pipe(rename({ dirname: entry.dir }))
+        .pipe(gulp.dest(paths.dist));
+    });
+  };
+  return eventStream.merge.apply(null, tasks());
 });
 
-gulp.task("copy-pages", () => {
-  return gulp.src(paths.appHTML).pipe(gulp.dest(paths.dist));
+gulp.task("copy-html", async () => {
+  const tasks = () => {
+    paths.html.map((entry) => {
+      return gulp
+        .src(entry.url)
+        .pipe(rename({ dirname: entry.dir }))
+        .pipe(gulp.dest(paths.dist));
+    });
+  };
+  return eventStream.merge.apply(null, tasks());
 });
 
-gulp.task("css", () => {
-  return gulp
-    .src(paths.appCSS[0])
-    .pipe(
-      purgecss({
-        content: [paths.appHTML[0]],
-      })
-    )
-    .pipe(gulp.dest(paths.dist));
+gulp.task("css", async () => {
+  const tasks = () => {
+    paths.css.map((entry) => {
+      return gulp
+        .src(entry.url)
+        .pipe(
+          purgecss({
+            content: paths.html.map((v) => v.url),
+          })
+        )
+        .pipe(
+          rename({
+            dirname: entry.dir,
+          })
+        )
+        .pipe(gulp.dest(paths.dist));
+    });
+  };
+  return eventStream.merge.apply(null, tasks());
 });
 
 gulp.task("ts", async () => {
-  const tasks = (path = paths.files, dirname = ".") =>
-    path.map((entry) => {
+  const tasks = () =>
+    paths.typescript.map((entry) => {
       return browserify({
         basedir: ".",
         debug: true,
-        entries: [entry],
+        entries: [entry.url],
         cache: {},
         packageCache: {},
       })
         .plugin(tsify)
         .bundle()
-        .pipe(source(entry))
+        .pipe(source(entry.url))
         .pipe(
           rename({
-            dirname: dirname,
+            dirname: entry.dir,
             extname: ".js",
           })
         )
@@ -75,14 +109,14 @@ gulp.task("ts", async () => {
         .pipe(sourcemaps.write("./"))
         .pipe(gulp.dest("dist"));
     });
-  return eventStream.merge.apply(null, tasks(), tasks(paths.appTS, "popup"));
+  return eventStream.merge.apply(null, tasks());
 });
 
 gulp.task(
   "build",
   gulp.series(
     "clean-dist",
-    gulp.parallel("copy-assets", "copy-pages", "ts", "css")
+    gulp.parallel("copy-assets", "copy-html", "ts", "css")
   )
 );
 
