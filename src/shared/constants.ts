@@ -12,5 +12,5 @@ export const ACTIVE_TAB_QUERY = { active: true, currentWindow: true };
 export const APP_EXT_CONST_STORAGE_KEY_PREFIX = APP_EXT_CONST + "_TABS_";
 export const MESSAGES: { [key: string]: string } = {
   "tippy-popper-not-found":
-    "Tippy.js and Popper.js, both are required to run this extension properly.",
+    "Tippy.js is required to run this extension properly.",
 };

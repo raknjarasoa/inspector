@@ -21,11 +21,11 @@ const paths = {
   ],
   typescript: [
     { url: "src/background.ts", dir: "." },
-    { url: "src/content-script.ts", dir: "." },
+    { url: "src/content_script.ts", dir: "." },
     { url: "src/inject/in-app.ts", dir: "inject" },
     { url: "src/inject/ng-check.ts", dir: "inject" },
     { url: "src/shared/constants.ts", dir: "shared" },
-    { url: "src/app/popup/popup.ts", dir: "app/popup" },
+    { url: "src/app/popup/index.ts", dir: "app/popup" },
   ],
   css: [
     {

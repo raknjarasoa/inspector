@@ -9,19 +9,20 @@
     "persistent": false
   },
   "page_action": {
-    "default_title": "Start inspecting with ng-neat/inspector",
-    "default_popup": "app/popup/popup.html"
+    "default_title": "ng-neat inspector",
+    "default_popup": "app/popup/index.html"
   },
   "content_scripts": [
     {
       "matches": ["*://*/"],
-      "js": ["content-script.js"],
+      "js": ["content_script.js"],
       "run_at": "document_end"
     }
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "web_accessible_resources": [
     "inject/in-app.js",
+    "inject/in-app.js.map",
     "inject/ng-check.js",
     "shared/constants.js",
     "assets/lib/css/light-border.css",

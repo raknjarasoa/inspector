@@ -9,8 +9,6 @@ initContentScript();
 
 function initContentScript(): void {
   injectScriptsAndStyles();
-  const ngCheckScriptPath = chrome.runtime.getURL("inject/ng-check.js");
-  injectScript(ngCheckScriptPath);
   startListeningForConnectionMessage();
   startListeningForErrorMessage();
   window.addEventListener("load", () => {
@@ -20,8 +18,6 @@ function initContentScript(): void {
 
 function injectScriptsAndStyles(): void {
   const scriptPath = [
-    chrome.runtime.getURL("assets/lib/js/popper.min.js"),
-    chrome.runtime.getURL("assets/lib/js/tippy-bundle.umd.min.js"),
     chrome.runtime.getURL("inject/in-app.js"),
   ];
 
@@ -54,7 +50,7 @@ function injectStyle(path: string): void {
 
 function injectCustomStyle(): void {
   const style = document.createElement("style");
-  style.innerText = `.tippy-box {
+  style.textContent = `.tippy-box {
           font-family: Arial, Helvetica, sans-serif;
           padding: 8px;
         }

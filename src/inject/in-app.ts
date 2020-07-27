@@ -1,4 +1,4 @@
-import { Instance, createSingleton } from "tippy.js";
+import tippy, { Instance, createSingleton } from "tippy.js";
 import {
   APP_EXT_CONST,
   APP_EXT_PROP_EMIT_BUTTON_CLASS,
@@ -10,8 +10,6 @@ import {
 import { isAngularAppRunning } from "./ng-check";
 
 declare const ng: any;
-declare const tippy: any;
-declare const Popper: any;
 
 let activePopovers: Instance[] = [];
 let activeTarget: Element = null;
@@ -23,26 +21,32 @@ const singletonInstance = createSingleton(activePopovers, {
   theme: "light-border",
   interactive: true,
   appendTo: () => document.body,
-  overrides: ["onShown", "onHidden", "content"],
+  overrides: ["onShown", "onHidden", "content", "onShow"],
 });
 const inAppMethods = { enabled: false };
 
 initInAppScript();
 
 function initInAppScript(): void {
-  if (typeof tippy !== "undefined" && typeof Popper !== "undefined") {
+  if (typeof tippy !== "undefined") {
     window.addEventListener("message", (event) => {
       if (event.source != window) {
         return;
       }
       if (event.data.command === "destroy") {
         disableInAppMethods();
-      } else if (
-        event.data.command === "start-ng-check" ||
-        event.data.command === "start"
-      ) {
+      } else if (event.data.command === "start-ng-check") {
         if (isAngularAppRunning()) {
-          enableInAppMethods(event.data.command === "start");
+          window.postMessage({ type: "ng-check-status", isAngular: true }, "*");
+        } else {
+          window.postMessage(
+            { type: "ng-check-status", isAngular: false },
+            "*"
+          );
+        }
+      } else if (event.data.command === "start") {
+        if (isAngularAppRunning()) {
+          enableInAppMethods();
         } else {
           window.postMessage(
             { type: "ng-check-status", isAngular: false },
@@ -65,13 +69,11 @@ function disableInAppMethods() {
   }
 }
 
-function enableInAppMethods(startingAgain: boolean) {
+function enableInAppMethods() {
   if (!inAppMethods.enabled) {
     singletonInstance.enable();
     startDocumentOverListen();
     inAppMethods.enabled = true;
-  }
-  if (!startingAgain) {
     window.postMessage({ type: "ng-check-status", isAngular: true }, "*");
   }
 }
@@ -111,10 +113,14 @@ function handleMouseOver(): (this: Document, ev: MouseEvent) => any {
             let html = buildHTML(nGComponent, isPopoverActive + "");
             activePopovers[isPopoverActive].setProps({
               content: html,
+              onShown: () => {
+                listenForSelect();
+              },
             });
             singletonInstance.setInstances(activePopovers);
           }
         }
+      } else {
       }
     }
   };
