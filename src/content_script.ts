@@ -17,15 +17,13 @@ function initContentScript(): void {
 }
 
 function injectScriptsAndStyles(): void {
-  const scriptPath = [
-    chrome.runtime.getURL("inject/in-app.js"),
-  ];
+  const scriptPath = [chrome.runtime.getURL("inject/index.js")];
 
   scriptPath.forEach((p) => injectScript(p));
 
   const stylePath = [
-    chrome.runtime.getURL("assets/lib/css/tippy.css"),
-    chrome.runtime.getURL("assets/lib/css/light-border.css"),
+    chrome.runtime.getURL("assets/css/tippy.css"),
+    chrome.runtime.getURL("assets/css/light-border.css"),
   ];
 
   stylePath.forEach((p) => injectStyle(p));

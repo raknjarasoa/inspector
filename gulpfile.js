@@ -11,19 +11,27 @@ const sourcemaps = require("gulp-sourcemaps");
 const purgecss = require("gulp-purgecss");
 
 const paths = {
-  html: [{ url: "src/app/popup/*.html", dir: "app/popup" }],
+  html: [
+    { url: "src/app/popup/*.html", dir: "app/popup" },
+    { url: "src/inject/index.html", dir: "inject" },
+  ],
   dist: "dist",
   assets: [
     { url: "src/manifest.json", dir: "." },
     { url: "src/assets/images/*.*", dir: "assets/images" },
-    { url: "src/assets/lib/css/*.*", dir: "assets/lib/css" },
-    { url: "src/assets/lib/js/*.*", dir: "assets/lib/js" },
+    {
+      url: "node_modules/tippy.js/dist/tippy.css",
+      dir: "assets/css",
+    },
+    {
+      url: "node_modules/tippy.js/themes/light-border.css",
+      dir: "assets/css",
+    },
   ],
   typescript: [
     { url: "src/background.ts", dir: "." },
     { url: "src/content_script.ts", dir: "." },
-    { url: "src/inject/in-app.ts", dir: "inject" },
-    { url: "src/inject/ng-check.ts", dir: "inject" },
+    { url: "src/inject/index.ts", dir: "inject" },
     { url: "src/shared/constants.ts", dir: "shared" },
     { url: "src/app/popup/index.ts", dir: "app/popup" },
   ],
@@ -70,7 +78,7 @@ gulp.task("css", async () => {
         .src(entry.url)
         .pipe(
           purgecss({
-            content: paths.html.map((v) => v.url),
+            content: paths.html.map((v) => v.url)
           })
         )
         .pipe(

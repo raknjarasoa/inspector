@@ -21,14 +21,10 @@
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "web_accessible_resources": [
-    "inject/in-app.js",
-    "inject/in-app.js.map",
-    "inject/ng-check.js",
-    "shared/constants.js",
-    "assets/lib/css/light-border.css",
-    "assets/lib/css/tippy.css",
-    "assets/lib/js/popper.min.js",
-    "assets/lib/js/tippy-bundle.umd.min.js"
+    "inject/index.js",
+    "inject/index.html",
+    "assets/css/light-border.css",
+    "assets/css/tippy.css"
   ],
   "icons": {
     "16": "assets/images/ngneat_16.png",
