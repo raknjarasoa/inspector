@@ -1,6 +1,6 @@
 declare const ng: any;
 
-export function isAngular(): boolean {
+export function isAngularAppRunning(): boolean {
   if (
     typeof ng !== "undefined" &&
     ng.getComponent &&
@@ -9,10 +9,4 @@ export function isAngular(): boolean {
     return true;
   }
   return false;
-}
-
-if (isAngular()) {
-  window.postMessage({ isAngular: true }, "*");
-} else {
-  window.postMessage({ isAngular: false }, "*");
 }
