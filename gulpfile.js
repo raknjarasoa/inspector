@@ -9,8 +9,11 @@ const rename = require("gulp-rename");
 const buffer = require("vinyl-buffer");
 const sourcemaps = require("gulp-sourcemaps");
 const purgecss = require("gulp-purgecss");
+var sass = require("gulp-sass");
+sass.compiler = require("node-sass");
 
 const paths = {
+  scss: [{ url: "src/inject/index.scss", dir: "inject" }],
   html: [
     { url: "src/app/popup/*.html", dir: "app/popup" },
     { url: "src/inject/index.html", dir: "inject" },
@@ -78,7 +81,7 @@ gulp.task("css", async () => {
         .src(entry.url)
         .pipe(
           purgecss({
-            content: paths.html.map((v) => v.url)
+            content: paths.html.map((v) => v.url),
           })
         )
         .pipe(
@@ -120,11 +123,28 @@ gulp.task("ts", async () => {
   return eventStream.merge.apply(null, tasks());
 });
 
+gulp.task("sass", async function () {
+  const tasks = () =>
+    paths.scss.map((entry) => {
+      return gulp
+        .src(entry.url)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(
+          rename({
+            dirname: entry.dir,
+          })
+        )
+        .pipe(gulp.dest("dist"));
+    });
+
+  return eventStream.merge.apply(null, tasks());
+});
+
 gulp.task(
   "build",
   gulp.series(
     "clean-dist",
-    gulp.parallel("copy-assets", "copy-html", "ts", "css")
+    gulp.parallel("copy-assets", "copy-html", "ts", "css", "sass")
   )
 );
 

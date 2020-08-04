@@ -6,6 +6,8 @@ import {
   APP_EXT_PROP_VALUE_SPAN_CLASS,
   APP_EXT_PROP_VALUE_INPUT_CLASS,
   APP_EXT_PROP_VALUE_BUTTON_CLASS,
+  APP_EXT_PROP_SELECT_CLASS,
+  APP_EXT_PROP_OUTPUT_JSON_ID,
 } from "../shared/constants";
 import { buildHTML, getPropertyHTML } from "./html-generators";
 import { getProperties } from "./shared";
@@ -22,6 +24,7 @@ const singletonInstance = createSingleton(activePopovers, {
   theme: "light-border",
   interactive: true,
   appendTo: () => document.body,
+  maxWidth: 500,
   overrides: ["onShown", "onHidden", "content", "onShow"],
 });
 
@@ -31,9 +34,9 @@ const singletonInstance = createSingleton(activePopovers, {
  * component's properties and show a popover with all controls.
  *
  */
-export function startDocumentOverListen(stylesheet: string): void {
+export function startDocumentOverListen(runtimeData: runtimeData): void {
   singletonInstance.enable();
-  document.addEventListener("mouseover", handleMouseOver(stylesheet), true);
+  document.addEventListener("mouseover", handleMouseOver(runtimeData), true);
 }
 
 export function stopDocumentOverListen(): void {
@@ -42,7 +45,7 @@ export function stopDocumentOverListen(): void {
 }
 
 export function handleMouseOver(
-  stylesheet = ""
+  runtimeData: Partial<runtimeData> = {}
 ): (this: Document, ev: MouseEvent) => any {
   return (ev: MouseEvent) => {
     const element = ev.target as Element;
@@ -59,7 +62,7 @@ export function handleMouseOver(
           let html = buildHTML(
             nGComponent,
             activePopovers.length + 1 + "",
-            stylesheet
+            <runtimeData>runtimeData
           );
           const tippyInstance = tippy(element, {
             content: html,
@@ -72,7 +75,11 @@ export function handleMouseOver(
           element.setAttribute(APP_EXT_CONST, activePopovers.length - 1 + "");
         } else {
           if (activePopovers[isPopoverActive]) {
-            let html = buildHTML(nGComponent, isPopoverActive + "");
+            let html = buildHTML(
+              nGComponent,
+              isPopoverActive + "",
+              <runtimeData>runtimeData
+            );
             activePopovers[isPopoverActive].setProps({
               content: html,
               onShown: () => {
@@ -104,7 +111,7 @@ function getNgComponent(element: Element | HTMLElement): any {
 }
 
 function listenForSelect(): void {
-  const selectList = document.getElementsByClassName("select-class");
+  const selectList = document.getElementsByClassName(APP_EXT_PROP_SELECT_CLASS);
   if (selectList.length) {
     for (let i = 0; i < selectList.length; i++) {
       const selectElement = selectList.item(i);
@@ -113,25 +120,19 @@ function listenForSelect(): void {
           const properties = getProperties(activeNgComponent);
           const activeProp = (event.target as any).value;
 
-          const selectNextDiv = selectElement.nextElementSibling;
-
+          const selectNextDiv =
+            selectElement.parentElement &&
+            selectElement.parentElement.nextElementSibling;
           if (selectNextDiv) {
-            let html = "<table><tbody>";
-
+            let html = "";
             if (activeProp) {
-              html +=
-                "<tr><th>" +
-                activeProp +
-                "</th><td>" +
-                getPropertyHTML(
-                  activeProp,
-                  properties[activeProp],
-                  activeNgComponent
-                ) +
-                "</td></tr>";
+              html = getPropertyHTML(
+                activeProp,
+                properties[activeProp],
+                activeNgComponent
+              );
             }
 
-            html += "</tbody></table>";
             selectNextDiv.innerHTML = html;
             listenForEmit();
             listenForValueChange();
@@ -160,9 +161,16 @@ function listenForEmit(): void {
             APP_EXT_BUTTON_PROP
           );
           if (activeNgComponent && prop) {
-            const inputValue = ((event.target as Element)
-              .previousElementSibling as HTMLInputElement).value;
-            if (inputValue) {
+            const parentElement = (event.target as Element).parentElement;
+            const inputValue =
+              parentElement &&
+              (parentElement.previousElementSibling as HTMLInputElement).value;
+            const isJSON = (document.getElementById(
+              APP_EXT_PROP_OUTPUT_JSON_ID
+            ) as HTMLInputElement).checked;
+            if (inputValue && isJSON) {
+              activeNgComponent[prop].emit(JSON.parse(inputValue));
+            } else if (inputValue) {
               activeNgComponent[prop].emit(inputValue);
             }
           } else {
@@ -187,28 +195,20 @@ function listenForValueChange(): void {
       const valueButton = valueButtonList.item(i);
       if (valueButton) {
         valueButton.addEventListener("click", (event) => {
-          if (valueButton.innerHTML !== "✏️") {
-            const prop = (event.target as Element).getAttribute(
-              APP_EXT_BUTTON_PROP
-            );
-            if (activeNgComponent && prop) {
-              const inputValue = ((event.target as Element)
-                .previousElementSibling as HTMLInputElement).value;
-              if (inputValue) {
-                activeNgComponent[prop] = inputValue;
-                ng.applyChanges(activeNgComponent);
-              } else {
-              }
+          const prop = (event.target as Element).getAttribute(
+            APP_EXT_BUTTON_PROP
+          );
+          if (activeNgComponent && prop) {
+            const parentElement = (event.target as Element).parentElement;
+            const inputValue =
+              parentElement &&
+              (parentElement.previousElementSibling as HTMLInputElement).value;
+            if (inputValue) {
+              activeNgComponent[prop] = inputValue;
+              ng.applyChanges(activeNgComponent);
             } else {
             }
           } else {
-            valueButton.innerHTML = "Update";
-            (document
-              .getElementsByClassName(APP_EXT_PROP_VALUE_INPUT_CLASS)
-              .item(i) as HTMLElement).style.display = "inline-block";
-            (document
-              .getElementsByClassName(APP_EXT_PROP_VALUE_SPAN_CLASS)
-              .item(i) as HTMLElement).style.display = "none";
           }
         });
       } else {

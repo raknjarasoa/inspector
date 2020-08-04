@@ -19,18 +19,8 @@ function initInAppScript(): void {
       }
     } else if (event.data.command === "start") {
       if (isAngularAppRunning()) {
-        const stylesheetPath = event.data.runTimeData.stylesheetPath;
-        var rawFile = new XMLHttpRequest();
-        rawFile.open("GET", stylesheetPath, false);
-        rawFile.onreadystatechange = function () {
-          if (rawFile.readyState === 4) {
-            if (rawFile.status === 200 || rawFile.status == 0) {
-              var allText = rawFile.responseText;
-              enableInAppMethods({ stylesheet: allText });
-            }
-          }
-        };
-        rawFile.send(null);
+        const runtimeData: runtimeData = event.data.runtimeData;
+        enableInAppMethods(runtimeData);
       } else {
         window.postMessage({ type: "ng-check-status", isAngular: false }, "*");
       }
@@ -46,9 +36,9 @@ function disableInAppMethods() {
   }
 }
 
-function enableInAppMethods(runTimeData: { stylesheet: string }) {
+function enableInAppMethods(runtimeData: runtimeData) {
   if (!inAppMethods.enabled) {
-    startDocumentOverListen(runTimeData.stylesheet);
+    startDocumentOverListen(runtimeData);
     inAppMethods.enabled = true;
     window.postMessage({ type: "ng-check-status", isAngular: true }, "*");
   }

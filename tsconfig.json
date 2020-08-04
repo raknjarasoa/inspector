@@ -11,7 +11,13 @@
             "dom",
             "es6"
         ],
-        "strict": true
+        "strict": true,
+        "typeRoots": [
+            "src/types"
+        ],
+        "types": [
+            "chrome"
+        ]
     },
     "include": [
         "src"

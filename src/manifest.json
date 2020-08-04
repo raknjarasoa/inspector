@@ -23,9 +23,10 @@
   "web_accessible_resources": [
     "inject/index.js",
     "inject/index.html",
+    "inject/index.css",
     "assets/css/light-border.css",
     "assets/css/tippy.css",
-    "app/styles/bootstrap.min.css"
+    "assets/images/ngneat_16.png"
   ],
   "icons": {
     "16": "assets/images/ngneat_16.png",

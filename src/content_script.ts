@@ -2,7 +2,6 @@ import { MESSAGES } from "./shared/constants";
 
 const scriptElements: HTMLScriptElement[] = [];
 const styleElements: HTMLLinkElement[] = [];
-const customStyleElements: HTMLStyleElement[] = [];
 let errorData: { error: string; type: string; message: string };
 
 initContentScript();
@@ -22,13 +21,12 @@ function injectScriptsAndStyles(): void {
   scriptPath.forEach((p) => injectScript(p));
 
   const stylePath = [
+    chrome.runtime.getURL("inject/index.css"),
     chrome.runtime.getURL("assets/css/tippy.css"),
     chrome.runtime.getURL("assets/css/light-border.css"),
   ];
 
   stylePath.forEach((p) => injectStyle(p));
-
-  injectCustomStyle();
 }
 
 function injectScript(path: string): void {
@@ -44,27 +42,6 @@ function injectStyle(path: string): void {
   style.setAttribute("href", path);
   document.head.appendChild(style);
   styleElements.push(style);
-}
-
-function injectCustomStyle(): void {
-  const style = document.createElement("style");
-  style.textContent = `.tippy-box {
-          font-family: Arial, Helvetica, sans-serif;
-          padding: 8px;
-        }
-        .tippy-box table td,
-        .tippy-box table th {
-          text-align: left;
-        }
-        .tippy-box select, .tippy-box .select-next-div {
-          margin-top: 8px;
-          margin-bottom: 8px;
-        }
-        .chrome-ext-ng-properties-prop-input-value {
-          display: none;
-        }`;
-  document.head.appendChild(style);
-  customStyleElements.push(style);
 }
 
 function startListeningForConnectionMessage(): void {
@@ -110,14 +87,13 @@ function startListeningForAppMessage(): void {
   chrome.runtime.onMessage.addListener((appMessage, appSender, appResponse) => {
     if (appMessage.command === "start") {
       appResponse({ message: "started" });
+      const runtimeData: runtimeData = {
+        paths: { assets: chrome.runtime.getURL("assets") },
+      };
       window.postMessage(
         {
           command: "start",
-          runTimeData: {
-            stylesheetPath: chrome.runtime.getURL(
-              "app/styles/bootstrap.min.css"
-            ),
-          },
+          runtimeData,
         },
         "*"
       );
