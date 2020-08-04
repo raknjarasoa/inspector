@@ -19,7 +19,18 @@ function initInAppScript(): void {
       }
     } else if (event.data.command === "start") {
       if (isAngularAppRunning()) {
-        enableInAppMethods();
+        const stylesheetPath = event.data.runTimeData.stylesheetPath;
+        var rawFile = new XMLHttpRequest();
+        rawFile.open("GET", stylesheetPath, false);
+        rawFile.onreadystatechange = function () {
+          if (rawFile.readyState === 4) {
+            if (rawFile.status === 200 || rawFile.status == 0) {
+              var allText = rawFile.responseText;
+              enableInAppMethods({ stylesheet: allText });
+            }
+          }
+        };
+        rawFile.send(null);
       } else {
         window.postMessage({ type: "ng-check-status", isAngular: false }, "*");
       }
@@ -35,9 +46,9 @@ function disableInAppMethods() {
   }
 }
 
-function enableInAppMethods() {
+function enableInAppMethods(runTimeData: { stylesheet: string }) {
   if (!inAppMethods.enabled) {
-    startDocumentOverListen();
+    startDocumentOverListen(runTimeData.stylesheet);
     inAppMethods.enabled = true;
     window.postMessage({ type: "ng-check-status", isAngular: true }, "*");
   }

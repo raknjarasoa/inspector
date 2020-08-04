@@ -110,7 +110,17 @@ function startListeningForAppMessage(): void {
   chrome.runtime.onMessage.addListener((appMessage, appSender, appResponse) => {
     if (appMessage.command === "start") {
       appResponse({ message: "started" });
-      window.postMessage({ command: "start" }, "*");
+      window.postMessage(
+        {
+          command: "start",
+          runTimeData: {
+            stylesheetPath: chrome.runtime.getURL(
+              "app/styles/bootstrap.min.css"
+            ),
+          },
+        },
+        "*"
+      );
     } else if (appMessage.command === "end") {
       appResponse({ message: "ended" });
       window.postMessage({ command: "destroy" }, "*");

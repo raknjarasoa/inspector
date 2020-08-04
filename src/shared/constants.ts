@@ -14,3 +14,20 @@ export const MESSAGES: { [key: string]: string } = {
   "tippy-popper-not-found":
     "Tippy.js is required to run this extension properly.",
 };
+
+export function TOOLTIP_HTML(stylesheet: string): string {
+  return `
+    <div>
+      <style scoped>
+      .${APP_EXT_CONST}-style {
+        ${stylesheet}
+      }
+      </style>
+      <div class="${APP_EXT_CONST}-style">
+        <div class="container-fluid">
+          <h4>Component:<%= name %></h4>
+        </div>
+      </div>
+    </div>
+  `;
+}

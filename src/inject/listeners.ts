@@ -13,7 +13,7 @@ import { getProperties } from "./shared";
 declare const ng: any;
 
 let activePopovers: Instance[] = [];
-let activeTarget: Element = null;
+let activeTarget: Element;
 let activeNgComponent: any = null;
 const singletonInstance = createSingleton(activePopovers, {
   moveTransition: "transform 0.3s ease-in-out",
@@ -31,9 +31,9 @@ const singletonInstance = createSingleton(activePopovers, {
  * component's properties and show a popover with all controls.
  *
  */
-export function startDocumentOverListen(): void {
+export function startDocumentOverListen(stylesheet: string): void {
   singletonInstance.enable();
-  document.addEventListener("mouseover", handleMouseOver(), true);
+  document.addEventListener("mouseover", handleMouseOver(stylesheet), true);
 }
 
 export function stopDocumentOverListen(): void {
@@ -41,17 +41,26 @@ export function stopDocumentOverListen(): void {
   singletonInstance.disable();
 }
 
-export function handleMouseOver(): (this: Document, ev: MouseEvent) => any {
+export function handleMouseOver(
+  stylesheet = ""
+): (this: Document, ev: MouseEvent) => any {
   return (ev: MouseEvent) => {
     const element = ev.target as Element;
     if (element !== activeTarget) {
       activeTarget = element;
       const { nGComponent } = getNgComponent(element);
-      const isPopoverActive = parseInt(element.getAttribute(APP_EXT_CONST));
+      const attributeValue = element.getAttribute(APP_EXT_CONST);
+      const isPopoverActive = attributeValue
+        ? parseInt(attributeValue, 10)
+        : -1;
       if (nGComponent) {
         activeNgComponent = nGComponent;
-        if (isNaN(isPopoverActive)) {
-          let html = buildHTML(nGComponent, activePopovers.length + 1 + "");
+        if (isPopoverActive < 0) {
+          let html = buildHTML(
+            nGComponent,
+            activePopovers.length + 1 + "",
+            stylesheet
+          );
           const tippyInstance = tippy(element, {
             content: html,
             onShown: () => {
@@ -61,7 +70,7 @@ export function handleMouseOver(): (this: Document, ev: MouseEvent) => any {
           activePopovers.push(tippyInstance);
           singletonInstance.setInstances(activePopovers);
           element.setAttribute(APP_EXT_CONST, activePopovers.length - 1 + "");
-        } else if (isPopoverActive) {
+        } else {
           if (activePopovers[isPopoverActive]) {
             let html = buildHTML(nGComponent, isPopoverActive + "");
             activePopovers[isPopoverActive].setProps({
@@ -99,32 +108,36 @@ function listenForSelect(): void {
   if (selectList.length) {
     for (let i = 0; i < selectList.length; i++) {
       const selectElement = selectList.item(i);
-      selectElement.addEventListener("change", (event) => {
-        const properties = getProperties(activeNgComponent);
-        const activeProp = (event.target as any).value;
+      if (selectElement) {
+        selectElement.addEventListener("change", (event) => {
+          const properties = getProperties(activeNgComponent);
+          const activeProp = (event.target as any).value;
 
-        const selectNextDiv = selectElement.nextElementSibling;
+          const selectNextDiv = selectElement.nextElementSibling;
 
-        let html = "<table><tbody>";
+          if (selectNextDiv) {
+            let html = "<table><tbody>";
 
-        if (activeProp) {
-          html +=
-            "<tr><th>" +
-            activeProp +
-            "</th><td>" +
-            getPropertyHTML(
-              activeProp,
-              properties[activeProp],
-              activeNgComponent
-            ) +
-            "</td></tr>";
-        }
+            if (activeProp) {
+              html +=
+                "<tr><th>" +
+                activeProp +
+                "</th><td>" +
+                getPropertyHTML(
+                  activeProp,
+                  properties[activeProp],
+                  activeNgComponent
+                ) +
+                "</td></tr>";
+            }
 
-        html += "</tbody></table>";
-        selectNextDiv.innerHTML = html;
-        listenForEmit();
-        listenForValueChange();
-      });
+            html += "</tbody></table>";
+            selectNextDiv.innerHTML = html;
+            listenForEmit();
+            listenForValueChange();
+          }
+        });
+      }
     }
   }
 }
@@ -146,7 +159,7 @@ function listenForEmit(): void {
           const prop = (event.target as Element).getAttribute(
             APP_EXT_BUTTON_PROP
           );
-          if (activeNgComponent) {
+          if (activeNgComponent && prop) {
             const inputValue = ((event.target as Element)
               .previousElementSibling as HTMLInputElement).value;
             if (inputValue) {
@@ -178,7 +191,7 @@ function listenForValueChange(): void {
             const prop = (event.target as Element).getAttribute(
               APP_EXT_BUTTON_PROP
             );
-            if (activeNgComponent) {
+            if (activeNgComponent && prop) {
               const inputValue = ((event.target as Element)
                 .previousElementSibling as HTMLInputElement).value;
               if (inputValue) {

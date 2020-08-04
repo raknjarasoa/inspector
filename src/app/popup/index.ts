@@ -18,10 +18,15 @@ initPopup();
 
 function initPopup(): void {
   chrome.tabs.query(tabQueryData, (tabs) => {
-    currentTabID = tabs[0].id;
-    storageKey = APP_EXT_CONST_STORAGE_KEY_PREFIX + currentTabID;
-    getIsAngularFromStorage();
-    initErrorMessages();
+    let activeTabID = tabs[0].id;
+    if (typeof activeTabID === "number") {
+      currentTabID = activeTabID;
+      storageKey = APP_EXT_CONST_STORAGE_KEY_PREFIX + currentTabID;
+      getIsAngularFromStorage();
+      initErrorMessages();
+    } else {
+      throw new Error("Unable to fetch active tab ID");
+    }
   });
 }
 
@@ -166,7 +171,7 @@ function updateSyncStorage(pair: { [key: string]: string | boolean }): void {
 
 function readSyncStorage(
   key: string,
-  cb: (value: string | boolean) => void
+  cb: (value: string | boolean | undefined) => void
 ): void {
   chrome.storage.sync.get([storageKey], (data) => {
     if (data[storageKey] && data[storageKey][key]) {

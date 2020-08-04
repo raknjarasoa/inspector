@@ -1,4 +1,4 @@
-// import { renderFile } from "ejs";
+import { render } from "ejs";
 import { getProperties } from "./shared";
 import {
   APP_EXT_CONST,
@@ -7,26 +7,39 @@ import {
   APP_EXT_PROP_VALUE_SPAN_CLASS,
   APP_EXT_PROP_VALUE_INPUT_CLASS,
   APP_EXT_PROP_VALUE_BUTTON_CLASS,
+  TOOLTIP_HTML,
 } from "../shared/constants";
 
-export function buildHTML(nGComponent: any, attrValue: string) {
+export function buildHTML(
+  nGComponent: any,
+  attrValue: string,
+  stylesheetPath = ""
+): string {
   const properties = getProperties(nGComponent);
+
+  // TODO: pass runtime css url from content_script as window.postmessage and pass it further to TOOLTIP_HTML
+
+  let html = render(TOOLTIP_HTML(stylesheetPath), {
+    name: nGComponent.constructor.name,
+  });
+  return html;
+
   //   let html = renderFile('./index.html', { name: nGComponent.constructor.name }, (err, str)=>{
 
   //   });
-  let html = `<h4><strong>Component:</strong>${nGComponent.constructor.name}</h4>`;
-  html += `<h4><strong>Selector:</strong>${nGComponent.constructor.decorators[0].args[0].selector}</h4>`;
-  html += "<hr/>";
+  // let html = `<h4><strong>Component:</strong>${nGComponent.constructor.name}</h4>`;
+  // html += `<h4><strong>Selector:</strong>${nGComponent.constructor.decorators[0].args[0].selector}</h4>`;
+  // html += "<hr/>";
 
-  html += `<select class="select-class" ${APP_EXT_CONST}="${attrValue}">
-            <option value="">--Please choose a property--</option>`;
-  for (const prop in properties) {
-    html += `<option value="${prop}">${prop}</option>`;
-  }
-  html += "</select>";
+  // html += `<select class="select-class" ${APP_EXT_CONST}="${attrValue}">
+  //           <option value="">--Please choose a property--</option>`;
+  // for (const prop in properties) {
+  //   html += `<option value="${prop}">${prop}</option>`;
+  // }
+  // html += "</select>";
 
-  html += "<div class='select-next-div'></div>";
-  return html;
+  // html += "<div class='select-next-div'></div>";
+  // return html;
 }
 
 /**

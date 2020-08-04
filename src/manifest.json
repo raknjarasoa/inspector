@@ -24,7 +24,8 @@
     "inject/index.js",
     "inject/index.html",
     "assets/css/light-border.css",
-    "assets/css/tippy.css"
+    "assets/css/tippy.css",
+    "app/styles/bootstrap.min.css"
   ],
   "icons": {
     "16": "assets/images/ngneat_16.png",
