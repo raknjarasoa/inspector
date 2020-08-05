@@ -1,32 +1,4 @@
-export const APP_EXT_CONST = "chrome-ext-ng-properties";
-export const APP_EXT_PROP_EMIT_BUTTON_CLASS =
-  "chrome-ext-ng-properties-emit-btn";
-export const APP_EXT_BUTTON_PROP = "chrome-ext-ng-properties-prop";
-export const APP_EXT_PROP_VALUE_SPAN_CLASS =
-  "chrome-ext-ng-properties-prop-value";
-export const APP_EXT_PROP_VALUE_INPUT_CLASS =
-  "chrome-ext-ng-properties-prop-input-value";
-export const APP_EXT_PROP_VALUE_TEXTAREA_CLASS =
-  "chrome-ext-ng-properties-prop-textarea-value";
-export const APP_EXT_PROP_VALUE_BUTTON_CLASS =
-  "chrome-ext-ng-properties-value-btn";
-export const APP_EXT_PROP_SELECT_CLASS = "chrome-ext-ng-properties-select";
-export const APP_EXT_PROP_VIEW_CLASS = "chrome-ext-ng-properties-view";
-export const APP_EXT_PROP_OUTPUT_JSON_ID =
-  "chrome-ext-ng-properties-prop-is-json";
-export const APP_EXT_PROP_SELECT_TYPE =
-  "chrome-ext-ng-properties-prop-select-type";
-export const ACTIVE_TAB_QUERY = { active: true, currentWindow: true };
-export const APP_EXT_CONST_STORAGE_KEY_PREFIX = APP_EXT_CONST + "_TABS_";
-export const MESSAGES: { [key: string]: string } = {
-  "tippy-popper-not-found":
-    "Tippy.js is required to run this extension properly.",
-};
-
-export function TOOLTIP_HTML(runtimeData: runtimeData): string {
-  // TODO: Move content to index.ejs and try to read it
-  return `
-  <div class="${APP_EXT_CONST}">
+<div class="${APP_EXT_CONST}">
   <div class="container-fluid pb-3 position-relative">
     <h5>Component: <code class="h4"><%= name %></code></h5>
     <h5>Selector: <code class="h4">&lt;<%= selector %>&gt;</code></h5>
@@ -110,6 +82,3 @@ export function TOOLTIP_HTML(runtimeData: runtimeData): string {
     >
   </div>
 </div>
-
-  `;
-}

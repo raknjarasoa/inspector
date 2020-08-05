@@ -27,23 +27,6 @@ export function buildHTML(
     properties,
   });
   return html;
-
-  //   let html = renderFile('./index.html', { name: nGComponent.constructor.name }, (err, str)=>{
-
-  //   });
-  // let html = `<h4><strong>Component:</strong>${nGComponent.constructor.name}</h4>`;
-  // html += `<h4><strong>Selector:</strong>${nGComponent.constructor.decorators[0].args[0].selector}</h4>`;
-  // html += "<hr/>";
-
-  // html += `<select class="select-class" ${APP_EXT_CONST}="${attrValue}">
-  //           <option value="">--Please choose a property--</option>`;
-  // for (const prop in properties) {
-  //   html += `<option value="${prop}">${prop}</option>`;
-  // }
-  // html += "</select>";
-
-  // html += "<div class='select-next-div'></div>";
-  // return html;
 }
 
 /**

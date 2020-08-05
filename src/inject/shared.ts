@@ -5,14 +5,25 @@
  * @param {*} ngComponent
  * @returns {{ [key: string]: any }}
  */
-export function getProperties(ngComponent: any): { [key: string]: any } {
-  let properties = {};
+export function getProperties(ngComponent: any): Properties {
+  let inputProperties = {};
+  let outputProperties = {};
   Object.keys(ngComponent)
     .filter((v) => v !== "__ngContext__")
     .forEach((propName) => {
-      properties = Object.assign(properties, {
-        [propName]: ngComponent[propName],
-      });
+      const componentProp = ngComponent[propName];
+      const propType =
+        componentProp.constructor.name === "EventEmitter_" ? "output" : "input";
+
+      if (propType === "output") {
+        outputProperties = Object.assign(outputProperties, {
+          [propName]: componentProp,
+        });
+      } else {
+        inputProperties = Object.assign(inputProperties, {
+          [propName]: componentProp,
+        });
+      }
     });
-  return properties;
+  return { inputs: inputProperties, outputs: outputProperties };
 }

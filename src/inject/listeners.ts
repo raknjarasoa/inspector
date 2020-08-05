@@ -8,6 +8,7 @@ import {
   APP_EXT_PROP_VALUE_BUTTON_CLASS,
   APP_EXT_PROP_SELECT_CLASS,
   APP_EXT_PROP_OUTPUT_JSON_ID,
+  APP_EXT_PROP_SELECT_TYPE,
 } from "../shared/constants";
 import { buildHTML, getPropertyHTML } from "./html-generators";
 import { getProperties } from "./shared";
@@ -24,7 +25,11 @@ const singletonInstance = createSingleton(activePopovers, {
   theme: "light-border",
   interactive: true,
   appendTo: () => document.body,
-  maxWidth: 500,
+  maxWidth: 600,
+  placement: "top-start",
+  delay: [null, 100],
+  // trigger: "click",
+  // hideOnClick: false,
   overrides: ["onShown", "onHidden", "content", "onShow"],
 });
 
@@ -117,25 +122,29 @@ function listenForSelect(): void {
       const selectElement = selectList.item(i);
       if (selectElement) {
         selectElement.addEventListener("change", (event) => {
+          const element = event.target as HTMLInputElement;
           const properties = getProperties(activeNgComponent);
-          const activeProp = (event.target as any).value;
+          const activeProp = element.value;
+          const propType = element.getAttribute(APP_EXT_PROP_SELECT_TYPE);
 
-          const selectNextDiv =
-            selectElement.parentElement &&
-            selectElement.parentElement.nextElementSibling;
-          if (selectNextDiv) {
-            let html = "";
-            if (activeProp) {
-              html = getPropertyHTML(
-                activeProp,
-                properties[activeProp],
-                activeNgComponent
-              );
+          if (propType === "inputs" || propType === "outputs") {
+            const selectNextDiv =
+              selectElement.parentElement &&
+              selectElement.parentElement.nextElementSibling;
+            if (selectNextDiv) {
+              let html = "";
+              if (activeProp) {
+                html = getPropertyHTML(
+                  activeProp,
+                  properties[propType][activeProp],
+                  activeNgComponent
+                );
+              }
+
+              selectNextDiv.innerHTML = html;
+              listenForEmit();
+              listenForValueChange();
             }
-
-            selectNextDiv.innerHTML = html;
-            listenForEmit();
-            listenForValueChange();
           }
         });
       }
