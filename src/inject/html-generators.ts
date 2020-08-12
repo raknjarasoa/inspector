@@ -10,6 +10,7 @@ import {
   TOOLTIP_HTML,
   APP_EXT_PROP_OUTPUT_JSON_ID,
   APP_EXT_PROP_BOOLEAN_ID,
+  APP_EXT_PROP_OBJECT_BUTTON_ID,
 } from "../shared/constants";
 
 export function buildHTML(
@@ -88,6 +89,20 @@ export function getPropertyHTML(
           html += `<input type="checkbox" class="custom-control-input" id="${APP_EXT_PROP_BOOLEAN_ID}" ${APP_EXT_BUTTON_PROP}="${prop}">`;
         }
         html += `<label class="custom-control-label" for="${APP_EXT_PROP_BOOLEAN_ID}">Toggle</label></div>`;
+        break;
+      case "Object":
+        html = `
+        <div class="input-group mb-1">
+          <textarea rows="5" class="form-control" placeholder="Property value" aria-label="Property value" aria-describedby="property-emit-value">${JSON.stringify(
+            value,
+            null,
+            2
+          )}</textarea>
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary px-1" type="button" id="${APP_EXT_PROP_OBJECT_BUTTON_ID}" ${APP_EXT_BUTTON_PROP}="${prop}">Update</button>
+          </div>
+        </div>
+        `;
         break;
       default:
         html = `<p> ⚠️ ${value.constructor.name} is not supported</p>`;

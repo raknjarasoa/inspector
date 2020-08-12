@@ -10,6 +10,7 @@ import {
   APP_EXT_PROP_OUTPUT_JSON_ID,
   APP_EXT_PROP_SELECT_TYPE,
   APP_EXT_PROP_BOOLEAN_ID,
+  APP_EXT_PROP_OBJECT_BUTTON_ID,
 } from "../shared/constants";
 import { buildHTML, getPropertyHTML } from "./html-generators";
 import { getProperties } from "./shared";
@@ -146,6 +147,7 @@ function listenForSelect(): void {
               listenForEmit();
               listenForValueChange();
               listenForBoolean();
+              listenForObjectUpdate();
             }
           }
         });
@@ -246,5 +248,32 @@ function listenForBoolean(): void {
       } else {
       }
     });
+  }
+}
+
+/**
+ * As soon as tooltip is shown, we can start listening to `update buttons`, so that we can
+ * capture events and update the component.
+ *
+ */
+function listenForObjectUpdate(): void {
+  const valueButton = document.getElementById(APP_EXT_PROP_OBJECT_BUTTON_ID);
+  if (valueButton) {
+    valueButton.addEventListener("click", (event) => {
+      const prop = (event.target as Element).getAttribute(APP_EXT_BUTTON_PROP);
+      if (activeNgComponent && prop) {
+        const parentElement = (event.target as Element).parentElement;
+        const inputValue =
+          parentElement &&
+          (parentElement.previousElementSibling as HTMLInputElement).value;
+        if (inputValue) {
+          activeNgComponent[prop] = JSON.parse(inputValue);
+          ng.applyChanges(activeNgComponent);
+        } else {
+        }
+      } else {
+      }
+    });
+  } else {
   }
 }
