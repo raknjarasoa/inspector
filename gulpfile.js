@@ -14,10 +14,7 @@ sass.compiler = require("node-sass");
 
 const paths = {
   scss: [{ url: "src/inject/index.scss", dir: "inject" }],
-  html: [
-    { url: "src/app/popup/*.html", dir: "app/popup" },
-    { url: "src/inject/index.html", dir: "inject" },
-  ],
+  html: [{ url: "src/app/popup/*.html", dir: "app/popup" }],
   dist: "dist",
   assets: [
     { url: "src/manifest.json", dir: "." },

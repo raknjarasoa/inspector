@@ -9,6 +9,7 @@ import {
   APP_EXT_PROP_VALUE_BUTTON_CLASS,
   TOOLTIP_HTML,
   APP_EXT_PROP_OUTPUT_JSON_ID,
+  APP_EXT_PROP_BOOLEAN_ID,
 } from "../shared/constants";
 
 export function buildHTML(
@@ -47,7 +48,7 @@ export function getPropertyHTML(
   nGComponent: any
 ): string {
   if (value.constructor && value.constructor.name) {
-    let html = value;
+    let html = "";
     switch (value.constructor.name) {
       case "EventEmitter_":
         html = `
@@ -78,8 +79,18 @@ export function getPropertyHTML(
           </div>
         </div>`;
         break;
+      case "Boolean":
+        html = `
+        <div class="custom-control custom-checkbox mb-3">`;
+        if (value === true) {
+          html += `<input type="checkbox" class="custom-control-input" id="${APP_EXT_PROP_BOOLEAN_ID}" ${APP_EXT_BUTTON_PROP}="${prop}" checked>`;
+        } else {
+          html += `<input type="checkbox" class="custom-control-input" id="${APP_EXT_PROP_BOOLEAN_ID}" ${APP_EXT_BUTTON_PROP}="${prop}">`;
+        }
+        html += `<label class="custom-control-label" for="${APP_EXT_PROP_BOOLEAN_ID}">Toggle</label></div>`;
+        break;
       default:
-        html = value;
+        html = `<p> ⚠️ ${value.constructor.name} is not supported</p>`;
         break;
     }
     return html;

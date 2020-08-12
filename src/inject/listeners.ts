@@ -9,6 +9,7 @@ import {
   APP_EXT_PROP_SELECT_CLASS,
   APP_EXT_PROP_OUTPUT_JSON_ID,
   APP_EXT_PROP_SELECT_TYPE,
+  APP_EXT_PROP_BOOLEAN_ID,
 } from "../shared/constants";
 import { buildHTML, getPropertyHTML } from "./html-generators";
 import { getProperties } from "./shared";
@@ -28,8 +29,8 @@ const singletonInstance = createSingleton(activePopovers, {
   maxWidth: 600,
   placement: "top-start",
   delay: [null, 100],
-  // trigger: "click",
-  // hideOnClick: false,
+  trigger: "click",
+  hideOnClick: false,
   overrides: ["onShown", "onHidden", "content", "onShow"],
 });
 
@@ -144,6 +145,7 @@ function listenForSelect(): void {
               selectNextDiv.innerHTML = html;
               listenForEmit();
               listenForValueChange();
+              listenForBoolean();
             }
           }
         });
@@ -223,5 +225,26 @@ function listenForValueChange(): void {
       } else {
       }
     }
+  }
+}
+
+/**
+ * As soon as tooltip is shown, we can start listening to `boolean checkboxes`, so that we can
+ * capture events and update the component.
+ *
+ */
+function listenForBoolean(): void {
+  const checkbox = document.getElementById(APP_EXT_PROP_BOOLEAN_ID);
+  if (checkbox) {
+    checkbox.addEventListener("change", (event) => {
+      const element = event.target as HTMLInputElement;
+      const prop = element.getAttribute(APP_EXT_BUTTON_PROP);
+      if (activeNgComponent && prop) {
+        const checkboxValue = element.checked;
+        activeNgComponent[prop] = checkboxValue;
+        ng.applyChanges(activeNgComponent);
+      } else {
+      }
+    });
   }
 }

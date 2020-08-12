@@ -12,8 +12,9 @@ export function getProperties(ngComponent: any): Properties {
     .filter((v) => v !== "__ngContext__")
     .forEach((propName) => {
       const componentProp = ngComponent[propName];
-      const propType =
-        componentProp.constructor.name === "EventEmitter_" ? "output" : "input";
+      const propType: "input" | "output" = getPropType(
+        componentProp.constructor.name
+      );
 
       if (propType === "output") {
         outputProperties = Object.assign(outputProperties, {
@@ -26,4 +27,7 @@ export function getProperties(ngComponent: any): Properties {
       }
     });
   return { inputs: inputProperties, outputs: outputProperties };
+}
+function getPropType(constructorName: any): "input" | "output" {
+  return constructorName === "EventEmitter_" ? "output" : "input";
 }
