@@ -30,8 +30,8 @@ const singletonInstance = createSingleton(activePopovers, {
   maxWidth: 600,
   placement: "top-start",
   delay: [null, 100],
-  trigger: "click",
-  hideOnClick: false,
+  // trigger: "click",
+  // hideOnClick: false,
   overrides: ["onShown", "onHidden", "content", "onShow"],
 });
 
