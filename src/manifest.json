@@ -3,7 +3,7 @@
   "name": "ngneat-inspector",
   "description": "A chrome extension to inspect and change Angular component properties, by ngneat.",
   "version": "0.1.0",
-  "permissions": ["storage", "declarativeContent", "activeTab", "tabs"],
+  "permissions": ["storage", "declarativeContent", "activeTab", "tabs", "contextMenus"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false

@@ -16,13 +16,12 @@ import {
 export function buildHTML(
   nGComponent: any,
   attrValue: string,
-  runtimeData: runtimeData
 ): string {
   const properties = getProperties(nGComponent);
 
   // TODO: pass runtime css url from content_script as window.postmessage and pass it further to TOOLTIP_HTML
 
-  let html = render(TOOLTIP_HTML(runtimeData), {
+  let html = render(TOOLTIP_HTML(), {
     name: nGComponent.constructor.name,
     selector: nGComponent.constructor.decorators[0].args[0].selector,
     propertySelectAttrValue: attrValue,

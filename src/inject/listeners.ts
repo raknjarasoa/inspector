@@ -1,4 +1,4 @@
-import tippy, { Instance, createSingleton } from "tippy.js";
+import tippy, { Instance, createSingleton, Props } from "tippy.js";
 import {
   APP_EXT_CONST,
   APP_EXT_PROP_EMIT_BUTTON_CLASS,
@@ -11,17 +11,32 @@ import {
   APP_EXT_PROP_SELECT_TYPE,
   APP_EXT_PROP_BOOLEAN_ID,
   APP_EXT_PROP_OBJECT_BUTTON_ID,
+  APP_EXT_CLOSE_BUTTON_ID,
 } from "../shared/constants";
 import { buildHTML, getPropertyHTML } from "./html-generators";
 import { getProperties } from "./shared";
 
 declare const ng: any;
 
-let activePopovers: Instance[] = [];
+export let activePopovers: Instance[] = [];
 let activeTarget: Element;
 let activeNgComponent: any = null;
-const singletonInstance = createSingleton(activePopovers, {
-  moveTransition: "transform 0.3s ease-in-out",
+// export const singletonInstance = createSingleton(activePopovers, {
+//   moveTransition: "transform 0.3s ease-in-out",
+//   allowHTML: true,
+//   arrow: false,
+//   theme: "light-border",
+//   interactive: true,
+//   appendTo: () => document.body,
+//   maxWidth: 600,
+//   placement: "top-start",
+//   delay: [null, 100],
+//   trigger: "manual",
+//   hideOnClick: false,
+//   overrides: ["onShown", "onHidden", "content", "onShow"],
+// });
+
+const defaultTippyOptions: Partial<Props> = {
   allowHTML: true,
   arrow: false,
   theme: "light-border",
@@ -30,10 +45,11 @@ const singletonInstance = createSingleton(activePopovers, {
   maxWidth: 600,
   placement: "top-start",
   delay: [null, 100],
-  // trigger: "click",
-  // hideOnClick: false,
-  overrides: ["onShown", "onHidden", "content", "onShow"],
-});
+  trigger: "manual",
+  hideOnClick: false,
+};
+
+export let activePopoverIndex = -1;
 
 /**
  * Start listening to `mouseover` of `document`. Fetch the hovered target and find the Angular component
@@ -41,59 +57,51 @@ const singletonInstance = createSingleton(activePopovers, {
  * component's properties and show a popover with all controls.
  *
  */
-export function startDocumentOverListen(runtimeData: runtimeData): void {
-  singletonInstance.enable();
-  document.addEventListener("mouseover", handleMouseOver(runtimeData), true);
+export function startDocumentOverListen(): void {
+  // singletonInstance.enable();
+  document.addEventListener("contextmenu", handleMouseOver(), true);
 }
 
 export function stopDocumentOverListen(): void {
-  document.removeEventListener("mouseover", handleMouseOver(), true);
-  singletonInstance.disable();
+  document.removeEventListener("contextmenu", handleMouseOver(), true);
+  // singletonInstance.disable();
 }
 
-export function handleMouseOver(
-  runtimeData: Partial<runtimeData> = {}
-): (this: Document, ev: MouseEvent) => any {
+export function handleMouseOver(): (this: Document, ev: MouseEvent) => any {
   return (ev: MouseEvent) => {
     const element = ev.target as Element;
     if (element !== activeTarget) {
       activeTarget = element;
-      const { nGComponent } = getNgComponent(element);
+      const nGComponent = getNgComponent(element);
       const attributeValue = element.getAttribute(APP_EXT_CONST);
-      const isPopoverActive = attributeValue
-        ? parseInt(attributeValue, 10)
-        : -1;
+      activePopoverIndex = attributeValue ? parseInt(attributeValue, 10) : -1;
       if (nGComponent) {
         activeNgComponent = nGComponent;
-        if (isPopoverActive < 0) {
-          let html = buildHTML(
-            nGComponent,
-            activePopovers.length + 1 + "",
-            <runtimeData>runtimeData
-          );
+        if (activePopoverIndex < 0) {
+          let html = buildHTML(nGComponent, activePopovers.length + 1 + "");
           const tippyInstance = tippy(element, {
+            ...defaultTippyOptions,
             content: html,
             onShown: () => {
               listenForSelect();
+              listenForCloseButton();
             },
           });
           activePopovers.push(tippyInstance);
-          singletonInstance.setInstances(activePopovers);
+          // singletonInstance.setInstances(activePopovers);
+          activePopoverIndex = activePopovers.length - 1;
           element.setAttribute(APP_EXT_CONST, activePopovers.length - 1 + "");
         } else {
-          if (activePopovers[isPopoverActive]) {
-            let html = buildHTML(
-              nGComponent,
-              isPopoverActive + "",
-              <runtimeData>runtimeData
-            );
-            activePopovers[isPopoverActive].setProps({
+          if (activePopovers[activePopoverIndex]) {
+            let html = buildHTML(nGComponent, activePopoverIndex + "");
+            activePopovers[activePopoverIndex].setProps({
               content: html,
               onShown: () => {
                 listenForSelect();
+                listenForCloseButton();
               },
             });
-            singletonInstance.setInstances(activePopovers);
+            // singletonInstance.setInstances(activePopovers);
           }
         }
       } else {
@@ -111,10 +119,10 @@ export function handleMouseOver(
  */
 function getNgComponent(element: Element | HTMLElement): any {
   const nGComponent = ng.getComponent(element);
-  if (!nGComponent && element.parentElement) {
-    return getNgComponent(element.parentElement);
+  if (!nGComponent) {
+    return ng.getOwningComponent(element);
   }
-  return { nGComponent, element };
+  return nGComponent;
 }
 
 function listenForSelect(): void {
@@ -272,6 +280,27 @@ function listenForObjectUpdate(): void {
         } else {
         }
       } else {
+      }
+    });
+  } else {
+  }
+}
+
+/**
+ * As soon as tooltip is shown, we can start listening to `close buttons`, so that we can
+ * close the tooltip
+ *
+ */
+function listenForCloseButton(): void {
+  const closeButton = document.getElementById(APP_EXT_CLOSE_BUTTON_ID);
+  if (closeButton) {
+    closeButton.addEventListener("click", (event) => {
+      if (
+        activePopovers.length &&
+        activePopoverIndex > -1 &&
+        activePopovers[activePopoverIndex]
+      ) {
+        activePopovers[activePopoverIndex].hide();
       }
     });
   } else {

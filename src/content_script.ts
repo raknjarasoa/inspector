@@ -8,7 +8,7 @@ initContentScript();
 
 function initContentScript(): void {
   injectScriptsAndStyles();
-  startListeningForConnectionMessage();
+  startListeningForNgStatusMessage();
   startListeningForErrorMessage();
   window.addEventListener("load", () => {
     chrome.storage.sync.clear();
@@ -44,69 +44,45 @@ function injectStyle(path: string): void {
   styleElements.push(style);
 }
 
-function startListeningForConnectionMessage(): void {
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.command === "check-connection") {
-      sendResponse({ message: "connection-established" });
-      if (errorData) {
-        chrome.runtime.sendMessage(errorData, (response) => {});
-      } else {
-        startListeningForNgStatusMessage();
-      }
-    }
-  });
-}
+// function startListeningForConnectionMessage(): void {
+//   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//     if (message.command === "check-connection") {
+//       sendResponse({ message: "connection-established" });
+//       if (errorData) {
+//         chrome.runtime.sendMessage(errorData, (response) => {});
+//       } else {
+//         startListeningForNgStatusMessage();
+//       }
+//     }
+//   });
+// }
 
 function startListeningForNgStatusMessage(): void {
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.command === "check-ng-status") {
-      sendResponse({ message: "checking-ng-status" });
-      window.postMessage({ command: "start-ng-check" }, "*");
-      window.addEventListener("message", (event) => {
-        if (event.source != window) {
-          return;
-        }
-        if (event.data.type === "ng-check-status") {
-          const isAngular = event.data.isAngular;
-          chrome.runtime.sendMessage(
-            {
-              command: "get-ng-status",
-              status: event.data.isAngular,
-            },
-            () => {
-              startListeningForAppMessage();
-            }
-          );
-        }
-      });
+  window.addEventListener("message", (event) => {
+    if (event.source != window) {
+      return;
     }
-  });
-}
-
-function startListeningForAppMessage(): void {
-  chrome.runtime.onMessage.addListener((appMessage, appSender, appResponse) => {
-    if (appMessage.command === "start") {
-      appResponse({ message: "started" });
-      const runtimeData: runtimeData = {
-        paths: { assets: chrome.runtime.getURL("assets") },
-      };
-      window.postMessage(
-        {
-          command: "start",
-          runtimeData,
-        },
-        "*"
-      );
-    } else if (appMessage.command === "end") {
-      appResponse({ message: "ended" });
-      window.postMessage({ command: "destroy" }, "*");
-      window.addEventListener("message", (event) => {
-        if (event.source != window) {
-          return;
-        }
-        if (event.data.response === "destroyed") {
-        }
-      });
+    if (event.data.type === "ng-check-status") {
+      const isAngular = event.data.isAngular;
+      if (isAngular) {
+        chrome.runtime.onMessage.addListener(function (
+          request,
+          sender,
+          sendResponse
+        ) {
+          if (request.command == "show") {
+            sendResponse({ status: "will-show" });
+            window.postMessage(
+              {
+                command: "show",
+              },
+              "*"
+            );
+          }
+        });
+      } else {
+        chrome.contextMenus.remove("show-props");
+      }
     }
   });
 }
