@@ -21,6 +21,7 @@ export const APP_EXT_CONST_STORAGE_KEY_PREFIX = APP_EXT_CONST + "_TABS_";
 export const APP_EXT_PROP_BOOLEAN_ID = APP_EXT_CONST + "-boolean-prop";
 export const APP_EXT_PROP_OBJECT_BUTTON_ID =
   APP_EXT_CONST + "-object-update-button";
+export const APP_EXT_PROP_OBJECT_VALUE = APP_EXT_CONST + "-object-update-value";
 export const APP_EXT_CLOSE_BUTTON_ID = APP_EXT_CONST + "-close-btn";
 export const MESSAGES: { [key: string]: string } = {
   "tippy-popper-not-found":

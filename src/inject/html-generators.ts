@@ -11,12 +11,11 @@ import {
   APP_EXT_PROP_OUTPUT_JSON_ID,
   APP_EXT_PROP_BOOLEAN_ID,
   APP_EXT_PROP_OBJECT_BUTTON_ID,
+  APP_EXT_PROP_OBJECT_VALUE,
 } from "../shared/constants";
+// import Prism from "prismjs";
 
-export function buildHTML(
-  nGComponent: any,
-  attrValue: string,
-): string {
+export function buildHTML(nGComponent: any, attrValue: string): string {
   const properties = getProperties(nGComponent);
 
   // TODO: pass runtime css url from content_script as window.postmessage and pass it further to TOOLTIP_HTML
@@ -49,6 +48,11 @@ export function getPropertyHTML(
 ): string {
   if (value.constructor && value.constructor.name) {
     let html = "";
+    // let codeHtml = Prism.highlight(
+    //   JSON.stringify(value, null, 2),
+    //   Prism.languages.javascript,
+    //   "javascript"
+    // );
     switch (value.constructor.name) {
       case "EventEmitter_":
         html = `
@@ -91,16 +95,14 @@ export function getPropertyHTML(
         break;
       case "Object":
         html = `
-        <div class="input-group mb-1">
-          <textarea rows="5" class="form-control" placeholder="Property value" aria-label="Property value" aria-describedby="property-emit-value">${JSON.stringify(
-            value,
-            null,
-            2
-          )}</textarea>
-          <div class="input-group-append">
-            <button class="btn btn-outline-secondary px-1" type="button" id="${APP_EXT_PROP_OBJECT_BUTTON_ID}" ${APP_EXT_BUTTON_PROP}="${prop}">Update</button>
+        <div class="mb-1">
+          <pre contenteditable="true" class="language-markup" style="max-height: 300px;"><code id="${APP_EXT_PROP_OBJECT_VALUE}" class="language-javascript">${JSON.stringify(
+          value,
+          null,
+          2
+        )}</code></pre>
           </div>
-        </div>
+          <button class="btn btn-outline-secondary px-1" type="button" id="${APP_EXT_PROP_OBJECT_BUTTON_ID}" ${APP_EXT_BUTTON_PROP}="${prop}">Update</button>
         `;
         break;
       default:

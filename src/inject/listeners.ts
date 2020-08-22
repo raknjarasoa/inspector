@@ -12,6 +12,7 @@ import {
   APP_EXT_PROP_BOOLEAN_ID,
   APP_EXT_PROP_OBJECT_BUTTON_ID,
   APP_EXT_CLOSE_BUTTON_ID,
+  APP_EXT_PROP_OBJECT_VALUE,
 } from "../shared/constants";
 import { buildHTML, getPropertyHTML } from "./html-generators";
 import { getProperties } from "./shared";
@@ -270,10 +271,8 @@ function listenForObjectUpdate(): void {
     valueButton.addEventListener("click", (event) => {
       const prop = (event.target as Element).getAttribute(APP_EXT_BUTTON_PROP);
       if (activeNgComponent && prop) {
-        const parentElement = (event.target as Element).parentElement;
-        const inputValue =
-          parentElement &&
-          (parentElement.previousElementSibling as HTMLInputElement).value;
+        const element = document.getElementById(APP_EXT_PROP_OBJECT_VALUE);
+        const inputValue = element && element.innerText;
         if (inputValue) {
           activeNgComponent[prop] = JSON.parse(inputValue);
           ng.applyChanges(activeNgComponent);

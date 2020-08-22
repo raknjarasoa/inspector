@@ -3,7 +3,13 @@
   "name": "ngneat-inspector",
   "description": "A chrome extension to inspect and change Angular component properties, by ngneat.",
   "version": "0.1.0",
-  "permissions": ["storage", "declarativeContent", "activeTab", "tabs", "contextMenus"],
+  "permissions": [
+    "storage",
+    "declarativeContent",
+    "activeTab",
+    "tabs",
+    "contextMenus"
+  ],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
@@ -26,6 +32,10 @@
     "inject/index.css",
     "assets/css/light-border.css",
     "assets/css/tippy.css",
+    "assets/css/prism.css",
+    "assets/js/clipboard.min.js",
+    "assets/js/prism.js",
+    "assets/js/prism-json.min.js",
     "assets/images/ngneat_16.png"
   ],
   "icons": {

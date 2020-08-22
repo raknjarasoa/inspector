@@ -16,14 +16,23 @@ function initContentScript(): void {
 }
 
 function injectScriptsAndStyles(): void {
-  const scriptPath = [chrome.runtime.getURL("inject/index.js")];
+  const scriptPath = [
+    chrome.runtime.getURL("assets/js/clipboard.min.js"),
+    chrome.runtime.getURL("assets/js/prism.js"),
+    chrome.runtime.getURL("assets/js/prism-json.min.js"),
+    chrome.runtime.getURL("inject/index.js"),
+  ];
 
-  scriptPath.forEach((p) => injectScript(p));
+  for (let index = 0; index < scriptPath.length; index++) {
+    const element = scriptPath[index];
+    injectScript(element);
+  }
 
   const stylePath = [
     chrome.runtime.getURL("inject/index.css"),
     chrome.runtime.getURL("assets/css/tippy.css"),
     chrome.runtime.getURL("assets/css/light-border.css"),
+    chrome.runtime.getURL("assets/css/prism.css"),
   ];
 
   stylePath.forEach((p) => injectStyle(p));

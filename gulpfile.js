@@ -20,13 +20,17 @@ const paths = {
     { url: "src/manifest.json", dir: "." },
     { url: "src/assets/images/*.*", dir: "assets/images" },
     {
-      url: "node_modules/tippy.js/dist/tippy.css",
+      url: "src/assets/css/*.css",
       dir: "assets/css",
     },
     {
-      url: "node_modules/tippy.js/themes/light-border.css",
-      dir: "assets/css",
+      url: "src/assets/js/*.js",
+      dir: "assets/js",
     },
+    {
+      url: "node_modules/clipboard/dist/clipboard.min.js",
+      dir: "assets/js"
+    }
   ],
   typescript: [
     { url: "src/background.ts", dir: "." },
