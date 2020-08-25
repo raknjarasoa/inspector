@@ -1,10 +1,10 @@
 import { render } from "ejs";
+import Prism from "prismjs";
+// import * as l from "prismjs/plugins/line-numbers";
 import { getProperties } from "./shared";
 import {
-  APP_EXT_CONST,
   APP_EXT_PROP_EMIT_BUTTON_CLASS,
   APP_EXT_BUTTON_PROP,
-  APP_EXT_PROP_VALUE_SPAN_CLASS,
   APP_EXT_PROP_VALUE_INPUT_CLASS,
   APP_EXT_PROP_VALUE_BUTTON_CLASS,
   TOOLTIP_HTML,
@@ -12,13 +12,11 @@ import {
   APP_EXT_PROP_BOOLEAN_ID,
   APP_EXT_PROP_OBJECT_BUTTON_ID,
   APP_EXT_PROP_OBJECT_VALUE,
+  APP_EXT_PROP_OBJECT_VALUE_ERROR,
 } from "../shared/constants";
-// import Prism from "prismjs";
 
 export function buildHTML(nGComponent: any, attrValue: string): string {
   const properties = getProperties(nGComponent);
-
-  // TODO: pass runtime css url from content_script as window.postmessage and pass it further to TOOLTIP_HTML
 
   let html = render(TOOLTIP_HTML(), {
     name: nGComponent.constructor.name,
@@ -48,11 +46,6 @@ export function getPropertyHTML(
 ): string {
   if (value.constructor && value.constructor.name) {
     let html = "";
-    // let codeHtml = Prism.highlight(
-    //   JSON.stringify(value, null, 2),
-    //   Prism.languages.javascript,
-    //   "javascript"
-    // );
     switch (value.constructor.name) {
       case "EventEmitter_":
         html = `
@@ -93,18 +86,36 @@ export function getPropertyHTML(
         }
         html += `<label class="custom-control-label" for="${APP_EXT_PROP_BOOLEAN_ID}">Toggle</label></div>`;
         break;
-      case "Object":
+      case "Object": {
+        const codeHtml = Prism.highlight(
+          JSON.stringify(value, null, 2),
+          Prism.languages.javascript,
+          "javascript"
+        );
         html = `
         <div class="mb-1">
-          <pre contenteditable="true" class="language-markup" style="max-height: 300px;"><code id="${APP_EXT_PROP_OBJECT_VALUE}" class="language-javascript">${JSON.stringify(
-          value,
-          null,
-          2
-        )}</code></pre>
-          </div>
-          <button class="btn btn-outline-secondary px-1" type="button" id="${APP_EXT_PROP_OBJECT_BUTTON_ID}" ${APP_EXT_BUTTON_PROP}="${prop}">Update</button>
+          <pre id="${APP_EXT_PROP_OBJECT_VALUE}" contenteditable="true" class="language-markup line-numbers" style="max-height: 300px;"><code class="language-javascript">${codeHtml}</code></pre>
+        </div>
+        <span class="form-text text-danger mb-1" id="${APP_EXT_PROP_OBJECT_VALUE_ERROR}"></span>
+        <button class="btn btn-outline-secondary px-1" type="button" id="${APP_EXT_PROP_OBJECT_BUTTON_ID}" ${APP_EXT_BUTTON_PROP}="${prop}">Update</button>
         `;
         break;
+      }
+      case "Array": {
+        const codeHtml = Prism.highlight(
+          JSON.stringify(value, null, 2),
+          Prism.languages.javascript,
+          "javascript"
+        );
+        html = `
+        <div class="mb-1">
+          <pre id="${APP_EXT_PROP_OBJECT_VALUE}" contenteditable="true" class="language-markup line-numbers" style="max-height: 300px;"><code class="language-javascript">${codeHtml}</code></pre>
+        </div>
+        <span class="form-text text-danger mb-1" id="${APP_EXT_PROP_OBJECT_VALUE_ERROR}"></span>
+        <button class="btn btn-outline-secondary px-1" type="button" id="${APP_EXT_PROP_OBJECT_BUTTON_ID}" ${APP_EXT_BUTTON_PROP}="${prop}">Update</button>
+        `;
+        break;
+      }
       default:
         html = `<p> ⚠️ ${value.constructor.name} is not supported</p>`;
         break;

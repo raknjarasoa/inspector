@@ -20,7 +20,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*/"],
+      "matches": ["*://*/*"],
       "js": ["content_script.js"],
       "run_at": "document_end"
     }
@@ -33,9 +33,6 @@
     "assets/css/light-border.css",
     "assets/css/tippy.css",
     "assets/css/prism.css",
-    "assets/js/clipboard.min.js",
-    "assets/js/prism.js",
-    "assets/js/prism-json.min.js",
     "assets/images/ngneat_16.png"
   ],
   "icons": {

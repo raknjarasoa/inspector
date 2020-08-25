@@ -7,26 +7,18 @@ let errorData: { error: string; type: string; message: string };
 initContentScript();
 
 function initContentScript(): void {
-  injectScriptsAndStyles();
-  startListeningForNgStatusMessage();
-  startListeningForErrorMessage();
   window.addEventListener("load", () => {
     chrome.storage.sync.clear();
+    injectScriptsAndStyles();
+    startListeningForNgStatusMessage();
+    startListeningForErrorMessage();
   });
 }
 
 function injectScriptsAndStyles(): void {
-  const scriptPath = [
-    chrome.runtime.getURL("assets/js/clipboard.min.js"),
-    chrome.runtime.getURL("assets/js/prism.js"),
-    chrome.runtime.getURL("assets/js/prism-json.min.js"),
-    chrome.runtime.getURL("inject/index.js"),
-  ];
+  const scriptPath = [chrome.runtime.getURL("inject/index.js")];
 
-  for (let index = 0; index < scriptPath.length; index++) {
-    const element = scriptPath[index];
-    injectScript(element);
-  }
+  scriptPath.forEach((p) => injectScript(p));
 
   const stylePath = [
     chrome.runtime.getURL("inject/index.css"),
@@ -36,6 +28,8 @@ function injectScriptsAndStyles(): void {
   ];
 
   stylePath.forEach((p) => injectStyle(p));
+
+  console.log("injection done");
 }
 
 function injectScript(path: string): void {

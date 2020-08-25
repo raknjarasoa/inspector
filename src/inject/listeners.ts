@@ -13,6 +13,7 @@ import {
   APP_EXT_PROP_OBJECT_BUTTON_ID,
   APP_EXT_CLOSE_BUTTON_ID,
   APP_EXT_PROP_OBJECT_VALUE,
+  APP_EXT_PROP_OBJECT_VALUE_ERROR,
 } from "../shared/constants";
 import { buildHTML, getPropertyHTML } from "./html-generators";
 import { getProperties } from "./shared";
@@ -22,20 +23,6 @@ declare const ng: any;
 export let activePopovers: Instance[] = [];
 let activeTarget: Element;
 let activeNgComponent: any = null;
-// export const singletonInstance = createSingleton(activePopovers, {
-//   moveTransition: "transform 0.3s ease-in-out",
-//   allowHTML: true,
-//   arrow: false,
-//   theme: "light-border",
-//   interactive: true,
-//   appendTo: () => document.body,
-//   maxWidth: 600,
-//   placement: "top-start",
-//   delay: [null, 100],
-//   trigger: "manual",
-//   hideOnClick: false,
-//   overrides: ["onShown", "onHidden", "content", "onShow"],
-// });
 
 const defaultTippyOptions: Partial<Props> = {
   allowHTML: true,
@@ -44,7 +31,7 @@ const defaultTippyOptions: Partial<Props> = {
   interactive: true,
   appendTo: () => document.body,
   maxWidth: 600,
-  placement: "top-start",
+  placement: "auto",
   delay: [null, 100],
   trigger: "manual",
   hideOnClick: false,
@@ -274,8 +261,23 @@ function listenForObjectUpdate(): void {
         const element = document.getElementById(APP_EXT_PROP_OBJECT_VALUE);
         const inputValue = element && element.innerText;
         if (inputValue) {
-          activeNgComponent[prop] = JSON.parse(inputValue);
-          ng.applyChanges(activeNgComponent);
+          // thanks to https://stackoverflow.com/a/48632166
+          const jsonString = inputValue.replace(/("[^"]*")|([ \s]+)/g, (x) => {
+            return x.charCodeAt(0) == 34 ? x : "";
+          });
+          if (jsonString) {
+            try {
+              activeNgComponent[prop] = JSON.parse(jsonString);
+              ng.applyChanges(activeNgComponent);
+            } catch (e) {
+              const errorElement = document.getElementById(
+                APP_EXT_PROP_OBJECT_VALUE_ERROR
+              );
+              if (errorElement) {
+                errorElement.innerText = "⚠️ Error while parsing JSON!";
+              }
+            }
+          }
         } else {
         }
       } else {
