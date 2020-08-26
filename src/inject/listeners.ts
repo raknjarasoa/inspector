@@ -217,7 +217,16 @@ function listenForEmit(): void {
           APP_EXT_PROP_OUTPUT_JSON_ID
         ) as HTMLInputElement).checked;
         if (inputValue && isJSON) {
-          activeNgComponent[prop].emit(JSON.parse(inputValue));
+          try {
+            activeNgComponent[prop].emit(JSON.parse(inputValue));
+          } catch(e) {
+            const errorElement = document.getElementById(
+              APP_EXT_PROP_OBJECT_VALUE_ERROR
+            );
+            if (errorElement) {
+              errorElement.innerText = "⚠️ Error while parsing JSON!";
+            }
+          }
         } else if (inputValue) {
           activeNgComponent[prop].emit(inputValue);
         }

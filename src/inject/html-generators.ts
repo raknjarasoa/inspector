@@ -84,6 +84,7 @@ export function getPropertyHTML(
             </div>
             <textarea class="form-control" placeholder="Property value" aria-label="Property value" id="${APP_EXT_PROP_OUTPUT_VALUE}"></textarea>
           </div>
+          <span class="form-text text-danger mb-1" id="${APP_EXT_PROP_OBJECT_VALUE_ERROR}"></span>
         </div>
         <div class="row">
           <div class="col-auto mb-2">
