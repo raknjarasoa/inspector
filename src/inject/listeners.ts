@@ -1,7 +1,7 @@
 import tippy, { Instance, createSingleton, Props } from "tippy.js";
 import {
   APP_EXT_CONST,
-  APP_EXT_PROP_EMIT_BUTTON_CLASS,
+  APP_EXT_PROP_EMIT_BUTTON_ID,
   APP_EXT_BUTTON_PROP,
   APP_EXT_PROP_VALUE_SPAN_CLASS,
   APP_EXT_PROP_VALUE_INPUT_CLASS,
@@ -14,8 +14,18 @@ import {
   APP_EXT_CLOSE_BUTTON_ID,
   APP_EXT_PROP_OBJECT_VALUE,
   APP_EXT_PROP_OBJECT_VALUE_ERROR,
+  APP_EXT_PROP_OUTPUT_VALUE,
+  APP_EXT_TOGGLE_BTN_ID,
+  APP_EXT_PROP_VIEW_ID,
+  APP_EXT_PROP_TYPE_RADIO_NAME,
+  APP_EXT_INPUT_SELECT_ID,
+  APP_EXT_OUTPUT_SELECT_ID,
 } from "../shared/constants";
-import { buildHTML, getPropertyHTML } from "./html-generators";
+import {
+  buildHTML,
+  buildNotFoundHTML,
+  getPropertyHTML,
+} from "./html-generators";
 import { getProperties } from "./shared";
 
 declare const ng: any;
@@ -35,9 +45,11 @@ const defaultTippyOptions: Partial<Props> = {
   delay: [null, 100],
   trigger: "manual",
   hideOnClick: false,
+  moveTransition: "transform 0.2s ease-out",
 };
 
 export let activePopoverIndex = -1;
+export let oldActivePopoverIndex = -1;
 
 /**
  * Start listening to `mouseover` of `document`. Fetch the hovered target and find the Angular component
@@ -46,17 +58,16 @@ export let activePopoverIndex = -1;
  *
  */
 export function startDocumentOverListen(): void {
-  // singletonInstance.enable();
-  document.addEventListener("contextmenu", handleMouseOver(), true);
+  document.addEventListener("contextmenu", handleContextMenu(), true);
 }
 
 export function stopDocumentOverListen(): void {
-  document.removeEventListener("contextmenu", handleMouseOver(), true);
-  // singletonInstance.disable();
+  document.removeEventListener("contextmenu", handleContextMenu(), true);
 }
 
-export function handleMouseOver(): (this: Document, ev: MouseEvent) => any {
+export function handleContextMenu(): (this: Document, ev: MouseEvent) => any {
   return (ev: MouseEvent) => {
+    oldActivePopoverIndex = activePopoverIndex;
     const element = ev.target as Element;
     if (element !== activeTarget) {
       activeTarget = element;
@@ -71,12 +82,12 @@ export function handleMouseOver(): (this: Document, ev: MouseEvent) => any {
             ...defaultTippyOptions,
             content: html,
             onShown: () => {
+              listenForRadio();
               listenForSelect();
               listenForCloseButton();
             },
           });
           activePopovers.push(tippyInstance);
-          // singletonInstance.setInstances(activePopovers);
           activePopoverIndex = activePopovers.length - 1;
           element.setAttribute(APP_EXT_CONST, activePopovers.length - 1 + "");
         } else {
@@ -85,14 +96,25 @@ export function handleMouseOver(): (this: Document, ev: MouseEvent) => any {
             activePopovers[activePopoverIndex].setProps({
               content: html,
               onShown: () => {
+                listenForRadio();
                 listenForSelect();
                 listenForCloseButton();
               },
             });
-            // singletonInstance.setInstances(activePopovers);
           }
         }
       } else {
+        let html = buildNotFoundHTML();
+        const tippyInstance = tippy(element, {
+          ...defaultTippyOptions,
+          content: html,
+          onShown: () => {
+            listenForCloseButton();
+          },
+        });
+        activePopovers.push(tippyInstance);
+        activePopoverIndex = activePopovers.length - 1;
+        element.setAttribute(APP_EXT_CONST, activePopovers.length - 1 + "");
       }
     }
   };
@@ -106,9 +128,21 @@ export function handleMouseOver(): (this: Document, ev: MouseEvent) => any {
  * @returns {*}
  */
 function getNgComponent(element: Element | HTMLElement): any {
-  const nGComponent = ng.getComponent(element);
+  let nGComponent = ng.getComponent(element);
+
+  // if it's not a component, get owning component
   if (!nGComponent) {
-    return ng.getOwningComponent(element);
+    nGComponent = ng.getOwningComponent(element);
+
+    // if it's not a component, get parent element and get it's component
+    // but we won't go to body
+    if (
+      !nGComponent &&
+      element.parentElement &&
+      element.parentElement.tagName !== "BODY"
+    ) {
+      nGComponent = getNgComponent(element.parentElement);
+    }
   }
   return nGComponent;
 }
@@ -122,31 +156,43 @@ function listenForSelect(): void {
         selectElement.addEventListener("change", (event) => {
           const element = event.target as HTMLInputElement;
           const properties = getProperties(activeNgComponent);
-          const activeProp = element.value;
-          const propType = element.getAttribute(APP_EXT_PROP_SELECT_TYPE);
-
-          if (propType === "inputs" || propType === "outputs") {
-            const selectNextDiv =
-              selectElement.parentElement &&
-              selectElement.parentElement.nextElementSibling;
-            if (selectNextDiv) {
-              let html = "";
-              if (activeProp) {
-                html = getPropertyHTML(
-                  activeProp,
-                  properties[propType][activeProp],
-                  activeNgComponent
-                );
-              }
-
-              selectNextDiv.innerHTML = html;
-              listenForEmit();
-              listenForValueChange();
-              listenForBoolean();
-              listenForObjectUpdate();
-            }
-          }
+          updateViewContent(element, properties);
         });
+      }
+    }
+  }
+}
+
+function updateViewContent(
+  element: HTMLInputElement,
+  properties: Properties,
+  shouldListenForSelect = false
+) {
+  const activeProp = element.value;
+  const propType = element.getAttribute(APP_EXT_PROP_SELECT_TYPE);
+
+  if (propType === "inputs" || propType === "outputs") {
+    const viewDIV = document.getElementById(APP_EXT_PROP_VIEW_ID);
+    if (viewDIV) {
+      let html = "";
+      if (activeProp && activeProp !== "Choose...") {
+        html = getPropertyHTML(
+          activeProp,
+          properties[propType][activeProp],
+          activeNgComponent
+        );
+        activePopovers[activePopoverIndex].setProps({
+          placement: "auto",
+        });
+      }
+
+      viewDIV.innerHTML = html;
+      listenForEmit();
+      listenForValueChange();
+      listenForBoolean();
+      listenForObjectUpdate();
+      if (shouldListenForSelect) {
+        listenForSelect();
       }
     }
   }
@@ -158,35 +204,26 @@ function listenForSelect(): void {
  *
  */
 function listenForEmit(): void {
-  const emitButtonList = document.getElementsByClassName(
-    APP_EXT_PROP_EMIT_BUTTON_CLASS
-  );
-  if (emitButtonList.length) {
-    for (let i = 0; i < emitButtonList.length; i++) {
-      const emitButton = emitButtonList.item(i);
-      if (emitButton) {
-        emitButton.addEventListener("click", (event) => {
-          const prop = (event.target as Element).getAttribute(
-            APP_EXT_BUTTON_PROP
-          );
-          if (activeNgComponent && prop) {
-            const parentElement = (event.target as Element).parentElement;
-            const inputValue =
-              parentElement &&
-              (parentElement.previousElementSibling as HTMLInputElement).value;
-            const isJSON = (document.getElementById(
-              APP_EXT_PROP_OUTPUT_JSON_ID
-            ) as HTMLInputElement).checked;
-            if (inputValue && isJSON) {
-              activeNgComponent[prop].emit(JSON.parse(inputValue));
-            } else if (inputValue) {
-              activeNgComponent[prop].emit(inputValue);
-            }
-          } else {
-          }
-        });
+  const emitButton = document.getElementById(APP_EXT_PROP_EMIT_BUTTON_ID);
+  if (emitButton) {
+    emitButton.addEventListener("click", (event) => {
+      const prop = (event.target as Element).getAttribute(APP_EXT_BUTTON_PROP);
+      if (activeNgComponent && prop) {
+        const element = document.getElementById(
+          APP_EXT_PROP_OUTPUT_VALUE
+        ) as HTMLInputElement;
+        const inputValue = element && element.value;
+        const isJSON = (document.getElementById(
+          APP_EXT_PROP_OUTPUT_JSON_ID
+        ) as HTMLInputElement).checked;
+        if (inputValue && isJSON) {
+          activeNgComponent[prop].emit(JSON.parse(inputValue));
+        } else if (inputValue) {
+          activeNgComponent[prop].emit(inputValue);
+        }
+      } else {
       }
-    }
+    });
   }
 }
 
@@ -306,4 +343,41 @@ function listenForCloseButton(): void {
     });
   } else {
   }
+}
+
+/**
+ * As soon as tooltip is shown, we can start listening to `radio buttons`, so that we can
+ * capture events and update the component.
+ *
+ */
+function listenForRadio(): void {
+  const radioButtons = document.querySelectorAll(
+    "input[name='" + APP_EXT_PROP_TYPE_RADIO_NAME + "']"
+  );
+  radioButtons.forEach((radioButton) => {
+    const element = radioButton as HTMLInputElement;
+    element.addEventListener("change", (event) => {
+      const targetElement = event.target as HTMLInputElement;
+      if (targetElement.checked) {
+        const value = targetElement.value;
+        const inputSelect = document.getElementById(
+          APP_EXT_INPUT_SELECT_ID
+        ) as HTMLInputElement;
+        const outputSelect = document.getElementById(
+          APP_EXT_OUTPUT_SELECT_ID
+        ) as HTMLInputElement;
+        if (value === "input") {
+          inputSelect.disabled = false;
+          outputSelect.disabled = true;
+          const properties = getProperties(activeNgComponent);
+          updateViewContent(inputSelect, properties, true);
+        } else {
+          inputSelect.disabled = true;
+          outputSelect.disabled = false;
+          const properties = getProperties(activeNgComponent);
+          updateViewContent(outputSelect, properties, true);
+        }
+      }
+    });
+  });
 }

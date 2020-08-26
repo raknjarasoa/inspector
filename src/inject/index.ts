@@ -2,7 +2,9 @@ import { isAngularAppRunning } from "./ng-check";
 import {
   activePopoverIndex,
   activePopovers,
+  oldActivePopoverIndex,
   startDocumentOverListen,
+  stopDocumentOverListen,
 } from "./listeners";
 
 initInAppScript();
@@ -18,6 +20,13 @@ function initInAppScript(): void {
       if (event.data.command === "show") {
         if (
           activePopovers.length &&
+          oldActivePopoverIndex > -1 &&
+          activePopovers[oldActivePopoverIndex]
+        ) {
+          activePopovers[oldActivePopoverIndex].hide();
+        }
+        if (
+          activePopovers.length &&
           activePopoverIndex > -1 &&
           activePopovers[activePopoverIndex]
         ) {
@@ -27,21 +36,6 @@ function initInAppScript(): void {
     });
   } else {
     window.postMessage({ type: "ng-check-status", isAngular: false }, "*");
+    stopDocumentOverListen();
   }
 }
-
-// function disableInAppMethods() {
-//   if (inAppMethods.enabled) {
-//     stopDocumentOverListen();
-//     inAppMethods.enabled = false;
-//     window.postMessage({ response: "destroyed" }, "*");
-//   }
-// }
-
-// function enableInAppMethods(runtimeData: runtimeData) {
-//   if (!inAppMethods.enabled) {
-//     startDocumentOverListen(runtimeData);
-//     inAppMethods.enabled = true;
-//     window.postMessage({ type: "ng-check-status", isAngular: true }, "*");
-//   }
-// }

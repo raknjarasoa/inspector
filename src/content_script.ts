@@ -7,11 +7,11 @@ let errorData: { error: string; type: string; message: string };
 initContentScript();
 
 function initContentScript(): void {
+  injectScriptsAndStyles();
+  startListeningForNgStatusMessage();
+  startListeningForErrorMessage();
   window.addEventListener("load", () => {
     chrome.storage.sync.clear();
-    injectScriptsAndStyles();
-    startListeningForNgStatusMessage();
-    startListeningForErrorMessage();
   });
 }
 
@@ -28,8 +28,6 @@ function injectScriptsAndStyles(): void {
   ];
 
   stylePath.forEach((p) => injectStyle(p));
-
-  console.log("injection done");
 }
 
 function injectScript(path: string): void {
@@ -46,19 +44,6 @@ function injectStyle(path: string): void {
   document.head.appendChild(style);
   styleElements.push(style);
 }
-
-// function startListeningForConnectionMessage(): void {
-//   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-//     if (message.command === "check-connection") {
-//       sendResponse({ message: "connection-established" });
-//       if (errorData) {
-//         chrome.runtime.sendMessage(errorData, (response) => {});
-//       } else {
-//         startListeningForNgStatusMessage();
-//       }
-//     }
-//   });
-// }
 
 function startListeningForNgStatusMessage(): void {
   window.addEventListener("message", (event) => {
