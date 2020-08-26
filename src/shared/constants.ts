@@ -37,7 +37,7 @@ export function TOOLTIP_HTML(): string {
   // TODO: Move content to index.ejs and try to read it
   return `
   <div class="${APP_EXT_CONST}">
-  <div class="position-absolute" style="top: 0px; right: 0px; z-index: 1;">
+  <div class="position-absolute" style="top: 0px; right: 0px; z-index: 1">
     <button
       type="button"
       class="btn btn-sm"
@@ -59,7 +59,7 @@ export function TOOLTIP_HTML(): string {
       </svg>
     </button>
   </div>
-  <div class="container-fluid pb-3 position-relative">
+  <div class="container-fluid p-3 pb-4 position-relative">
     <h5>Component: <code class="h4"><%= name %></code></h5>
     <h5>Selector: <code class="h4">&lt;<%= selector %>&gt;</code></h5>
     <hr class="my-2" />
@@ -71,6 +71,7 @@ export function TOOLTIP_HTML(): string {
         <% if (Object.keys(properties.inputs).length !== 0) { %>
         <div class="col">
           <div class="input-group mb-3">
+            <% if (Object.keys(properties.outputs).length !== 0) { %>
             <div class="input-group-prepend">
               <div class="input-group-text">
                 <input
@@ -82,6 +83,7 @@ export function TOOLTIP_HTML(): string {
                 />
               </div>
             </div>
+            <% } %>
             <div class="input-group-prepend">
               <label class="input-group-text" for="inputsSelect">Inputs</label>
             </div>
@@ -101,26 +103,18 @@ export function TOOLTIP_HTML(): string {
         <% } %> <% if (Object.keys(properties.outputs).length !== 0) { %>
         <div class="col">
           <div class="input-group mb-3">
+            <% if (Object.keys(properties.inputs).length !== 0) { %>
             <div class="input-group-prepend">
               <div class="input-group-text">
-                <% if (Object.keys(properties.inputs).length !== 0) { %>
                 <input
                   type="radio"
                   name="${APP_EXT_PROP_TYPE_RADIO_NAME}"
                   value="output"
                   aria-label="Radio button for following text input"
                 />
-                <% } else { %>
-                <input
-                  type="radio"
-                  name="${APP_EXT_PROP_TYPE_RADIO_NAME}"
-                  value="output"
-                  aria-label="Radio button for following text input"
-                  checked
-                />
-                <% } %>
               </div>
             </div>
+            <% } %>
             <div class="input-group-prepend">
               <label class="input-group-text" for="outputsSelect"
                 >Outputs</label
@@ -164,9 +158,9 @@ export function TOOLTIP_HTML(): string {
     </div>
   </div>
 
-  <div class="position-absolute" style="bottom: 4px; right: 4px;">
+  <div class="position-absolute" style="bottom: 4px; right: 4px">
     <img
-      style="display: inline;"
+      style="display: inline"
       src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACnElEQVQ4T42TW0gUYRTH/7MXb+stL2yaq9viJYmySBRKaO0h8iExNHoKrISSihUCkXqo1CAo2B4kvCQGvQSCRBdqoQcfVpBQyFBRTBfZzSx3d3ZnJ2fGucV828ruUtA8nfnOOb9zvvP9D4V/fLmw5joOOp3M+gb/gr3b7Yc/8rdQKulQ327tu9FW2v3AqEsxaT52zkdCdlSBmeAGesaFJ0MAlFgeATQUtNivVz4dzUspsiVXiQHizwPKj5WhXz2XZ6WPbg2gc9lVOT7AVAak7AGMWYAcpCFsyWDXJLCrUgK/lbboSAcuu6rGPDojUNYGcJtAfi3gGw/A3JgGkVEw3xuGGsdopS0UAXywyyIFnUGzrRcARQQCM4DlHMB5Ikgv1kPmVYTnRayNsqSWAlk4T1vTCGCiIbxpMmSbNbv8CsB6gEwrYMgAjBkcNt7xEPwy8utSsdAfJgBGDXovhWpKCWCwds69P/PwCS2h8DiQdwyADAg0kFHIg/VI4HwS/NM7YBZF0s2yOOu6zbacIYCuqhFnU1FHl3Z/20UgtAiIIcB8EuC9DLbcArgNGcZsHRmmGFbwhhu595zvvU8Ap83tZ29Vj73W7MpOIK0AEIIAVEAMssipNoJZEhH5KmHtWXQGzkhno1t6O0kAFTmHbANHv6wSwLXoDLIrAMoAUPI2tqaiHZjKDFgdjgKu0g3Ffqx//6PEknSX3bsde8qSZiDLBvA/gcx9HEILIlQRWHrM7OqglbakagLdlfJY/crn4vTymv9Rok9e+eRgTtVrsQm7UJVVW/XoyOR0qt6UGwPFS5lTWf+dUEvdOpY9CbuQXLVpb0eb48DwSwqUXgOoUCTntqN5Snj1Pjk2eRsT/DcrBh+y3m/sGN/Xn5wY+/8NCHEWIcyJZ9sAAAAASUVORK5CYII="
       alt="ngneat logo"
     /><small
@@ -174,6 +168,5 @@ export function TOOLTIP_HTML(): string {
     >
   </div>
 </div>
-
   `;
 }
