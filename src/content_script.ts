@@ -1,15 +1,11 @@
-import { MESSAGES } from "./shared/constants";
-
 const scriptElements: HTMLScriptElement[] = [];
 const styleElements: HTMLLinkElement[] = [];
-let errorData: { error: string; type: string; message: string };
 
 initContentScript();
 
 function initContentScript(): void {
   injectScriptsAndStyles();
-  startListeningForNgStatusMessage();
-  startListeningForErrorMessage();
+  startListeningMessagesFromInject();
   window.addEventListener("load", () => {
     chrome.storage.sync.clear();
   });
@@ -21,7 +17,7 @@ function injectScriptsAndStyles(): void {
   scriptPath.forEach((p) => injectScript(p));
 
   const stylePath = [
-    chrome.runtime.getURL("inject/index.css"),
+    chrome.runtime.getURL("styles/index.css"),
     chrome.runtime.getURL("assets/css/tippy.css"),
     chrome.runtime.getURL("assets/css/light-border.css"),
     chrome.runtime.getURL("assets/css/prism.css"),
@@ -45,7 +41,7 @@ function injectStyle(path: string): void {
   styleElements.push(style);
 }
 
-function startListeningForNgStatusMessage(): void {
+function startListeningMessagesFromInject(): void {
   window.addEventListener("message", (event) => {
     if (event.source != window) {
       return;
@@ -62,7 +58,7 @@ function startListeningForNgStatusMessage(): void {
             sendResponse({ status: "will-show" });
             window.postMessage(
               {
-                command: "show",
+                command: "show"
               },
               "*"
             );
@@ -72,20 +68,20 @@ function startListeningForNgStatusMessage(): void {
         chrome.contextMenus.remove("show-props");
       }
     }
-  });
-}
-
-function startListeningForErrorMessage(): void {
-  window.addEventListener("message", (event) => {
-    if (event.source != window) {
-      return;
-    }
-    if (event.data.type === "error") {
-      errorData = {
-        type: "error",
-        error: event.data.error,
-        message: MESSAGES[event.data.error],
+    if (event.data.type === "send-runtime-data") {
+      const runTimeData: RunTimeData = {
+        paths: {
+          "index-ejs": chrome.runtime.getURL("assets/files/index.ejs"),
+        },
       };
+
+      window.postMessage(
+        {
+          command: "receive-runtime-data",
+          runTimeData,
+        },
+        "*"
+      );
     }
   });
 }

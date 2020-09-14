@@ -16,7 +16,7 @@
   },
   "page_action": {
     "default_title": "ng-neat inspector",
-    "default_popup": "app/popup/index.html"
+    "default_popup": "popup.html"
   },
   "content_scripts": [
     {
@@ -28,11 +28,11 @@
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "web_accessible_resources": [
     "inject/index.js",
-    "inject/index.html",
-    "inject/index.css",
+    "styles/index.css",
     "assets/css/light-border.css",
     "assets/css/tippy.css",
     "assets/css/prism.css",
+    "assets/files/index.ejs",
     "assets/images/ngneat_16.png"
   ],
   "icons": {
