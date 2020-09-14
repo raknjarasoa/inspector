@@ -58,7 +58,7 @@ function startListeningMessagesFromInject(): void {
             sendResponse({ status: "will-show" });
             window.postMessage(
               {
-                command: "show"
+                command: "show",
               },
               "*"
             );
@@ -71,7 +71,7 @@ function startListeningMessagesFromInject(): void {
     if (event.data.type === "send-runtime-data") {
       const runTimeData: RunTimeData = {
         paths: {
-          "index-ejs": chrome.runtime.getURL("assets/files/index.ejs"),
+          tooltip: chrome.runtime.getURL("assets/templates/tooltip.ejs"),
         },
       };
 

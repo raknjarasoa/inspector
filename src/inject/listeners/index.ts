@@ -22,7 +22,7 @@ const defaultTippyOptions: Partial<Props> = {
   interactive: true,
   appendTo: () => document.body,
   maxWidth: 600,
-  placement: "auto",
+  placement: "auto-end",
   delay: [null, 100],
   trigger: "manual",
   hideOnClick: false,

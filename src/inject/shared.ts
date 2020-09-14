@@ -91,7 +91,7 @@ export function updateViewContent(
           activeNgComponent
         );
         activePopovers[activePopoverIndex].setProps({
-          placement: "auto",
+          placement: "auto-end",
         });
       }
 

@@ -23,8 +23,8 @@ const paths = {
       dir: "assets/css",
     },
     {
-      url: "src/inject/html-generators/index.ejs",
-      dir: "assets/files",
+      url: "src/inject/html-generators/templates/tooltip.ejs",
+      dir: "assets/templates",
     },
   ],
   typescript: [

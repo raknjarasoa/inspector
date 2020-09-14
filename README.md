@@ -2,6 +2,8 @@
 
 > A chrome extension to inspect and change Angular component properties.
 
+![Demo of ngneat inspector](./demo-ngneat-inspector.gif)
+
 ## Development
 
 ```bash

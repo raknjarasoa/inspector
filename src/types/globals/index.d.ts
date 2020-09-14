@@ -4,5 +4,9 @@ type Properties = {
 };
 
 type RunTimeData = {
-  paths: { [key: string]: string };
+  paths: { [key in paths]: string };
 };
+
+declare enum paths {
+  tooltip = "tooltip",
+}

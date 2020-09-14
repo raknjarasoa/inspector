@@ -32,7 +32,7 @@
     "assets/css/light-border.css",
     "assets/css/tippy.css",
     "assets/css/prism.css",
-    "assets/files/index.ejs",
+    "assets/templates/tooltip.ejs",
     "assets/images/ngneat_16.png"
   ],
   "icons": {
