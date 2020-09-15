@@ -13,7 +13,7 @@ sass.compiler = require("node-sass");
 
 const paths = {
   scss: [{ url: "src/styles/index.scss", dir: "styles" }],
-  html: [{ url: "src/popup.html", dir: "." }],
+  html: [{ url: "src/popup.html", dir: "." }, { url: "src/nong-popup.html", dir: "." }],
   dist: "dist",
   assets: [
     { url: "src/manifest.json", dir: "." },

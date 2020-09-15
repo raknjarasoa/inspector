@@ -49,7 +49,7 @@ function startListeningMessagesFromInject(): void {
     if (event.data.type === "ng-check-status") {
       const isAngular = event.data.isAngular;
       if (isAngular) {
-        chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+        chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           if (request.command == "show") {
             sendResponse({ status: "will-show" });
             window.postMessage(
@@ -61,7 +61,8 @@ function startListeningMessagesFromInject(): void {
           }
         });
       } else {
-        chrome.contextMenus.remove("show-props");
+        chrome.runtime.sendMessage({ command: "show-no-ng-popup" });
+        // TODO: figure out a way to disable menu item for a tab
       }
     }
     if (event.data.type === "send-runtime-data") {

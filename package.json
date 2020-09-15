@@ -12,8 +12,8 @@
     "lint:fix": "run-s eslint:fix prettier:fix",
     "eslint": "npx eslint src/**/*.ts",
     "eslint:fix": "npx eslint src/**/*.ts --fix",
-    "prettier": "npx prettier src/**/*.* --check",
-    "prettier:fix": "npx prettier src/**/*.{ts,json} --write",
+    "prettier": "npx prettier src/**/*.{ts,json,html} --check",
+    "prettier:fix": "npx prettier src/**/*.{ts,json,html} --write",
     "ejslint": "npx ejslint src/inject/html-generators/index.ejs",
     "start": "gulp",
     "test": "echo \"Error: no test specified\" && exit 1"
