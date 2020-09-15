@@ -13,14 +13,10 @@ import {
   APP_EXT_PROP_VIEW_ID,
 } from "../../constants";
 
-export async function buildHTML(
-  nGComponent: any,
-  attrValue: string,
-  runTimeData: RunTimeData
-): Promise<string> {
+export async function buildHTML(nGComponent: any, attrValue: string, runTimeData: RunTimeData): Promise<string> {
   const properties = getProperties(nGComponent);
 
-  let html = render(await tooltipHTML(runTimeData), {
+  return render(await tooltipHTML(runTimeData), {
     name: nGComponent.constructor.name,
     selector: nGComponent.constructor.decorators[0].args[0].selector,
     propertySelectAttrValue: attrValue,
@@ -30,7 +26,6 @@ export async function buildHTML(
     APP_EXT_PROP_VIEW_ID: APP_EXT_PROP_VIEW_ID,
     APP_EXT_OUTPUT_SELECT_ID: APP_EXT_OUTPUT_SELECT_ID,
   });
-  return html;
 }
 
 /**
@@ -45,11 +40,7 @@ export async function buildHTML(
  * @param {*} nGComponent
  * @returns {string}
  */
-export function getPropertyHTML(
-  prop: any,
-  value: any,
-  nGComponent: any
-): string {
+export function getPropertyHTML(prop: any, value: any, nGComponent: any): string {
   if (value.constructor && value.constructor.name) {
     let html = "";
     switch (value.constructor.name) {

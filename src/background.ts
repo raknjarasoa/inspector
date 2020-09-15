@@ -3,7 +3,7 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "ngneat-inspect",
     title: "Inspect with ngneat inspector",
-    contexts: ["all"]
+    contexts: ["all"],
   });
   chrome.declarativeContent.onPageChanged.removeRules(undefined, () => {
     chrome.declarativeContent.onPageChanged.addRules([
@@ -18,13 +18,11 @@ chrome.runtime.onInstalled.addListener(() => {
     ]);
   });
 });
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+chrome.contextMenus.onClicked.addListener((info) => {
   if (info.menuItemId === "ngneat-inspect") {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       if (tabs[0] && tabs[0].id) {
-        chrome.tabs.sendMessage(tabs[0].id, { command: "show" }, function (
-          response
-        ) {
+        chrome.tabs.sendMessage(tabs[0].id, { command: "show" }, function () {
           // will show popover
         });
       }

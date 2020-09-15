@@ -1,3 +1,4 @@
+import { activeNgComponent } from ".";
 import {
   APP_EXT_PROP_OBJECT_BUTTON_ID,
   APP_EXT_BUTTON_PROP,
@@ -12,25 +13,21 @@ declare const ng: any;
  * capture events and update the component.
  *
  */
-export function listenForObjectUpdate(activeNgComponent: any): void {
+export function listenForObjectUpdate(): void {
   const valueButton = document.getElementById(APP_EXT_PROP_OBJECT_BUTTON_ID);
   if (valueButton) {
-    valueButton.addEventListener("click", clickListener(activeNgComponent));
-  } else {
+    valueButton.addEventListener("click", clickListener());
   }
 }
 
-export function stopListenForObjectUpdate(activeNgComponent: any): void {
+export function stopListenForObjectUpdate(): void {
   const valueButton = document.getElementById(APP_EXT_PROP_OBJECT_BUTTON_ID);
   if (valueButton) {
-    valueButton.removeEventListener("click", clickListener(activeNgComponent));
-  } else {
+    valueButton.removeEventListener("click", clickListener());
   }
 }
 
-function clickListener(
-  activeNgComponent: any
-): (this: HTMLElement, ev: MouseEvent) => any {
+function clickListener(): (this: HTMLElement, ev: MouseEvent) => any {
   return (event) => {
     const prop = (event.target as Element).getAttribute(APP_EXT_BUTTON_PROP);
     if (activeNgComponent && prop) {
@@ -44,9 +41,7 @@ function clickListener(
           return x.charCodeAt(0) == 34 ? x : "";
         });
         if (jsonString) {
-          const errorElement = document.getElementById(
-            APP_EXT_PROP_OBJECT_VALUE_ERROR
-          );
+          const errorElement = document.getElementById(APP_EXT_PROP_OBJECT_VALUE_ERROR);
           try {
             activeNgComponent[prop] = JSON.parse(jsonString);
             ng.applyChanges(activeNgComponent);
@@ -59,9 +54,7 @@ function clickListener(
             }
           }
         }
-      } else {
       }
-    } else {
     }
   };
 }

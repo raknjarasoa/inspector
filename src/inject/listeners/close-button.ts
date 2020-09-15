@@ -1,4 +1,4 @@
-import { Instance } from "tippy.js";
+import { activePopovers, activePopoverIndex } from ".";
 import { APP_EXT_CLOSE_BUTTON_ID } from "../../constants";
 
 /**
@@ -6,44 +6,23 @@ import { APP_EXT_CLOSE_BUTTON_ID } from "../../constants";
  * close the tooltip
  *
  */
-export function listenForCloseButton(
-  activePopovers: Instance[],
-  activePopoverIndex: number
-): void {
+export function listenForCloseButton(): void {
   const closeButton = document.getElementById(APP_EXT_CLOSE_BUTTON_ID);
   if (closeButton) {
-    closeButton.addEventListener(
-      "click",
-      clickListener(activePopovers, activePopoverIndex)
-    );
-  } else {
+    closeButton.addEventListener("click", clickListener());
   }
 }
 
-export function stopListenForCloseButton(
-  activePopovers: Instance[],
-  activePopoverIndex: number
-): void {
+export function stopListenForCloseButton(): void {
   const closeButton = document.getElementById(APP_EXT_CLOSE_BUTTON_ID);
   if (closeButton) {
-    closeButton.removeEventListener(
-      "click",
-      clickListener(activePopovers, activePopoverIndex)
-    );
-  } else {
+    closeButton.removeEventListener("click", clickListener());
   }
 }
 
-function clickListener(
-  activePopovers: Instance[],
-  activePopoverIndex: number
-): (this: HTMLElement, ev: MouseEvent) => any {
-  return (event) => {
-    if (
-      activePopovers.length &&
-      activePopoverIndex > -1 &&
-      activePopovers[activePopoverIndex]
-    ) {
+function clickListener(): (this: HTMLElement, ev: MouseEvent) => any {
+  return () => {
+    if (activePopovers.length && activePopoverIndex > -1 && activePopovers[activePopoverIndex]) {
       activePopovers[activePopoverIndex].hide();
     }
   };

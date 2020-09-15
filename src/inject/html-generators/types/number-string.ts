@@ -1,8 +1,4 @@
-import {
-  APP_EXT_PROP_VALUE_INPUT_CLASS,
-  APP_EXT_PROP_VALUE_BUTTON_ID,
-  APP_EXT_BUTTON_PROP,
-} from "../../../constants";
+import { APP_EXT_PROP_VALUE_INPUT_CLASS, APP_EXT_PROP_VALUE_BUTTON_ID, APP_EXT_BUTTON_PROP } from "../../../constants";
 
 export function numberStringHTML(prop: any, value: any): string {
   return `

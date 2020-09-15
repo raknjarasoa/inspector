@@ -25,18 +25,10 @@ function initInAppScript(): void {
             return;
           }
           if (event.data.command === "show") {
-            if (
-              activePopovers.length &&
-              oldActivePopoverIndex > -1 &&
-              activePopovers[oldActivePopoverIndex]
-            ) {
+            if (activePopovers.length && oldActivePopoverIndex > -1 && activePopovers[oldActivePopoverIndex]) {
               activePopovers[oldActivePopoverIndex].hide();
             }
-            if (
-              activePopovers.length &&
-              activePopoverIndex > -1 &&
-              activePopovers[activePopoverIndex]
-            ) {
+            if (activePopovers.length && activePopoverIndex > -1 && activePopovers[activePopoverIndex]) {
               activePopovers[activePopoverIndex].show();
             }
           }

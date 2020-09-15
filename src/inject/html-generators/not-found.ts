@@ -1,7 +1,7 @@
 import { APP_EXT_CONST } from "../../constants";
 
 export function componentNotFoundHTML(): string {
-  let html = `
+  return `
     <div class="${APP_EXT_CONST}">
     <div class="position-absolute" style="top: 0px;right: 0px;z-index: 1;">
       <button type="button" class="btn btn-sm" aria-label="Close" id="chrome-ext-ng-properties-close-btn" title="Close inspector">
@@ -23,5 +23,4 @@ export function componentNotFoundHTML(): string {
   </div>
     </div>
     `;
-  return html;
 }

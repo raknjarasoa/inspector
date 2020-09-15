@@ -1,8 +1,5 @@
-import {
-  APP_EXT_INPUT_SELECT_ID,
-  APP_EXT_OUTPUT_SELECT_ID,
-  APP_EXT_PROP_TYPE_RADIO_NAME,
-} from "../../constants";
+import { activeNgComponent } from ".";
+import { APP_EXT_INPUT_SELECT_ID, APP_EXT_OUTPUT_SELECT_ID, APP_EXT_PROP_TYPE_RADIO_NAME } from "../../constants";
 import { getProperties, updateViewContent } from "../shared";
 
 /**
@@ -10,39 +7,29 @@ import { getProperties, updateViewContent } from "../shared";
  * capture events and update the component.
  *
  */
-export function listenForRadio(activeNgComponent: any): void {
-  const radioButtons = document.querySelectorAll(
-    "input[name='" + APP_EXT_PROP_TYPE_RADIO_NAME + "']"
-  );
+export function listenForRadio(): void {
+  const radioButtons = document.querySelectorAll("input[name='" + APP_EXT_PROP_TYPE_RADIO_NAME + "']");
   radioButtons.forEach((radioButton) => {
     const element = radioButton as HTMLInputElement;
-    element.addEventListener("change", changeListener(activeNgComponent));
+    element.addEventListener("change", changeListener());
   });
 }
 
-export function stopListenForRadio(activeNgComponent: any): void {
-  const radioButtons = document.querySelectorAll(
-    "input[name='" + APP_EXT_PROP_TYPE_RADIO_NAME + "']"
-  );
+export function stopListenForRadio(): void {
+  const radioButtons = document.querySelectorAll("input[name='" + APP_EXT_PROP_TYPE_RADIO_NAME + "']");
   radioButtons.forEach((radioButton) => {
     const element = radioButton as HTMLInputElement;
-    element.removeEventListener("change", changeListener(activeNgComponent));
+    element.removeEventListener("change", changeListener());
   });
 }
 
-function changeListener(
-  activeNgComponent: any
-): (this: HTMLInputElement, ev: Event) => any {
+function changeListener(): (this: HTMLInputElement, ev: Event) => any {
   return (event) => {
     const targetElement = event.target as HTMLInputElement;
     if (targetElement.checked) {
       const value = targetElement.value;
-      const inputSelect = document.getElementById(
-        APP_EXT_INPUT_SELECT_ID
-      ) as HTMLInputElement;
-      const outputSelect = document.getElementById(
-        APP_EXT_OUTPUT_SELECT_ID
-      ) as HTMLInputElement;
+      const inputSelect = document.getElementById(APP_EXT_INPUT_SELECT_ID) as HTMLInputElement;
+      const outputSelect = document.getElementById(APP_EXT_OUTPUT_SELECT_ID) as HTMLInputElement;
       if (value === "input") {
         inputSelect.disabled = false;
         outputSelect.disabled = true;

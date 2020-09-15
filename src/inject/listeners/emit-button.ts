@@ -1,3 +1,4 @@
+import { activeNgComponent } from ".";
 import {
   APP_EXT_PROP_EMIT_BUTTON_ID,
   APP_EXT_BUTTON_PROP,
@@ -11,37 +12,29 @@ import {
  * capture events and update the component.
  *
  */
-export function listenForEmit(activeNgComponent: any): void {
+export function listenForEmit(): void {
   const emitButton = document.getElementById(APP_EXT_PROP_EMIT_BUTTON_ID);
   if (emitButton) {
-    emitButton.addEventListener("click", clickListener(activeNgComponent));
+    emitButton.addEventListener("click", clickListener());
   }
 }
 
-export function stopListenForEmit(activeNgComponent: any): void {
+export function stopListenForEmit(): void {
   const emitButton = document.getElementById(APP_EXT_PROP_EMIT_BUTTON_ID);
   if (emitButton) {
-    emitButton.removeEventListener("click", clickListener(activeNgComponent));
+    emitButton.removeEventListener("click", clickListener());
   }
 }
 
-function clickListener(
-  activeNgComponent: any
-): (this: HTMLElement, ev: MouseEvent) => any {
+function clickListener(): (this: HTMLElement, ev: MouseEvent) => any {
   return (event) => {
     const prop = (event.target as Element).getAttribute(APP_EXT_BUTTON_PROP);
     if (activeNgComponent && prop) {
-      const element = document.getElementById(
-        APP_EXT_PROP_OUTPUT_VALUE
-      ) as HTMLInputElement;
+      const element = document.getElementById(APP_EXT_PROP_OUTPUT_VALUE) as HTMLInputElement;
       const inputValue = element && element.value;
-      const isJSON = (document.getElementById(
-        APP_EXT_PROP_OUTPUT_JSON_ID
-      ) as HTMLInputElement).checked;
+      const isJSON = (document.getElementById(APP_EXT_PROP_OUTPUT_JSON_ID) as HTMLInputElement).checked;
       if (inputValue && isJSON) {
-        const errorElement = document.getElementById(
-          APP_EXT_PROP_OBJECT_VALUE_ERROR
-        );
+        const errorElement = document.getElementById(APP_EXT_PROP_OBJECT_VALUE_ERROR);
         try {
           activeNgComponent[prop].emit(JSON.parse(inputValue));
           if (errorElement) {
@@ -55,7 +48,6 @@ function clickListener(
       } else if (inputValue) {
         activeNgComponent[prop].emit(inputValue);
       }
-    } else {
     }
   };
 }

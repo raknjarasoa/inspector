@@ -1,6 +1,6 @@
 import { APP_EXT_PROP_SELECT_TYPE, APP_EXT_PROP_VIEW_ID } from "../constants";
 import { getPropertyHTML } from "./html-generators";
-import { activePopovers, activePopoverIndex } from "./listeners";
+import { activePopovers, activePopoverIndex, activeNgComponent } from "./listeners";
 import { listenForBoolean } from "./listeners/boolean-checkbox";
 import { listenForValueChange } from "./listeners/edit-button";
 import { listenForEmit } from "./listeners/emit-button";
@@ -23,9 +23,7 @@ export function getProperties(ngComponent: any): Properties {
     .filter((v) => v !== "__ngContext__")
     .forEach((propName) => {
       const componentProp = ngComponent[propName];
-      const propType: "input" | "output" = getPropType(
-        componentProp.constructor.name
-      );
+      const propType: "input" | "output" = getPropType(componentProp.constructor.name);
 
       if (propType === "output") {
         outputProperties = Object.assign(outputProperties, {
@@ -60,23 +58,14 @@ export function getNgComponent(element: Element | HTMLElement): any {
 
     // if it's not a component, get parent element and get it's component
     // but we won't go to body
-    if (
-      !nGComponent &&
-      element.parentElement &&
-      element.parentElement.tagName !== "BODY"
-    ) {
+    if (!nGComponent && element.parentElement && element.parentElement.tagName !== "BODY") {
       nGComponent = getNgComponent(element.parentElement);
     }
   }
   return nGComponent;
 }
 
-export function updateViewContent(
-  element: HTMLInputElement,
-  properties: Properties,
-  activeNgComponent: any,
-  shouldListenForSelect = false
-) {
+export function updateViewContent(element: HTMLInputElement, properties: Properties, shouldListenForSelect = false) {
   const activeProp = element.value;
   const propType = element.getAttribute(APP_EXT_PROP_SELECT_TYPE);
 
@@ -85,23 +74,19 @@ export function updateViewContent(
     if (viewDIV) {
       let html = "";
       if (activeProp && activeProp !== "Choose...") {
-        html = getPropertyHTML(
-          activeProp,
-          properties[propType][activeProp],
-          activeNgComponent
-        );
+        html = getPropertyHTML(activeProp, properties[propType][activeProp], activeNgComponent);
         activePopovers[activePopoverIndex].setProps({
           placement: "auto-end",
         });
       }
 
       viewDIV.innerHTML = html;
-      listenForEmit(activeNgComponent);
-      listenForValueChange(activeNgComponent);
-      listenForBoolean(activeNgComponent);
-      listenForObjectUpdate(activeNgComponent);
+      listenForEmit();
+      listenForValueChange();
+      listenForBoolean();
+      listenForObjectUpdate();
       if (shouldListenForSelect) {
-        listenForSelect(activeNgComponent);
+        listenForSelect();
       }
     }
   }

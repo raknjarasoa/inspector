@@ -7,11 +7,7 @@ import {
 } from "../../../constants";
 
 export function objectHTML(value: string, prop: string): string {
-  const codeHtml = Prism.highlight(
-    JSON.stringify(value, null, 2),
-    Prism.languages.javascript,
-    "javascript"
-  );
+  const codeHtml = Prism.highlight(JSON.stringify(value, null, 2), Prism.languages.javascript, "javascript");
   return `
       <div class="mb-1">
         <pre id="${APP_EXT_PROP_OBJECT_VALUE}" contenteditable="true" class="language-markup"><code class="language-javascript">${codeHtml}</code></pre>

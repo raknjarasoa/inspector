@@ -11,9 +11,12 @@ import { listenForSelect, stopListenForSelect } from "./select";
 import { listenForRadio, stopListenForRadio } from "./type-radio";
 import { stopListenForObjectUpdate } from "./update-button";
 
-export let activePopovers: Instance[] = [];
+export const activePopovers: Instance[] = [];
+export let activePopoverIndex = -1;
+export let oldActivePopoverIndex = -1;
+
 let activeTarget: Element;
-let activeNgComponent: any = null;
+export let activeNgComponent: any = null;
 
 const defaultTippyOptions: Partial<Props> = {
   allowHTML: true,
@@ -29,9 +32,6 @@ const defaultTippyOptions: Partial<Props> = {
   moveTransition: "transform 0.2s ease-out",
 };
 
-export let activePopoverIndex = -1;
-export let oldActivePopoverIndex = -1;
-
 /**
  * Start listening to `contextmenu` of `document`. Fetch the target and find the Angular component
  * for it, by traversing to the top-level of `event.target` using `parentElement`. Then find Angular
@@ -46,41 +46,29 @@ export function stopDocumentContextMenuListen(runTimeData: RunTimeData): void {
   document.removeEventListener("contextmenu", handleContextMenu(runTimeData));
 }
 
-export function handleContextMenu(
-  runTimeData: RunTimeData
-): (this: Document, ev: MouseEvent) => any {
+export function handleContextMenu(runTimeData: RunTimeData): (this: Document, ev: MouseEvent) => any {
   return async (ev: MouseEvent) => {
     oldActivePopoverIndex = activePopoverIndex;
     const element = ev.target as Element;
     if (element !== activeTarget) {
       activeTarget = element;
       const nGComponent = getNgComponent(element);
-      const attributeValue = element.getAttribute(
-        "data-chrome-ext-ng-properties"
-      );
+      const attributeValue = element.getAttribute("data-chrome-ext-ng-properties");
       activePopoverIndex = attributeValue ? parseInt(attributeValue, 10) : -1;
       if (nGComponent) {
         activeNgComponent = nGComponent;
         if (activePopoverIndex < 0) {
-          let html = await buildHTML(
-            nGComponent,
-            activePopovers.length + 1 + "",
-            runTimeData
-          );
+          const html = await buildHTML(nGComponent, activePopovers.length + 1 + "", runTimeData);
           const tippyInstance = tippy(element, {
             ...defaultTippyOptions,
             content: html,
             onShown: () => {
-              listenForRadio(activeNgComponent);
-              listenForSelect(activeNgComponent);
-              listenForCloseButton(activePopovers, activePopoverIndex);
+              listenForRadio();
+              listenForSelect();
+              listenForCloseButton();
             },
             onHidden: () => {
-              stopListening(
-                activeNgComponent,
-                activePopovers,
-                activePopoverIndex
-              );
+              stopListening();
             },
           });
           activePopovers.push(tippyInstance);
@@ -88,35 +76,27 @@ export function handleContextMenu(
           element.setAttribute(APP_EXT_CONST, activePopovers.length - 1 + "");
         } else {
           if (activePopovers[activePopoverIndex]) {
-            let html = await buildHTML(
-              nGComponent,
-              activePopoverIndex + "",
-              runTimeData
-            );
+            const html = await buildHTML(nGComponent, activePopoverIndex + "", runTimeData);
             activePopovers[activePopoverIndex].setProps({
               content: html,
               onShown: () => {
-                listenForRadio(activeNgComponent);
-                listenForSelect(activeNgComponent);
-                listenForCloseButton(activePopovers, activePopoverIndex);
+                listenForRadio();
+                listenForSelect();
+                listenForCloseButton();
               },
               onHidden: () => {
-                stopListening(
-                  activeNgComponent,
-                  activePopovers,
-                  activePopoverIndex
-                );
+                stopListening();
               },
             });
           }
         }
       } else {
-        let html = componentNotFoundHTML();
+        const html = componentNotFoundHTML();
         const tippyInstance = tippy(element, {
           ...defaultTippyOptions,
           content: html,
           onShown: () => {
-            listenForCloseButton(activePopovers, activePopoverIndex);
+            listenForCloseButton();
           },
         });
         activePopovers.push(tippyInstance);
@@ -127,16 +107,12 @@ export function handleContextMenu(
   };
 }
 
-function stopListening(
-  activeNgComponent: any,
-  activePopovers: Instance[],
-  activePopoverIndex: number
-) {
-  stopListenForBoolean(activeNgComponent);
-  stopListenForCloseButton(activePopovers, activePopoverIndex);
-  stopListenForEmit(activeNgComponent);
-  stopListenForObjectUpdate(activeNgComponent);
-  stopListenForRadio(activeNgComponent);
-  stopListenForSelect(activeNgComponent);
-  stopListenForValueChange(activeNgComponent);
+function stopListening() {
+  stopListenForBoolean();
+  stopListenForCloseButton();
+  stopListenForEmit();
+  stopListenForObjectUpdate();
+  stopListenForRadio();
+  stopListenForSelect();
+  stopListenForValueChange();
 }

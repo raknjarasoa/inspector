@@ -49,11 +49,7 @@ function startListeningMessagesFromInject(): void {
     if (event.data.type === "ng-check-status") {
       const isAngular = event.data.isAngular;
       if (isAngular) {
-        chrome.runtime.onMessage.addListener(function (
-          request,
-          sender,
-          sendResponse
-        ) {
+        chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
           if (request.command == "show") {
             sendResponse({ status: "will-show" });
             window.postMessage(
