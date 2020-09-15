@@ -1,5 +1,7 @@
 # Architecture
 
+This document is still in WIP state.
+
 ## Overview
 
 ### Functionality
