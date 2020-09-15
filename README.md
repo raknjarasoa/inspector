@@ -1,29 +1,34 @@
-<h1 align="center">Welcome to chrome-ext-ng-props 👋</h1>
-<p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
-  <a href="https://github.com/shhdharmen/chrome-ext-ng-props" target="_blank">
-    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
-  </a>
-  <a href="#" target="_blank">
-    <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
-  </a>
-  <a href="https://twitter.com/shhdharmen" target="_blank">
-    <img alt="Twitter: shhdharmen" src="https://img.shields.io/twitter/follow/shhdharmen.svg?style=social" />
-  </a>
-  <a href="http://commitizen.github.io/cz-cli/" target="_blank">
-    <img alt="Commitizen friendly" src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg">
-  </a>
-</p>
+# ngneat-inspector
 
-> A chrome extension to inspect and change Angular component properties.
+[![MIT](https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat-square)]()
+[![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
+[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/ngneat/inspector/compare)
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg?style=flat-square)](https://prettier.io/)
+[![lint with eslint](https://img.shields.io/badge/lint_with-eslint-4b32c3.svg?style=flat-square)](https://eslint.org/)
 
-![](chrome-ext-ng-properties.gif)
+> A chrome extension to inspect and change Angular component properties, by ngneat.
+
+## Demo
+
+![Demo of ngneat inspector](./demo-ngneat-inspector.gif)
+
+## Features
+
+- ✅ Inspect Angular components on the fly
+- ✅ Supports Angular 9+ applications
+- ✅ Change component properties without going into code
+- ✅ Invoke methods without performing intended action
+- ✅ See the results realtime
+
+## Installation
+
+Go to...
 
 ## Development
 
 ```bash
-git clone https://github.com/shhdharmen/chrome-ext-ng-props.git
-cd chrome-ext-ng-props
+git clone https://github.com/ngneat/inspector.git
+cd inspector
 npm i
 npm start
 ```
@@ -32,19 +37,4 @@ npm start
 2. Check the box next to Developer Mode.
 3. Click Load Unpacked Extension and select the `dist` directory.
 
-## Author
-
-👤 **Dharmen Shah**
-
-- Website: [shhdharmen.github.io](https://shhdharmen.github.io)
-- Twitter: [@shhdharmen](https://twitter.com/shhdharmen)
-- Github: [@shhdharmen](https://github.com/shhdharmen)
-- LinkedIn: [@shhdharmen](https://linkedin.com/in/shhdharmen)
-
-## 🤝 Contributing
-
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/shhdharmen/chrome-ext-ng-props/issues).
-
-## Show your support
-
-Give a ⭐️ if this project helped you!
+Want to know more? Head out to [ARCHITECTURE.md](./ARCHITECTURE.md).

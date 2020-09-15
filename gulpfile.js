@@ -8,41 +8,30 @@ const eventStream = require("event-stream");
 const rename = require("gulp-rename");
 const buffer = require("vinyl-buffer");
 const sourcemaps = require("gulp-sourcemaps");
-const purgecss = require("gulp-purgecss");
 var sass = require("gulp-sass");
 sass.compiler = require("node-sass");
 
 const paths = {
-  scss: [{ url: "src/inject/index.scss", dir: "inject" }],
-  html: [
-    { url: "src/app/popup/*.html", dir: "app/popup" },
-    { url: "src/inject/index.html", dir: "inject" },
-  ],
+  scss: [{ url: "src/styles/index.scss", dir: "styles" }],
+  html: [{ url: "src/popup.html", dir: "." }, { url: "src/nong-popup.html", dir: "." }],
   dist: "dist",
   assets: [
     { url: "src/manifest.json", dir: "." },
     { url: "src/assets/images/*.*", dir: "assets/images" },
     {
-      url: "node_modules/tippy.js/dist/tippy.css",
+      url: "src/assets/css/*.css",
       dir: "assets/css",
     },
     {
-      url: "node_modules/tippy.js/themes/light-border.css",
-      dir: "assets/css",
+      url: "src/inject/html-generators/templates/tooltip.ejs",
+      dir: "assets/templates",
     },
   ],
   typescript: [
     { url: "src/background.ts", dir: "." },
     { url: "src/content_script.ts", dir: "." },
     { url: "src/inject/index.ts", dir: "inject" },
-    { url: "src/shared/constants.ts", dir: "shared" },
-    { url: "src/app/popup/index.ts", dir: "app/popup" },
-  ],
-  css: [
-    {
-      url: "src/app/styles/*.css",
-      dir: "app/styles",
-    },
+    { url: "src/constants.ts", dir: "." },
   ],
 };
 
@@ -68,27 +57,6 @@ gulp.task("copy-html", async () => {
       return gulp
         .src(entry.url)
         .pipe(rename({ dirname: entry.dir }))
-        .pipe(gulp.dest(paths.dist));
-    });
-  };
-  return eventStream.merge.apply(null, tasks());
-});
-
-gulp.task("css", async () => {
-  const tasks = () => {
-    paths.css.map((entry) => {
-      return gulp
-        .src(entry.url)
-        .pipe(
-          purgecss({
-            content: paths.html.map((v) => v.url),
-          })
-        )
-        .pipe(
-          rename({
-            dirname: entry.dir,
-          })
-        )
         .pipe(gulp.dest(paths.dist));
     });
   };
@@ -144,7 +112,7 @@ gulp.task(
   "build",
   gulp.series(
     "clean-dist",
-    gulp.parallel("copy-assets", "copy-html", "ts", "css", "sass")
+    gulp.parallel("copy-assets", "copy-html", "ts", "sass")
   )
 );
 

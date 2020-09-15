@@ -1,0 +1,37 @@
+{
+  "projectName": "ngneat-inspector",
+  "projectOwner": "shhdharmen",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "shhdharmen",
+      "name": "Dharmen Shah",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6831283?s=60&v=4",
+      "profile": "https://shhdharmen.me/",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas"
+      ]
+    },
+    {
+      "login": "NetanelBasal",
+      "name": "Netanel Basal",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6745730?v=4",
+      "profile": "https://www.netbasal.com/",
+      "contributions": [
+        "bug",
+        "ideas",
+        "mentoring"
+      ]
+    },
+  ],
+  "contributorsPerLine": 7
+}
