@@ -1,44 +1,41 @@
 # ngneat-inspector
 
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![MIT](https://img.shields.io/packagist/l/doctrine/orm.svg?style=flat-square)]()
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/ngneat/inspector/compare)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg?style=flat-square)](https://prettier.io/)
-[![lint with eslint](https://img.shields.io/badge/lint_with-eslint-4b32c3.svg?style=flat-square)](https://eslint.org/)
+[![lint with eslint](https://img.shields.io/badge/lint_with-eslint-4b32c3.svg?style=flat-square)](https://eslint.org/)<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 
-> A chrome extension to inspect and change Angular component properties, by ngneat.
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+> A chrome extension that lets you inspect and change Angular component properties
 
 ## Demo
 
-![Demo of ngneat inspector](./demo-ngneat-inspector.gif)
+![Demo of ngneat inspector](./demo.gif)
 
 ## Features
 
-- ✅ Inspect Angular components on the fly
-- ✅ Supports Angular 9+ applications
-- ✅ Change component properties without going into code
-- ✅ Invoke methods without performing intended action
-- ✅ See the results realtime
+✅ Inspect Angular components on the fly <br>
+✅ Change component properties without touching the code <br>
+✅ Simulate Angular events <br>
+✅ See the results in realtime
+
+Works with Angular v9+.
 
 ## Installation
 
-Go to...
+- git clone https://github.com/ngneat/inspector.git
+- Go to chrome://extensions/
+- Click on Load Unpack and load the `dist` folder.
 
 ## Development
 
-```bash
-git clone https://github.com/ngneat/inspector.git
-cd inspector
-npm i
-npm start
-```
-
-1. Navigate to _chrome://extensions_ in your browser. You can also access this page by clicking on the Chrome menu on the top right side of the Omnibox, hovering over More Tools and selecting Extensions.
-2. Check the box next to Developer Mode.
-3. Click Load Unpacked Extension and select the `dist` directory.
+- git clone https://github.com/ngneat/inspector.git
+- cd inspector
+- npm i
+- npm start
 
 Want to know more? Head out to [ARCHITECTURE.md](./ARCHITECTURE.md).
 
@@ -58,6 +55,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
