@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'lib-inspector',
-  template: ` <p>inspector works!</p> `,
-  styles: [],
+  selector: 'ngneat-inspector',
+  templateUrl: 'inspector.component.html',
+  styleUrls: ['styles.scss', 'inspector.component.scss'],
 })
 export class InspectorComponent implements OnInit {
   constructor() {}

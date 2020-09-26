@@ -2,8 +2,11 @@
   "name": "@ngneat/inspector",
   "version": "1.0.0",
   "peerDependencies": {
+    "@angular/animations": "~10.1.3",
+    "@angular/cdk": "^10.2.2",
     "@angular/common": "^10.1.3",
-    "@angular/core": "^10.1.3"
+    "@angular/core": "^10.1.3",
+    "@angular/material": "10.2.2"
   },
   "dependencies": {
     "tslib": "^2.0.0"
