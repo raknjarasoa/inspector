@@ -1,24 +1,39 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { BrowserTestingModule } from '@angular/platform-browser/testing';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { Spectator, createComponentFactory } from '@ngneat/spectator';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+
+import { NgComponent } from '../../inspector.model';
 
 import { InspectorPanelComponent } from './inspector-panel.component';
 
 describe('InspectorPanelComponent', () => {
-  let component: InspectorPanelComponent;
-  let fixture: ComponentFixture<InspectorPanelComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [InspectorPanelComponent],
-    }).compileComponents();
+  let spectator: Spectator<InspectorPanelComponent>;
+  const createComponent = createComponentFactory({
+    component: InspectorPanelComponent,
+    imports: [BrowserTestingModule, HttpClientTestingModule, FontAwesomeModule, TabsModule.forRoot()],
   });
 
+  const dummyNgComponent: NgComponent = {
+    name: 'Dummy Component',
+    selector: 'dummy-comp',
+    functions: [],
+    properties: [],
+    rawComponent: undefined,
+    outputs: [],
+    hostElement: undefined,
+  };
+
   beforeEach(() => {
-    fixture = TestBed.createComponent(InspectorPanelComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent({
+      props: {
+        ngComponent: dummyNgComponent,
+      },
+    });
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator.component).toBeTruthy();
   });
 });
