@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ngneat-inspector-demo';
+
+  callParent(): void {
+    console.log('Parent called');
+  }
 }

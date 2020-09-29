@@ -1,12 +1,227 @@
-import { Component, OnInit } from '@angular/core';
+import { CdkDrag, CdkDragEnd, CdkDragMove } from '@angular/cdk/drag-drop';
+import { ConnectionPositionPair, Overlay, PositionStrategy } from '@angular/cdk/overlay';
+import { DomPortal, TemplatePortal } from '@angular/cdk/portal';
+import { NgClass } from '@angular/common';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+  ViewEncapsulation,
+} from '@angular/core';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+import { fromEvent, fromEventPattern, merge, Observable, Subject, Subscription } from 'rxjs';
+import { debounceTime, filter, takeUntil, takeWhile } from 'rxjs/operators';
+import { FunctionOrOutput, NG, NgComponent } from './inspector.model';
+import { faGripVertical, faTimes } from '@fortawesome/free-solid-svg-icons';
+
+declare const ng: NG;
 
 @Component({
   selector: 'ngneat-inspector',
   templateUrl: 'inspector.component.html',
-  styleUrls: ['styles.scss', 'inspector.component.scss'],
+  styleUrls: ['inspector.component.scss'],
 })
-export class InspectorComponent implements OnInit {
-  constructor() {}
+export class InspectorComponent implements OnInit, AfterViewInit {
+  isEnabled = false;
+  isHidden = false;
+  isExpanded = false;
+
+  private readonly nonFunctionNames = [
+    'construcstor',
+    'ngOnInit',
+    'ngOnChanges',
+    'ngDoCheck',
+    'ngAfterContentInit',
+    'ngAfterContentChecked',
+    'ngAfterViewInit',
+    'ngAfterViewChecked',
+    'ngOnDestroy',
+  ];
+
+  private escKeySub$: Subscription;
+  private mouseOver$: Subscription;
+
+  activeComponent: NgComponent;
+
+  @ViewChild(CdkDrag) cdkDrag!: CdkDrag;
+
+  faGripVertical = faGripVertical;
+  faTimes = faTimes;
+
+  constructor(private host: ElementRef<HTMLElement>, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+    iconRegistry.addSvgIcon('inspector', sanitizer.bypassSecurityTrustResourceUrl('assets/inspector.svg'));
+  }
 
   ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
+    // this.cdkDrag.started
+  }
+
+  private get origin(): HTMLElement {
+    return this.host.nativeElement;
+  }
+
+  startInspecting(): void {
+    console.log('start inspecting');
+    this.isEnabled = true;
+
+    let element: HTMLElement;
+    let originalOutline: string;
+
+    this.escKeySub$ = this.escapeKeyDown(document).subscribe(() => {
+      if (element) {
+        element.style.outline = originalOutline;
+      }
+      this.stopInspecting();
+    });
+
+    this.mouseOver$ = this.documentMouseOver(this.origin).subscribe((ev: MouseEvent) => {
+      if (ev.target instanceof HTMLElement) {
+        element = ev.target as HTMLElement;
+        originalOutline = element.style.outline;
+        this.highlightElement(element, originalOutline);
+      }
+    });
+  }
+
+  private highlightElement(element: HTMLElement, originalOutline: string): void {
+    element.style.outline = '2px solid red';
+    const endMouseOut$ = new Subject();
+    const endMouseClick$ = new Subject();
+
+    this.listenElementMouseOut(element, endMouseOut$, originalOutline);
+
+    this.listenElementClick(element, endMouseClick$, originalOutline, endMouseOut$);
+  }
+
+  private listenElementClick(
+    element: HTMLElement,
+    endMouseClick$: Subject<unknown>,
+    originalOutline: string,
+    endMouseOut$: Subject<unknown>
+  ): void {
+    fromEvent<MouseEvent>(element, 'click')
+      .pipe(
+        takeUntil(endMouseClick$),
+        takeWhile(() => this.isEnabled)
+      )
+      .subscribe((clickEvent) => {
+        clickEvent.stopPropagation();
+        clickEvent.stopImmediatePropagation();
+        clickEvent.preventDefault();
+        element.style.outline = originalOutline;
+        endMouseOut$.next();
+        endMouseClick$.next();
+
+        // read component
+        this.activeComponent = this.getNgComponent(element);
+        this.stopInspecting();
+        this.expandInspectorPanel();
+      });
+  }
+
+  private listenElementMouseOut(element: HTMLElement, endMouseOut$: Subject<unknown>, originalOutline: string): void {
+    fromEvent(element, 'mouseout')
+      .pipe(
+        takeUntil(endMouseOut$),
+        takeWhile(() => this.isEnabled)
+      )
+      .subscribe(() => {
+        element.style.outline = originalOutline;
+        endMouseOut$.next();
+      });
+  }
+
+  stopInspecting(): void {
+    console.log('stop inspecting');
+    this.isEnabled = false;
+  }
+
+  showInspector(): void {
+    console.log('show inspector');
+    this.isHidden = false;
+  }
+
+  hideInspector(): void {
+    console.log('hide inspector');
+    this.isHidden = true;
+  }
+
+  expandInspectorPanel(): void {
+    console.log('expand inspector');
+    this.isExpanded = true;
+  }
+
+  collapseInspectorPanel(): void {
+    console.log('collapse inspector');
+    this.isExpanded = false;
+  }
+
+  private getNgComponent(element: HTMLElement): NgComponent {
+    console.log('element', element);
+    const ngRawComponent = ng.getComponent(element) || ng.getOwningComponent(element);
+    const componentName = ngRawComponent.constructor.name;
+    const hostElement = ng.getHostElement(ngRawComponent);
+    const functions: FunctionOrOutput[] = [];
+
+    Object.keys(ngRawComponent.constructor.prototype)
+      .filter((v) => !this.nonFunctionNames.includes(v))
+      .forEach((functionName) => {
+        functions.push({ name: functionName, function: ngRawComponent.constructor.prototype[functionName] });
+      });
+
+    const properties: { name: string; value: any }[] = [];
+    const outputs: FunctionOrOutput[] = [];
+
+    Object.keys(ngRawComponent)
+      .filter((v) => v !== '__ngContext__')
+      .forEach((propName) => {
+        const componentPropValueOrFunction = ngRawComponent[propName];
+        const propType: 'input' | 'output' =
+          componentPropValueOrFunction.constructor.name === 'EventEmitter_' ? 'output' : 'input';
+
+        if (propType === 'output') {
+          outputs.push({ function: componentPropValueOrFunction, name: propName });
+        } else {
+          properties.push({ value: componentPropValueOrFunction, name: propName });
+        }
+      });
+
+    return {
+      functions,
+      hostElement,
+      name: componentName,
+      outputs,
+      properties,
+      selector: hostElement.tagName.toLowerCase(),
+      rawComponent: ngRawComponent,
+    };
+  }
+
+  escapeKeyDown(target: HTMLElement | Document): Observable<KeyboardEvent> {
+    return fromEvent<KeyboardEvent>(target, 'keydown').pipe(
+      filter((ev: KeyboardEvent) => {
+        return ev.key === 'Escape';
+      }),
+      takeWhile(() => this.isEnabled)
+    );
+  }
+
+  documentMouseOver(origin: HTMLElement): Observable<MouseEvent> {
+    return fromEvent<MouseEvent>(document, 'mouseover').pipe(
+      filter((ev: MouseEvent) => {
+        const overTarget = ev.target as HTMLElement;
+        const notBody = overTarget.tagName.toUpperCase() !== 'BODY';
+        const notOrigin = overTarget !== origin; // the inspector
+        return notOrigin && notBody;
+      }),
+      takeWhile(() => this.isEnabled)
+    );
+  }
 }

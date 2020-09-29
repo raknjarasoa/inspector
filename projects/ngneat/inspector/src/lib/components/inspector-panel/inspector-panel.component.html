@@ -1,0 +1,12 @@
+<div class="inspector-panel py-2 px-3">
+  <h3>
+    {{ ngComponent.name }}&nbsp;<code>&lt;{{ ngComponent.selector }}&gt;</code>
+  </h3>
+  <div>
+    <tabset type="tabs">
+      <tab heading="Properties" *ngIf="ngComponent.properties.length">Properties</tab>
+      <tab heading="Outputs" *ngIf="ngComponent.outputs.length">Outputs</tab>
+      <tab heading="Functions" *ngIf="ngComponent.functions.length">Functions</tab>
+    </tabset>
+  </div>
+</div>

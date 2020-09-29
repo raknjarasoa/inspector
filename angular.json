@@ -59,7 +59,7 @@
             "tsConfig": "projects/ngneat-inspector-demo/tsconfig.app.json",
             "aot": true,
             "assets": ["projects/ngneat-inspector-demo/src/favicon.ico", "projects/ngneat-inspector-demo/src/assets"],
-            "styles": ["projects/ngneat-inspector-demo/src/styles.scss"],
+            "styles": ["projects/ngneat-inspector-demo/src/styles.scss", "projects/ngneat/inspector/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -117,8 +117,13 @@
             "polyfills": "projects/ngneat-inspector-demo/src/polyfills.ts",
             "tsConfig": "projects/ngneat-inspector-demo/tsconfig.spec.json",
             "karmaConfig": "projects/ngneat-inspector-demo/karma.conf.js",
-            "assets": ["projects/ngneat-inspector-demo/src/favicon.ico", "projects/ngneat-inspector-demo/src/assets"],
-            "styles": ["projects/ngneat-inspector-demo/src/styles.scss"],
+            "assets": [
+              "projects/ngneat-inspector-demo/src/favicon.ico",
+              "projects/ngneat-inspector-demo/src/assets",
+              "projects/ngneat-inspector-demo/src/assets",
+              "projects/ngneat/inspector/src/assets"
+            ],
+            "styles": ["projects/ngneat-inspector-demo/src/styles.scss", "projects/ngneat/inspector/src/styles.scss"],
             "scripts": []
           }
         },
