@@ -1,0 +1,10 @@
+<div class="input-group" [ngClass]="className">
+  <div class="input-group-prepend" *ngIf="showTypeSelector" container="body">
+    <select class="custom-select" [formControl]="typeSelector">
+      <option *ngFor="let item of typesToSelectIterable; let i = index" [value]="item">
+        {{ item }}
+      </option>
+    </select>
+  </div>
+  <ng-template ngneatFieldHost></ng-template>
+</div>

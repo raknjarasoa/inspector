@@ -14,15 +14,20 @@ export class PropertiesComponent implements OnInit {
     propertyName: new FormControl('', Validators.required),
     propertyValue: new FormControl('', Validators.required),
   });
+  propertyValueType: any;
 
   constructor() {}
 
   ngOnInit(): void {
-    this.propertyName.setValue(this.properties[0].name);
-    this.propertyValue.setValue(this.properties[0].value);
+    let selectedProperty = this.properties[0];
+    this.propertyName.setValue(selectedProperty.name);
+    this.propertyValue.setValue(selectedProperty.value);
+    this.propertyValueType = selectedProperty.value.constructor.name;
 
     this.propertyName.valueChanges.subscribe((name: string) => {
-      this.propertyValue.setValue(this.properties.filter((item) => item.name === name)[0].value);
+      selectedProperty = this.properties.filter((item) => item.name === name)[0];
+      this.propertyValue.setValue(selectedProperty.value);
+      this.propertyValueType = selectedProperty.value.constructor && selectedProperty.value.constructor.name;
     });
 
     this.propertyValue.valueChanges.subscribe((value: any) => {

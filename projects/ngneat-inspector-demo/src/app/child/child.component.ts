@@ -8,6 +8,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 export class ChildComponent implements OnInit {
   title = 'I am child component';
   text = 'child works!';
+  number = 3;
   @Output() callParent = new EventEmitter();
   constructor() {}
 
