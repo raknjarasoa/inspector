@@ -1,0 +1,25 @@
+<form [formGroup]="propertyForm">
+  <div class="container-fluid px-0">
+    <div class="row no-gutters">
+      <div class="col-3">
+        <div class="mr-1">
+          <select class="custom-select" formControlName="propertyName">
+            <option *ngFor="let item of properties; let i = index" [value]="item.name">
+              {{ item.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-7">
+        <div class="mx-1">
+          <input type="text" class="form-control" formControlName="propertyValue" />
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="ml-1">
+          <button class="btn btn-outline-primary" [disabled]="propertyForm.invalid" (click)="update()">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

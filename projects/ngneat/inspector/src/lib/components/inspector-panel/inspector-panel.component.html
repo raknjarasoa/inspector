@@ -4,8 +4,15 @@
   </h3>
   <div>
     <tabset type="tabs">
-      <tab heading="Properties" *ngIf="ngComponent.properties.length">Properties</tab>
-      <tab heading="Outputs" *ngIf="ngComponent.outputs.length">Outputs</tab>
+      <tab heading="Properties" *ngIf="ngComponent.properties.length">
+        <ngneat-tab-properties
+          [properties]="ngComponent.properties"
+          (updateProperty)="updateProperty($event)"
+        ></ngneat-tab-properties>
+      </tab>
+      <tab heading="Outputs" *ngIf="ngComponent.outputs.length">
+        <ngneat-tab-outputs [outputs]="ngComponent.outputs" (emitOutput)="callOutput($event)"></ngneat-tab-outputs>
+      </tab>
       <tab heading="Functions" *ngIf="ngComponent.functions.length">Functions</tab>
     </tabset>
   </div>

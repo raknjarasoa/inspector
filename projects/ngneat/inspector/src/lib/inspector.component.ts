@@ -18,6 +18,7 @@ import { fromEvent, fromEventPattern, merge, Observable, Subject, Subscription }
 import { debounceTime, filter, takeUntil, takeWhile } from 'rxjs/operators';
 import { FunctionOrOutput, NG, NgComponent } from './inspector.model';
 import { faGripVertical, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { getNgComponent } from '../shared/helpers';
 
 declare const ng: NG;
 
@@ -26,7 +27,7 @@ declare const ng: NG;
   templateUrl: 'inspector.component.html',
   styleUrls: ['inspector.component.scss'],
 })
-export class InspectorComponent implements OnInit, AfterViewInit {
+export class InspectorComponent implements OnInit {
   isEnabled = false;
   isHidden = false;
   isExpanded = false;
@@ -58,10 +59,6 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {}
-
-  ngAfterViewInit(): void {
-    // this.cdkDrag.started
-  }
 
   private get origin(): HTMLElement {
     return this.host.nativeElement;
@@ -120,7 +117,7 @@ export class InspectorComponent implements OnInit, AfterViewInit {
         endMouseClick$.next();
 
         // read component
-        this.activeComponent = this.getNgComponent(element);
+        this.activeComponent = getNgComponent(element);
         this.stopInspecting();
         this.expandInspectorPanel();
       });
@@ -161,47 +158,6 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   collapseInspectorPanel(): void {
     console.log('collapse inspector');
     this.isExpanded = false;
-  }
-
-  private getNgComponent(element: HTMLElement): NgComponent {
-    console.log('element', element);
-    const ngRawComponent = ng.getComponent(element) || ng.getOwningComponent(element);
-    const componentName = ngRawComponent.constructor.name;
-    const hostElement = ng.getHostElement(ngRawComponent);
-    const functions: FunctionOrOutput[] = [];
-
-    Object.keys(ngRawComponent.constructor.prototype)
-      .filter((v) => !this.nonFunctionNames.includes(v))
-      .forEach((functionName) => {
-        functions.push({ name: functionName, function: ngRawComponent.constructor.prototype[functionName] });
-      });
-
-    const properties: { name: string; value: any }[] = [];
-    const outputs: FunctionOrOutput[] = [];
-
-    Object.keys(ngRawComponent)
-      .filter((v) => v !== '__ngContext__')
-      .forEach((propName) => {
-        const componentPropValueOrFunction = ngRawComponent[propName];
-        const propType: 'input' | 'output' =
-          componentPropValueOrFunction.constructor.name === 'EventEmitter_' ? 'output' : 'input';
-
-        if (propType === 'output') {
-          outputs.push({ function: componentPropValueOrFunction, name: propName });
-        } else {
-          properties.push({ value: componentPropValueOrFunction, name: propName });
-        }
-      });
-
-    return {
-      functions,
-      hostElement,
-      name: componentName,
-      outputs,
-      properties,
-      selector: hostElement.tagName.toLowerCase(),
-      rawComponent: ngRawComponent,
-    };
   }
 
   escapeKeyDown(target: HTMLElement | Document): Observable<KeyboardEvent> {

@@ -7,7 +7,7 @@
       "projectType": "library",
       "root": "projects/ngneat/inspector",
       "sourceRoot": "projects/ngneat/inspector/src",
-      "prefix": "lib",
+      "prefix": "ngneat",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NgComponent } from '../../inspector.model';
+import { updateComponent } from '../../../shared/helpers';
+import { CallFunctionOrOutput, NgComponent, Property } from '../../inspector.model';
 
 @Component({
   selector: 'ngneat-inspector-panel',
@@ -11,5 +12,16 @@ export class InspectorPanelComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log('ngComponent', this.ngComponent);
+  }
+
+  updateProperty(property: Property): void {
+    updateComponent(this.ngComponent, property);
+  }
+
+  callOutput(output: CallFunctionOrOutput): void {
+    console.log('output', output);
+    this.ngComponent.rawComponent[output.name].emit(output.arguments);
+  }
 }

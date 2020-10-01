@@ -23,10 +23,20 @@ export interface FunctionOrOutput {
   function: () => any;
 }
 
+export interface CallFunctionOrOutput {
+  arguments: any[];
+  name: string;
+}
+
+export interface Property {
+  name: string;
+  value: any;
+}
+
 export interface NgComponent {
   functions: FunctionOrOutput[];
   name: string;
-  properties: { name: string; value: any }[];
+  properties: Property[];
   selector: string;
   outputs: FunctionOrOutput[];
   hostElement: HTMLElement;
