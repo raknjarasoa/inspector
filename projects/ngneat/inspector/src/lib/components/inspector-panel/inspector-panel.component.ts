@@ -21,7 +21,9 @@ export class InspectorPanelComponent implements OnInit {
   }
 
   callOutput(output: CallFunctionOrOutput): void {
-    console.log('output', output);
-    this.ngComponent.rawComponent[output.name].emit(output.arguments);
+    this.ngComponent.rawComponent[output.name].emit(...output.args);
+  }
+  callFunction(functionToCall: CallFunctionOrOutput): void {
+    this.ngComponent.rawComponent.constructor.prototype[functionToCall.name](...functionToCall.args);
   }
 }

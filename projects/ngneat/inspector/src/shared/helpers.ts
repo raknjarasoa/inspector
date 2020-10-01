@@ -2,6 +2,18 @@ import { FunctionOrOutput, NG, NgComponent, Property } from '../lib/inspector.mo
 
 declare const ng: NG;
 
+const nonFunctionNames = [
+  'constructor',
+  'ngOnChanges',
+  'ngOnInit',
+  'ngDoCheck',
+  'ngAfterContentInit',
+  'ngAfterContentChecked',
+  'ngAfterViewInit',
+  'ngAfterViewChecked',
+  'ngOnDestroy',
+];
+
 /**
  * Get processed component from ng.getComponent or ng.getOwningComponent
  *
@@ -13,10 +25,11 @@ export function getNgComponent(element: HTMLElement): NgComponent {
   const hostElement = ng.getHostElement(ngRawComponent);
   const functions: FunctionOrOutput[] = [];
 
-  Object.keys(ngRawComponent.constructor.prototype)
-    .filter((v) => !this.nonFunctionNames.includes(v))
+  Object.getOwnPropertyNames(ngRawComponent.constructor.prototype)
+    .filter((v) => !nonFunctionNames.includes(v))
     .forEach((functionName) => {
-      functions.push({ name: functionName, function: ngRawComponent.constructor.prototype[functionName] });
+      const actualFunction = ngRawComponent.constructor.prototype[functionName];
+      functions.push({ name: functionName, actualFunction });
     });
 
   const properties: { name: string; value: any }[] = [];
@@ -30,7 +43,10 @@ export function getNgComponent(element: HTMLElement): NgComponent {
         componentPropValueOrFunction.constructor.name === 'EventEmitter_' ? 'output' : 'input';
 
       if (propType === 'output') {
-        outputs.push({ function: componentPropValueOrFunction, name: propName });
+        outputs.push({
+          actualFunction: componentPropValueOrFunction,
+          name: propName,
+        });
       } else {
         properties.push({ value: componentPropValueOrFunction, name: propName });
       }

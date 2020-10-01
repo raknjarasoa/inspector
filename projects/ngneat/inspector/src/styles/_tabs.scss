@@ -1,14 +1,14 @@
 .nav-tabs {
-  // border-bottom-width: 2px;
   .nav-link {
-    // padding: 0.25rem 0.5rem;
     border-radius: 0;
     border-bottom-width: 2px;
     color: $gray-700;
+    transition-property: border-color, color, background-color;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
     &.active {
       border-color: #fff #fff $primary;
       color: $primary;
-      font-weight: 500;
       &:hover,
       &:focus {
         border-bottom-color: $primary;

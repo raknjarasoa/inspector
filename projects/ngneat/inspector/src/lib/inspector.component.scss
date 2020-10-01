@@ -26,10 +26,11 @@
     background-color: #fff;
     border: solid 1px #ccc;
     width: 600px;
-    min-height: 200px;
+    height: auto;
     max-height: 600px;
     border-radius: 4px;
     margin-left: calc(-600px);
+    overflow: auto;
   }
 }
 

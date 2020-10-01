@@ -1,5 +1,6 @@
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserTestingModule } from '@angular/platform-browser/testing';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Spectator, createComponentFactory } from '@ngneat/spectator';
 import { FunctionOrOutput } from '../../../../inspector.model';
 
@@ -9,10 +10,12 @@ describe('OutputsComponent', () => {
   let spectator: Spectator<OutputsComponent>;
   const createComponent = createComponentFactory({
     component: OutputsComponent,
-    imports: [BrowserTestingModule, ReactiveFormsModule],
+    imports: [BrowserTestingModule, ReactiveFormsModule, FontAwesomeModule],
   });
 
-  const dummyOutputs: FunctionOrOutput[] = [{ function: () => console.log('dummy functions'), name: 'DummyFunction' }];
+  const dummyOutputs: FunctionOrOutput[] = [
+    { actualFunction: () => console.log('dummy functions'), name: 'DummyFunction' },
+  ];
 
   beforeEach(() => {
     spectator = createComponent({

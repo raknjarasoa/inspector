@@ -13,7 +13,13 @@
       <tab heading="Outputs" *ngIf="ngComponent.outputs.length">
         <ngneat-tab-outputs [outputs]="ngComponent.outputs" (emitOutput)="callOutput($event)"></ngneat-tab-outputs>
       </tab>
-      <tab heading="Functions" *ngIf="ngComponent.functions.length">Functions</tab>
+      <tab heading="Functions" *ngIf="ngComponent.functions.length">
+        <ngneat-tab-outputs
+          [outputs]="ngComponent.functions"
+          (emitOutput)="callFunction($event)"
+          type="functions"
+        ></ngneat-tab-outputs>
+      </tab>
     </tabset>
   </div>
 </div>

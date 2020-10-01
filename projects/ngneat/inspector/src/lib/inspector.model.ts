@@ -13,18 +13,19 @@ export interface NG {
 export interface NgComponentRaw {
   constructor: {
     name: string;
-    prototype: { [key: string]: () => any };
+    prototype: { [key: string]: (...args: any) => any };
   };
   __ngContext__: any;
+  [key: string]: any | ((...args: any) => any);
 }
 
 export interface FunctionOrOutput {
   name: string;
-  function: () => any;
+  actualFunction: (...args: any) => any;
 }
 
 export interface CallFunctionOrOutput {
-  arguments: any[];
+  args: any[];
   name: string;
 }
 

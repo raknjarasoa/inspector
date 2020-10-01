@@ -2,8 +2,9 @@
 
 .inspector-host {
   @import './bootstrap';
-  @import './tabs';
+  @import './icon';
   @import './misc';
+  @import './tabs';
   font-family: $font-family-base;
   font-size: $font-size-base;
   font-weight: $font-weight-base;

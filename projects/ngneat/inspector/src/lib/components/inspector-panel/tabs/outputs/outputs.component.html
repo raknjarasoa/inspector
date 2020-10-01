@@ -11,13 +11,28 @@
         </div>
       </div>
       <div class="col-7">
-        <div class="mx-1">
-          <input type="text" class="form-control" formControlName="outputValue" />
+        <div class="mx-1" *ngFor="let control of outputValue.controls; index as i; let last = last">
+          <div class="input-group" [ngClass]="{ 'mb-2': !last, 'mb-1': last }">
+            <input
+              type="text"
+              class="form-control"
+              [formControl]="outputValue.at(i)"
+              [placeholder]="'Argument ' + (i + 1)"
+            />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button" (click)="removeArgument(i)">
+                <fa-icon [icon]="faTimes"></fa-icon>
+              </button>
+            </div>
+          </div>
         </div>
+        <button class="btn btn-link btn-sm" (click)="addArgument()">Add Argument</button>
       </div>
       <div class="col-2">
         <div class="ml-1">
-          <button class="btn btn-outline-primary" (click)="callOutput()">Emit</button>
+          <button class="btn btn-outline-primary" (click)="callOutput()">
+            {{ type === 'outputs' ? 'Emit' : 'Call' }}
+          </button>
         </div>
       </div>
     </div>

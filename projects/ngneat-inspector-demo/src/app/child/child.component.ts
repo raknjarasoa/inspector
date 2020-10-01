@@ -11,8 +11,8 @@ export class ChildComponent implements OnInit {
   @Output() callParent = new EventEmitter();
   constructor() {}
 
-  fun(): void {
-    console.log('fun called');
+  fun(arg1 = 'hi'): void {
+    console.log('fun called with:', arg1);
   }
 
   ngOnInit(): void {}

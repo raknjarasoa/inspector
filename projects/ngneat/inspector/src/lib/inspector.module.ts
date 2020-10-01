@@ -12,16 +12,9 @@ import { InspectorPanelComponent } from './components/inspector-panel/inspector-
 import { InspectorComponent } from './inspector.component';
 import { PropertiesComponent } from './components/inspector-panel/tabs/properties/properties.component';
 import { OutputsComponent } from './components/inspector-panel/tabs/outputs/outputs.component';
-import { FunctionsComponent } from './components/inspector-panel/tabs/functions/functions.component';
 
 @NgModule({
-  declarations: [
-    InspectorComponent,
-    InspectorPanelComponent,
-    PropertiesComponent,
-    OutputsComponent,
-    FunctionsComponent,
-  ],
+  declarations: [InspectorComponent, InspectorPanelComponent, PropertiesComponent, OutputsComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
