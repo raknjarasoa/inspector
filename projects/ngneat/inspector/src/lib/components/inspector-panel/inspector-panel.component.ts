@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { updateComponent } from '../../../shared/helpers';
+import { updateComponent } from '../../shared/helpers';
 import { CallFunctionOrOutput, NgComponent, Property } from '../../inspector.model';
 
 @Component({

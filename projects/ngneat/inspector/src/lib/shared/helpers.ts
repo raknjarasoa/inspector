@@ -1,4 +1,4 @@
-import { FunctionOrOutput, NG, NgComponent, Property } from '../lib/inspector.model';
+import { FunctionOrOutput, NG, NgComponent, Property } from '../inspector.model';
 
 declare const ng: NG;
 

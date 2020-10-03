@@ -12,13 +12,11 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
 } from '@angular/core';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
 import { fromEvent, fromEventPattern, merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, filter, takeUntil, takeWhile } from 'rxjs/operators';
 import { FunctionOrOutput, NG, NgComponent } from './inspector.model';
 import { faGripVertical, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { getNgComponent } from '../shared/helpers';
+import { getNgComponent } from './shared/helpers';
 
 declare const ng: NG;
 
@@ -54,9 +52,7 @@ export class InspectorComponent implements OnInit {
   faGripVertical = faGripVertical;
   faTimes = faTimes;
 
-  constructor(private host: ElementRef<HTMLElement>, iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
-    iconRegistry.addSvgIcon('inspector', sanitizer.bypassSecurityTrustResourceUrl('assets/inspector.svg'));
-  }
+  constructor(private host: ElementRef<HTMLElement>) {}
 
   ngOnInit(): void {}
 

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -40,12 +39,11 @@ import { FieldHostDirective } from './directives/field-host.directive';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule,
     ReactiveFormsModule,
     FontAwesomeModule,
     DragDropModule,
-    TabsModule.forRoot(),
-    BsDropdownModule.forRoot(),
+    TabsModule,
+    BsDropdownModule,
     PortalModule,
   ],
   exports: [InspectorComponent],
