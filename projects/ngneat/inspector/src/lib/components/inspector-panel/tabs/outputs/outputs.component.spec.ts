@@ -8,10 +8,7 @@ import { OutputsComponent } from './outputs.component';
 
 describe('OutputsComponent', () => {
   let spectator: Spectator<OutputsComponent>;
-  const createComponent = createComponentFactory({
-    component: OutputsComponent,
-    imports: [BrowserTestingModule, ReactiveFormsModule, FontAwesomeModule],
-  });
+  const createComponent = createComponentFactory(OutputsComponent);
 
   const dummyOutputs: FunctionOrOutput[] = [
     { actualFunction: () => console.log('dummy functions'), name: 'DummyFunction' },

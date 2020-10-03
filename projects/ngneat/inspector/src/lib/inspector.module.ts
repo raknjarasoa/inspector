@@ -20,6 +20,7 @@ import { TBooleanComponent } from './components/inspector-panel/form-fields/type
 import { TObjectComponent } from './components/inspector-panel/form-fields/types/t-object/t-object.component';
 import { TArrayComponent } from './components/inspector-panel/form-fields/types/t-array/t-array.component';
 import { TNotSupportedComponent } from './components/inspector-panel/form-fields/types/t-not-supported/t-not-supported.component';
+import { FieldHostDirective } from './directives/field-host.directive';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { TNotSupportedComponent } from './components/inspector-panel/form-fields
     TObjectComponent,
     TArrayComponent,
     TNotSupportedComponent,
+    FieldHostDirective,
   ],
   imports: [
     BrowserModule,

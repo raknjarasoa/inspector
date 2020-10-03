@@ -2,6 +2,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserTestingModule } from '@angular/platform-browser/testing';
 import { Spectator, createComponentFactory } from '@ngneat/spectator';
 import { Property } from '../../../../inspector.model';
+import { TypeSelectorComponent } from '../../form-fields/type-selector/type-selector.component';
 
 import { PropertiesComponent } from './properties.component';
 
@@ -18,6 +19,7 @@ describe('PropertiesComponent', () => {
     spectator = createComponent({
       props: {
         properties: dummyProperties,
+        propertyValueType: 'String',
       },
     });
   });

@@ -1,24 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { BrowserTestingModule } from '@angular/platform-browser/testing';
+import { Spectator, createComponentFactory } from '@ngneat/spectator';
+import { FieldHostDirective } from '../../../../directives/field-host.directive';
 
 import { TypeSelectorComponent } from './type-selector.component';
 
 describe('TypeSelectorComponent', () => {
-  let component: TypeSelectorComponent;
-  let fixture: ComponentFixture<TypeSelectorComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [TypeSelectorComponent],
-    }).compileComponents();
+  let spectator: Spectator<TypeSelectorComponent>;
+  const createComponent = createComponentFactory({
+    component: TypeSelectorComponent,
+    imports: [BrowserTestingModule, ReactiveFormsModule],
+    declarations: [FieldHostDirective],
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TypeSelectorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent({ props: { fc: new FormControl('') } });
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator.component).toBeTruthy();
   });
 });
