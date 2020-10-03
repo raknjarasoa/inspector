@@ -15,7 +15,8 @@
     "test:lib": "ng test @ngneat/inspector",
     "release": "cd projects/ngneat/inspector && standard-version --infile ../../../CHANGELOG.md",
     "test:lib:headless": "cross-env CI=true npm run test:lib",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postbuild": "npm run build --prefix ./projects/ngneat/inspector"
   },
   "private": true,
   "dependencies": {

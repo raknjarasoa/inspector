@@ -2,7 +2,7 @@
 
 🙏 We would ❤️ for you to contribute to Inspector and help make it even better than it is today!
 
-# Developing
+## Developing
 
 Start by installing all dependencies:
 
@@ -26,7 +26,15 @@ npm start
 ## Building
 
 ```bash
-npm run build
+npm run build -- --prod
+```
+
+## Usage
+
+Go to another Angular project, preferred https://github.com/trungk18/jira-clone-angular and run...
+
+```bash
+ng add path/to/dist/ngneat/inspector
 ```
 
 ## <a name="rules"></a> Coding Rules
