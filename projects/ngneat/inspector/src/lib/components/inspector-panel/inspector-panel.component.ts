@@ -5,7 +5,6 @@ import { CallFunctionOrOutput, NgComponent, Property } from '../../inspector.mod
 @Component({
   selector: 'ngneat-inspector-panel',
   templateUrl: './inspector-panel.component.html',
-  styleUrls: ['./inspector-panel.component.scss'],
 })
 export class InspectorPanelComponent implements OnInit {
   @Input() ngComponent: NgComponent;

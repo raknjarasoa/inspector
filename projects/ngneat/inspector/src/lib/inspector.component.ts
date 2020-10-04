@@ -23,7 +23,8 @@ declare const ng: NG;
 @Component({
   selector: 'ngneat-inspector',
   templateUrl: 'inspector.component.html',
-  styleUrls: ['inspector.component.scss'],
+  styleUrls: ['../styles.scss', 'inspector.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class InspectorComponent implements OnInit {
   isEnabled = false;
