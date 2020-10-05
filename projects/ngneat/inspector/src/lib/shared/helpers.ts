@@ -1,4 +1,4 @@
-import { FunctionOrOutput, NG, NgComponent, Property } from '../inspector.model';
+import { FunctionOrOutput, NG, NgComponent, Property, TabType } from '../inspector.model';
 
 declare const ng: NG;
 
@@ -53,11 +53,11 @@ export function getNgComponent(element: HTMLElement): NgComponent {
     });
 
   return {
-    functions,
+    [TabType.functions]: functions,
     hostElement,
     name: componentName,
-    outputs,
-    properties,
+    [TabType.outputs]: outputs,
+    [TabType.properties]: properties,
     selector: hostElement.tagName.toLowerCase(),
     rawComponent: ngRawComponent,
   };

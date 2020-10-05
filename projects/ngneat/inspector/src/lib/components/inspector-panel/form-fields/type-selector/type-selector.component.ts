@@ -1,67 +1,74 @@
-import { Component, Input, OnInit, ComponentFactoryResolver, ViewChild, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, ComponentFactoryResolver, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FieldHostDirective } from '../../../../directives/field-host.directive';
+import { PropertyValueType } from '../../../../inspector.model';
+import { TArrayComponent } from '../types/t-array/t-array.component';
+import { TBooleanComponent } from '../types/t-boolean/t-boolean.component';
 import { TNotSupportedComponent } from '../types/t-not-supported/t-not-supported.component';
 import { TNumberComponent } from '../types/t-number/t-number.component';
+import { TObjectComponent } from '../types/t-object/t-object.component';
 import { TStringComponent } from '../types/t-string/t-string.component';
 
 @Component({
   selector: 'ngneat-type-selector',
   templateUrl: './type-selector.component.html',
-  styles: [],
+  styleUrls: ['type-selector.component.scss'],
 })
-export class TypeSelectorComponent implements OnInit, OnChanges {
-  @Input() fc: FormControl;
+export class TypeSelectorComponent implements OnInit {
+  @Input() inputFormControl: FormControl;
+  @Input() typeSelectorFormControl: FormControl;
   @Input() showTypeSelector = false;
-  @Input() selectedType = 'String';
   @Input() className = '';
+  @Input() appendButton: string;
+  @Output() appendButtonClick = new EventEmitter();
   @ViewChild(FieldHostDirective, { static: true }) adHost: FieldHostDirective;
 
-  typesToSelect = {
-    String: {
-      component: TStringComponent,
+  typesToSelect: { [key in PropertyValueType]: { component: any } } = {
+    [PropertyValueType.array]: {
+      component: TArrayComponent,
     },
-    Number: {
-      component: TNumberComponent,
+    [PropertyValueType.boolean]: {
+      component: TBooleanComponent,
     },
-    NotSupported: {
+    [PropertyValueType['not-supported']]: {
       component: TNotSupportedComponent,
     },
+    [PropertyValueType.number]: {
+      component: TNumberComponent,
+    },
+    [PropertyValueType.object]: {
+      component: TObjectComponent,
+    },
+    [PropertyValueType.string]: {
+      component: TStringComponent,
+    },
   };
-  typesToSelectIterable = Object.keys(this.typesToSelect);
-  typeSelector = new FormControl('String');
+  typesToSelectIterable = Object.keys(this.typesToSelect).filter((i) => i !== PropertyValueType['not-supported']);
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
 
   ngOnInit(): void {
-    this.loadComponent();
-    this.typeSelector.valueChanges.subscribe((val) => {
-      this.selectedType = val;
-      this.loadComponent();
-    });
+    this.loadComponent(this.typeSelectorFormControl.value);
+    this.typeSelectorFormControl.valueChanges.subscribe((val) => this.loadComponent(val));
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.selectedType && changes.selectedType.previousValue !== changes.selectedType.currentValue) {
-      this.loadComponent();
+  loadComponent(fieldType: PropertyValueType): void {
+    if (fieldType) {
+      const component =
+        this.typesToSelect[fieldType] && this.typesToSelect[fieldType].component
+          ? this.typesToSelect[fieldType].component
+          : this.typesToSelect['Not Supported'].component;
+
+      const componentFactory = this.componentFactoryResolver.resolveComponentFactory<InputComponent>(component);
+
+      const viewContainerRef = this.adHost.viewContainerRef;
+      viewContainerRef.clear();
+
+      const componentRef = viewContainerRef.createComponent<InputComponent>(componentFactory);
+
+      componentRef.instance.formControl = this.inputFormControl;
+      componentRef.instance.addClass('ngneat-field-host');
     }
-  }
-
-  loadComponent(): void {
-    const component =
-      this.typesToSelect[this.selectedType] && this.typesToSelect[this.selectedType].component
-        ? this.typesToSelect[this.selectedType].component
-        : this.typesToSelect.NotSupported.component;
-
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory<InputComponent>(component);
-
-    const viewContainerRef = this.adHost.viewContainerRef;
-    viewContainerRef.clear();
-
-    const componentRef = viewContainerRef.createComponent<InputComponent>(componentFactory);
-
-    componentRef.instance.formControl = this.fc;
-    componentRef.instance.addClass('flex-grow-1');
   }
 }
 

@@ -1,0 +1,41 @@
+<form [formGroup]="form">
+  <div class="container-fluid px-0">
+    <div class="row no-gutters">
+      <div class="col-3">
+        <div class="mr-1">
+          <select class="custom-select" formControlName="name">
+            <option *ngFor="let item of members; let i = index" [value]="item.name">
+              {{ item.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-7">
+        <div class="mx-1" *ngFor="let control of formValue.controls; index as i; let last = last">
+          <ngneat-type-selector
+            [className]="'mb-2'"
+            [inputFormControl]="formValue.at(i)"
+            [typeSelectorFormControl]="formValueType.at(i)"
+            [showTypeSelector]="type === TabType.functions || type === TabType.outputs"
+            [appendButton]="type === TabType.functions || type === TabType.outputs ? '&#10060;' : ''"
+            (appendButtonClick)="removeArgument(i)"
+          ></ngneat-type-selector>
+        </div>
+        <button
+          class="btn btn-link btn-sm"
+          (click)="addArgument()"
+          *ngIf="type === TabType.functions || type === TabType.outputs"
+        >
+          Add Argument
+        </button>
+      </div>
+      <div class="col-2">
+        <div class="ml-1">
+          <button class="btn btn-outline-primary" (click)="callEmitter()">
+            {{ type === TabType.functions ? 'Call' : type === TabType.outputs ? 'Emit' : 'Update' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

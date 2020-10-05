@@ -1,10 +1,15 @@
 <div class="input-group" [ngClass]="className">
-  <div class="input-group-prepend" *ngIf="showTypeSelector" container="body">
-    <select class="custom-select" [formControl]="typeSelector">
+  <div class="input-group-prepend" *ngIf="showTypeSelector">
+    <select class="custom-select" [formControl]="typeSelectorFormControl">
       <option *ngFor="let item of typesToSelectIterable; let i = index" [value]="item">
         {{ item }}
       </option>
     </select>
   </div>
   <ng-template ngneatFieldHost></ng-template>
+  <div class="input-group-append" *ngIf="appendButton">
+    <button class="btn btn-outline-secondary" type="button" (click)="appendButtonClick.emit()">
+      {{ appendButton }}
+    </button>
+  </div>
 </div>

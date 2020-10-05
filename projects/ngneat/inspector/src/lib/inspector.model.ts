@@ -1,3 +1,5 @@
+import { EventEmitter } from '@angular/core';
+
 export class InspectorConfig {
   enabled = true;
   hidden = false;
@@ -22,6 +24,7 @@ export interface NgComponentRaw {
 export interface FunctionOrOutput {
   name: string;
   actualFunction: (...args: any) => any;
+  args?: any[];
 }
 
 export interface CallFunctionOrOutput {
@@ -35,11 +38,37 @@ export interface Property {
 }
 
 export interface NgComponent {
-  functions: FunctionOrOutput[];
+  [TabType.functions]: FunctionOrOutput[];
   name: string;
-  properties: Property[];
+  [TabType.properties]: Property[];
   selector: string;
-  outputs: FunctionOrOutput[];
+  [TabType.outputs]: FunctionOrOutput[];
   hostElement: HTMLElement;
   rawComponent: NgComponentRaw;
+}
+
+export enum TabType {
+  properties = 'PROPERTIES',
+  outputs = 'OUTPUTS',
+  functions = 'FUNCTIONS',
+}
+
+export interface TabComponent {
+  members: (Property | FunctionOrOutput)[];
+  type: TabType;
+  emitter: EventEmitter<Property | CallFunctionOrOutput>;
+}
+
+export interface TabOutput {
+  name: string;
+  value: string[];
+}
+
+export enum PropertyValueType {
+  'string' = 'String',
+  'number' = 'Number',
+  'array' = 'Array',
+  'boolean' = 'Boolean',
+  'object' = 'Object',
+  'not-supported' = 'Not Supported',
 }

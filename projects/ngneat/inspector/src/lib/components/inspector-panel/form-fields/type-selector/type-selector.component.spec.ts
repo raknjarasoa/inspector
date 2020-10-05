@@ -14,7 +14,9 @@ describe('TypeSelectorComponent', () => {
   });
 
   beforeEach(() => {
-    spectator = createComponent({ props: { fc: new FormControl('') } });
+    spectator = createComponent({
+      props: { inputFormControl: new FormControl(''), typeSelectorFormControl: new FormControl('') },
+    });
   });
 
   it('should create', () => {
