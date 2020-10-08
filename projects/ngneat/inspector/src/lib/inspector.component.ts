@@ -1,24 +1,8 @@
-import { CdkDrag, CdkDragEnd, CdkDragMove } from '@angular/cdk/drag-drop';
-import { ConnectionPositionPair, Overlay, PositionStrategy } from '@angular/cdk/overlay';
-import { DomPortal, TemplatePortal } from '@angular/cdk/portal';
-import { NgClass } from '@angular/common';
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  TemplateRef,
-  ViewChild,
-  ViewContainerRef,
-  ViewEncapsulation,
-} from '@angular/core';
-import { fromEvent, fromEventPattern, merge, Observable, Subject, Subscription } from 'rxjs';
-import { debounceTime, filter, takeUntil, takeWhile } from 'rxjs/operators';
-import { FunctionOrOutput, NG, NgComponent } from './inspector.model';
-import { faGripVertical, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Component, ElementRef, OnInit, ViewEncapsulation } from '@angular/core';
+import { NgComponent } from 'dist/ngneat/inspector/lib/inspector.model';
+import { fromEvent, Observable, Subject, Subscription } from 'rxjs';
+import { filter, takeUntil, takeWhile } from 'rxjs/operators';
 import { getNgComponent } from './shared/helpers';
-
-declare const ng: NG;
 
 @Component({
   selector: 'ngneat-inspector',
@@ -47,11 +31,6 @@ export class InspectorComponent implements OnInit {
   private mouseOver$: Subscription;
 
   activeComponent: NgComponent;
-
-  @ViewChild(CdkDrag) cdkDrag!: CdkDrag;
-
-  faGripVertical = faGripVertical;
-  faTimes = faTimes;
 
   constructor(private host: ElementRef<HTMLElement>) {}
 

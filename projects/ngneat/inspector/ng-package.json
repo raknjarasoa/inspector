@@ -5,6 +5,5 @@
   "lib": {
     "entryFile": "src/public-api.ts",
     "cssUrl": "inline"
-  },
-  "whitelistedNonPeerDependencies": ["@angular/cdk", "bootstrap", "tslib"]
+  }
 }

@@ -45,24 +45,29 @@
       overflow: auto;
     }
   }
-
-  .inspector-host.cdk-drag-dragging {
-    .inspector-container {
-      box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
-        0 3px 14px 2px rgba(0, 0, 0, 0.12);
-    }
-    .inspector-btn {
-      pointer-events: none;
-    }
-  }
-
   .inspector-drag-handle {
     @include inspector-action-btn(20px);
 
     left: 5px;
     cursor: move !important;
+    &:focus {
+      outline: none;
+    }
     &-icon {
       @include svg-icon('../../assets/icons/drag_indicator-black-48dp.svg', 20px);
+    }
+  }
+
+  &.ngneat-drag-dragging {
+    .inspector-container {
+      box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    }
+    .inspector-drag-handle {
+      left: -95px;
+      padding: 100px;
+      top: -87px;
+      z-index: 1;
     }
   }
 

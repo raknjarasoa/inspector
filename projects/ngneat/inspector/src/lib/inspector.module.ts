@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ReactiveFormsModule } from '@angular/forms';
-import { PortalModule } from '@angular/cdk/portal';
 
 import { InspectorPanelComponent } from './components/inspector-panel/inspector-panel.component';
 import { InspectorComponent } from './inspector.component';
@@ -17,6 +15,8 @@ import { TNotSupportedComponent } from './components/inspector-panel/form-fields
 import { FieldHostDirective } from './directives/field-host.directive';
 import { TabHostDirective } from './directives/tab-host.directive';
 import { InspectorTabComponent } from './components/inspector-panel/inspector-tab/inspector-tab.component';
+import { DragNDropDirective } from './directives/drag-n-drop.directive';
+import { DragHandleDirective } from './directives/drag-handle.directive';
 
 @NgModule({
   declarations: [
@@ -32,8 +32,10 @@ import { InspectorTabComponent } from './components/inspector-panel/inspector-ta
     FieldHostDirective,
     TabHostDirective,
     InspectorTabComponent,
+    DragNDropDirective,
+    DragHandleDirective,
   ],
-  imports: [BrowserModule, BrowserAnimationsModule, ReactiveFormsModule, DragDropModule, PortalModule],
+  imports: [BrowserModule, BrowserAnimationsModule, ReactiveFormsModule],
   exports: [InspectorComponent],
 })
 export class InspectorModule {}

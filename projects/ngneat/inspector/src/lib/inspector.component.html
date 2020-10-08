@@ -1,18 +1,17 @@
 <div
   class="inspector-host"
-  cdkDrag
-  cdkDragBoundary="body"
-  [cdkDragDisabled]="isEnabled"
+  ngneatDragNDrop
+  [ngneatDragDisabled]="isEnabled"
   *ngIf="!isHidden"
   [ngClass]="{ 'pointer-events-none': isEnabled }"
 >
   <div class="inspector-container" [ngClass]="{ expanded: isExpanded }">
     <ng-container *ngIf="isExpanded && activeComponent; else collapsedPanel">
       <div class="inspector-actions">
-        <button class="close inspector-drag-handle" cdkDragHandle>
+        <button class="close inspector-drag-handle" ngneatDragHandle>
           <div class="inspector-drag-handle-icon"></div>
         </button>
-        <button type="button" class="close inspector-close-btn" aria-label="Close">
+        <button type="button" class="close inspector-close-btn" aria-label="Close" (click)="collapseInspectorPanel()">
           <div class="inspector-close-btn-icon"></div>
         </button>
       </div>
