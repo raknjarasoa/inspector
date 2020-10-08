@@ -3,9 +3,13 @@
   ngneatDragNDrop
   [ngneatDragDisabled]="isEnabled"
   *ngIf="!isHidden"
-  [ngClass]="{ 'pointer-events-none': isEnabled }"
+  [ngClass]="{ expanded: isExpanded }"
+  [ngStyle]="{ 'pointer-events': isEnabled ? 'none' : 'auto' }"
 >
-  <div class="inspector-container" [ngClass]="{ expanded: isExpanded }">
+  <div
+    class="inspector-container"
+    [ngClass]="{ expanded: isExpanded, 'pointer-events-none pointer-events-none-all': isEnabled }"
+  >
     <ng-container *ngIf="isExpanded && activeComponent; else collapsedPanel">
       <div class="inspector-actions">
         <button class="close inspector-drag-handle" ngneatDragHandle>

@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewEncapsulation } from '@angular/core';
-import { NgComponent } from 'dist/ngneat/inspector/lib/inspector.model';
 import { fromEvent, Observable, Subject, Subscription } from 'rxjs';
 import { filter, takeUntil, takeWhile } from 'rxjs/operators';
+import { NgComponent } from './inspector.model';
 import { getNgComponent } from './shared/helpers';
 
 @Component({
@@ -14,18 +14,6 @@ export class InspectorComponent implements OnInit {
   isEnabled = false;
   isHidden = false;
   isExpanded = false;
-
-  private readonly nonFunctionNames = [
-    'construcstor',
-    'ngOnInit',
-    'ngOnChanges',
-    'ngDoCheck',
-    'ngAfterContentInit',
-    'ngAfterContentChecked',
-    'ngAfterViewInit',
-    'ngAfterViewChecked',
-    'ngOnDestroy',
-  ];
 
   private escKeySub$: Subscription;
   private mouseOver$: Subscription;
@@ -41,7 +29,6 @@ export class InspectorComponent implements OnInit {
   }
 
   startInspecting(): void {
-    console.log('start inspecting');
     this.isEnabled = true;
 
     let element: HTMLElement;
@@ -112,27 +99,22 @@ export class InspectorComponent implements OnInit {
   }
 
   stopInspecting(): void {
-    console.log('stop inspecting');
     this.isEnabled = false;
   }
 
   showInspector(): void {
-    console.log('show inspector');
     this.isHidden = false;
   }
 
   hideInspector(): void {
-    console.log('hide inspector');
     this.isHidden = true;
   }
 
   expandInspectorPanel(): void {
-    console.log('expand inspector');
     this.isExpanded = true;
   }
 
   collapseInspectorPanel(): void {
-    console.log('collapse inspector');
     this.isExpanded = false;
   }
 

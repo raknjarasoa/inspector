@@ -6,7 +6,7 @@
     <ul class="nav nav-tabs" *ngIf="tabsToShow.length">
       <ng-container *ngFor="let tab of tabsToShow">
         <li class="nav-item" *ngIf="ngComponent[tab.value].length">
-          <a class="nav-link" href="#" [ngClass]="{ active: activeTab === tab.value }" (click)="loadTab(tab.value)">{{
+          <a class="nav-link" [ngClass]="{ active: activeTab === tab.value }" (click)="loadTab(tab.value)">{{
             tab.label
           }}</a>
         </li>

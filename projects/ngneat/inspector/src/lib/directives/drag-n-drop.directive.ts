@@ -1,22 +1,6 @@
 import { DOCUMENT } from '@angular/common';
-import {
-  AfterContentChecked,
-  AfterContentInit,
-  AfterViewChecked,
-  AfterViewInit,
-  ContentChild,
-  ContentChildren,
-  Directive,
-  ElementRef,
-  HostListener,
-  Inject,
-  Input,
-  QueryList,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
-import { fromEvent, Observable, Subscription } from 'rxjs';
-import { startWith, tap } from 'rxjs/operators';
+import { AfterContentChecked, AfterViewInit, ContentChild, Directive, ElementRef, Inject, Input } from '@angular/core';
+import { fromEvent, Subscription } from 'rxjs';
 import { DragHandleDirective } from './drag-handle.directive';
 
 @Directive({
@@ -53,7 +37,7 @@ export class DragNDropDirective implements AfterViewInit, AfterContentChecked {
   constructor(public elementRef: ElementRef, @Inject(DOCUMENT) private document: any) {}
 
   ngAfterViewInit(): void {
-    this._dropTarget = (this.document as HTMLBodyElement).querySelector(this.ngneatDropTarget);
+    this._dropTarget = (this.document as Document).querySelector(this.ngneatDropTarget);
     if (!this._dropTarget) {
       throw new Error("Couldn't find any element with query: " + this.ngneatDropTarget);
     } else {
@@ -81,6 +65,8 @@ export class DragNDropDirective implements AfterViewInit, AfterContentChecked {
   }
 
   private startDragOperations(): void {
+    const dropTargetBoundaries = (this._dropTarget as HTMLElement | HTMLBodyElement).getClientRects()[0];
+    const elementTargetBoundaries = this.element.getClientRects()[0].toJSON();
     const dragStart = fromEvent<MouseEvent>(this.handleElement, 'mousedown');
     const dragEnd = fromEvent<MouseEvent>(this.handleElement, 'mouseup');
     const drag = fromEvent<MouseEvent>(this.handleElement, 'mousemove');
@@ -102,14 +88,24 @@ export class DragNDropDirective implements AfterViewInit, AfterContentChecked {
     this.drag$ = drag.subscribe((event: MouseEvent) => {
       if (this._startEvents && !this._dragDisabled) {
         event.preventDefault();
-        event.stopImmediatePropagation();
-        event.stopPropagation();
         this.currentX = event.clientX - this.initialX;
         this.currentY = event.clientY - this.initialY;
         this.xOffset = this.currentX;
         this.yOffset = this.currentY;
 
+        elementTargetBoundaries.left += this.currentX;
+        elementTargetBoundaries.right -= this.currentX;
+        elementTargetBoundaries.top -= this.currentY;
+        elementTargetBoundaries.bottom += this.currentY;
+
+        // if (
+        //   elementTargetBoundaries.left >= dropTargetBoundaries.left &&
+        //   elementTargetBoundaries.right <= dropTargetBoundaries.right &&
+        //   elementTargetBoundaries.top >= dropTargetBoundaries.top &&
+        //   elementTargetBoundaries.bottom <= dropTargetBoundaries.bottom
+        // ) {
         this.element.style.transform = 'translate3d(' + this.currentX + 'px, ' + this.currentY + 'px, 0)';
+        // }
       }
     });
   }

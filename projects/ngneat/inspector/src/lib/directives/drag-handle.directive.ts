@@ -1,4 +1,4 @@
-import { Directive, ElementRef, InjectionToken } from '@angular/core';
+import { Directive, ElementRef } from '@angular/core';
 
 @Directive({
   selector: '[ngneatDragHandle]',
