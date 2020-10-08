@@ -1,3 +1,17 @@
+@mixin svg-icon($url, $size: 24px) {
+  height: $size;
+  width: $size;
+  background-image: url($url);
+  background-size: contain;
+}
+
+@mixin inspector-action-btn($size: 24px) {
+  position: absolute;
+  top: 13px;
+  width: $size;
+  height: $size;
+}
+
 .inspector-host {
   min-height: 40px;
   min-width: 40px;
@@ -8,68 +22,80 @@
   position: fixed;
   right: 10px;
   top: 10px;
-}
-
-.inspector-container {
-  border-radius: 50%;
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  left: 100%;
-  position: relative;
-  transition: box-shadow, height, width, margin-left, border, border-radius;
-  transition-duration: 200ms;
-  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-  z-index: 1;
-  height: 40px;
-  width: 40px;
-  margin-left: calc(-40px);
-  &.expanded {
-    background-color: #fff;
-    border: solid 1px #ccc;
-    width: 600px;
-    height: auto;
-    max-height: 600px;
-    border-radius: 4px;
-    margin-left: calc(-600px);
-    overflow: auto;
-  }
-}
-
-.inspector-host.cdk-drag-dragging {
   .inspector-container {
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
-      0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    border-radius: 50%;
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    left: 100%;
+    position: relative;
+    transition: box-shadow, height, width, margin-left, border, border-radius;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    z-index: 1;
+    height: 40px;
+    width: 40px;
+    margin-left: calc(-40px);
+    &.expanded {
+      background-color: #fff;
+      border: solid 1px #ccc;
+      width: 600px;
+      height: auto;
+      max-height: 600px;
+      border-radius: 4px;
+      margin-left: calc(-600px);
+      overflow: auto;
+    }
   }
+
+  .inspector-host.cdk-drag-dragging {
+    .inspector-container {
+      box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    }
+    .inspector-btn {
+      pointer-events: none;
+    }
+  }
+
+  .inspector-drag-handle {
+    @include inspector-action-btn(20px);
+
+    left: 5px;
+    cursor: move !important;
+    &-icon {
+      @include svg-icon('../../assets/icons/drag_indicator-black-48dp.svg', 20px);
+    }
+  }
+
+  .inspector-close-btn {
+    @include inspector-action-btn(20px);
+
+    right: 5px;
+    &-icon {
+      @include svg-icon('../../assets/icons/close-black-48dp.svg', 20px);
+    }
+  }
+
   .inspector-btn {
-    pointer-events: none;
+    padding: 7px;
+    &-icon {
+      @include svg-icon('../../assets/logo/inspector.svg');
+    }
   }
-}
 
-.inspector-drag-handle {
-  position: absolute;
-  top: 10px;
-  left: 5px;
-  cursor: move;
-  width: 18px;
-  height: 18px;
-}
+  .inspector-credit-logo,
+  .inspector-credit-ngneat-logo {
+    height: 16px;
+    width: 16px;
+    background-size: contain;
+    display: inline-block;
+    vertical-align: middle;
+  }
 
-.inspector-close-btn {
-  position: absolute;
-  top: 10px;
-  right: 5px;
-  cursor: pointer;
-  width: 18px;
-  height: 18px;
-}
+  .inspector-credit-ngneat-logo {
+    background-image: url('../../assets/logo/ngneat_16.png');
+  }
 
-.inspector-btn {
-  height: 100%;
-  width: 100%;
-  padding: 0 !important;
-}
-
-.inspector-icon {
-  height: 22px;
-  width: 22px;
-  margin-top: -2px;
+  .inspector-credit-logo {
+    background-image: url('../../assets/logo/inspector.svg');
+  }
 }

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PortalModule } from '@angular/cdk/portal';
 
@@ -34,14 +33,7 @@ import { InspectorTabComponent } from './components/inspector-panel/inspector-ta
     TabHostDirective,
     InspectorTabComponent,
   ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    ReactiveFormsModule,
-    FontAwesomeModule,
-    DragDropModule,
-    PortalModule,
-  ],
+  imports: [BrowserModule, BrowserAnimationsModule, ReactiveFormsModule, DragDropModule, PortalModule],
   exports: [InspectorComponent],
 })
 export class InspectorModule {}

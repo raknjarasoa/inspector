@@ -9,14 +9,21 @@
   <div class="inspector-container" [ngClass]="{ expanded: isExpanded }">
     <ng-container *ngIf="isExpanded && activeComponent; else collapsedPanel">
       <div class="inspector-actions">
-        <div class="inspector-drag-handle" cdkDragHandle>
-          <fa-icon [icon]="faGripVertical"></fa-icon>
-        </div>
-        <div class="inspector-close-btn" role="button" (click)="collapseInspectorPanel()">
-          <fa-icon [icon]="faTimes"></fa-icon>
-        </div>
+        <button class="close inspector-drag-handle" cdkDragHandle>
+          <div class="inspector-drag-handle-icon"></div>
+        </button>
+        <button type="button" class="close inspector-close-btn" aria-label="Close">
+          <div class="inspector-close-btn-icon"></div>
+        </button>
       </div>
       <ngneat-inspector-panel [ngComponent]="activeComponent"></ngneat-inspector-panel>
+      <div class="inspector-credit text-right px-2 py-1">
+        <a href="https://github.com/ngneat/inspector" target="_blank" title="ngneat/inspector">
+          <span class="inspector-credit-ngneat-logo mr-1"></span>
+          <span class="inspector-credit-logo mr-1"></span>
+          <small><b>inspector</b></small>
+        </a>
+      </div>
     </ng-container>
     <ng-template #collapsedPanel>
       <button
@@ -26,7 +33,7 @@
         (click)="startInspecting()"
         [disabled]="isEnabled"
       >
-        <img src="assets/inspector.svg" class="inspector-icon" />
+        <div class="inspector-btn-icon"></div>
       </button>
     </ng-template>
   </div>
