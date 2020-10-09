@@ -1,24 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl } from '@angular/forms';
+import { Spectator, createComponentFactory } from '@ngneat/spectator';
 
 import { TArrayComponent } from './t-array.component';
 
-describe('TArrayComponent', () => {
-  let component: TArrayComponent;
-  let fixture: ComponentFixture<TArrayComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [TArrayComponent],
-    }).compileComponents();
+describe('InspectorTabComponent', () => {
+  let spectator: Spectator<TArrayComponent>;
+  const createComponent = createComponentFactory({
+    component: TArrayComponent,
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TArrayComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent({
+      props: {
+        formControl: new FormControl(''),
+      },
+    });
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator.component).toBeTruthy();
   });
 });
