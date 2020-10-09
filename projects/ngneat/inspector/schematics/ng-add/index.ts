@@ -30,20 +30,22 @@ function installPackageJsonDependencies(): Rule {
 
 function addModuleToImports(options: Schema): Rule {
   return (host: Tree, context: SchematicContext) => {
-    const workspace = getWorkspace(host);
-    const project = getProjectFromWorkspace(
-      workspace,
-      options.project ? options.project : Object.keys(workspace.projects)[0]
-    );
+    if (!options.skipImport) {
+      const workspace = getWorkspace(host);
+      const project = getProjectFromWorkspace(
+        workspace,
+        options.project ? options.project : Object.keys(workspace.projects)[0]
+      );
 
-    if (project.projectType === 'library') {
-      throw new SchematicsException('This library should only be added to application type of projects.');
+      if (project.projectType === 'library') {
+        throw new SchematicsException('This library should only be added to application type of projects.');
+      }
+
+      const moduleName = 'InspectorModule';
+
+      addModuleImportToRootModule(host, moduleName, '@ngneat/inspector', project as WorkspaceProject);
+      context.logger.log('info', `✅️ "${moduleName}" is imported`);
     }
-
-    const moduleName = 'InspectorModule';
-
-    addModuleImportToRootModule(host, moduleName, '@ngneat/inspector', project as WorkspaceProject);
-    context.logger.log('info', `✅️ "${moduleName}" is imported`);
 
     return host;
   };
