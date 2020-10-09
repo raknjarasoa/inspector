@@ -62,6 +62,7 @@ export interface TabComponent {
 export interface TabOutput {
   name: string;
   value: string[];
+  valueType: PropertyValueType[];
 }
 
 export enum PropertyValueType {

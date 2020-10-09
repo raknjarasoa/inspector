@@ -8,6 +8,7 @@ import {
   TabOutput,
   TabType,
 } from '../../../inspector.model';
+import { jsonValidator } from '../../../shared/json-validator';
 
 @Component({
   selector: 'ngneat-inspector-tab',
@@ -44,8 +45,14 @@ export class InspectorTabComponent implements OnInit, TabComponent {
       );
 
       updatedValueList.forEach((i) => {
-        this.formValue.push(new FormControl(i));
-        this.formValueType.push(new FormControl(i.constructor.name));
+        const valueType: PropertyValueType = i.constructor.name;
+        this.formValue.push(
+          new FormControl(
+            valueType === PropertyValueType.array || valueType === PropertyValueType.object ? JSON.stringify(i) : i,
+            valueType === PropertyValueType.array || valueType === PropertyValueType.object ? jsonValidator : null
+          )
+        );
+        this.formValueType.push(new FormControl(valueType));
       });
     });
   }

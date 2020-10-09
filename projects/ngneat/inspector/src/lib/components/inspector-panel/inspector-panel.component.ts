@@ -2,7 +2,14 @@ import { Component, ComponentFactoryResolver, Input, OnInit, ViewChild } from '@
 import { Subscription } from 'rxjs';
 
 import { updateComponent } from '../../shared/helpers';
-import { CallFunctionOrOutput, NgComponent, Property, TabOutput, TabType } from '../../inspector.model';
+import {
+  CallFunctionOrOutput,
+  NgComponent,
+  Property,
+  PropertyValueType,
+  TabOutput,
+  TabType,
+} from '../../inspector.model';
 import { TabHostDirective } from '../../directives/tab-host.directive';
 import { InspectorTabComponent } from './inspector-tab/inspector-tab.component';
 
@@ -26,6 +33,7 @@ export class InspectorPanelComponent implements OnInit {
   constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
 
   ngOnInit(): void {
+    console.log('ngComponent', this.ngComponent);
     this.tabsToShow = this.allTabs.filter((tab) => {
       return this.ngComponent[tab.value].length;
     });
@@ -56,13 +64,16 @@ export class InspectorPanelComponent implements OnInit {
     const tabEmitter = componentRef.instance.emitter;
     this.tabEmitter$ = tabEmitter.subscribe((val: TabOutput) => {
       if (this.activeTab === TabType.properties) {
-        const property: Property = { name: val.name, value: val.value[0] };
+        const property: Property = {
+          name: val.name,
+          value: this.getProcessedPropertyValue(val),
+        };
         this.updateProperty(property);
       } else if (this.activeTab === TabType.outputs) {
-        const callOutput: CallFunctionOrOutput = { name: val.name, args: val.value };
+        const callOutput: CallFunctionOrOutput = { name: val.name, args: this.getProcessedOutputValue(val) };
         this.callOutput(callOutput);
       } else if (this.activeTab === TabType.functions) {
-        const callFunction: CallFunctionOrOutput = { name: val.name, args: val.value };
+        const callFunction: CallFunctionOrOutput = { name: val.name, args: this.getProcessedOutputValue(val) };
         this.callFunction(callFunction);
       }
     });
@@ -80,5 +91,15 @@ export class InspectorPanelComponent implements OnInit {
   callFunction(functionToCall: CallFunctionOrOutput): void {
     this.ngComponent.rawComponent.constructor.prototype[functionToCall.name](...functionToCall.args);
     this.ngComponent[TabType.functions].find((o) => o.name === functionToCall.name).args = functionToCall.args.slice();
+  }
+  getProcessedPropertyValue(val: TabOutput): any {
+    return val.valueType[0] === PropertyValueType.array || val.valueType[0] === PropertyValueType.object
+      ? JSON.parse(val.value[0])
+      : val.value[0];
+  }
+  getProcessedOutputValue(val: TabOutput): any {
+    return val.value.map((v, i) =>
+      val.valueType[i] === PropertyValueType.array || val.valueType[i] === PropertyValueType.object ? JSON.parse(v) : v
+    );
   }
 }

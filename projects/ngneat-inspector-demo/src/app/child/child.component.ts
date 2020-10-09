@@ -10,6 +10,7 @@ export class ChildComponent implements OnInit {
   text = 'child works!';
   number = 3;
   bool = false;
+  arr = ['a', 'b'];
   @Output() callParent = new EventEmitter();
   constructor() {}
 
