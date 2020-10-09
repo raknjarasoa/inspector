@@ -48,7 +48,9 @@ export class InspectorTabComponent implements OnInit, TabComponent {
         const valueType: PropertyValueType = i.constructor.name;
         this.formValue.push(
           new FormControl(
-            valueType === PropertyValueType.array || valueType === PropertyValueType.object ? JSON.stringify(i) : i,
+            valueType === PropertyValueType.array || valueType === PropertyValueType.object
+              ? JSON.stringify(i, null, 2)
+              : i,
             valueType === PropertyValueType.array || valueType === PropertyValueType.object ? jsonValidator : null
           )
         );

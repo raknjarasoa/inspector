@@ -1,24 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl } from '@angular/forms';
+import { Spectator, createComponentFactory } from '@ngneat/spectator';
 
 import { TObjectComponent } from './t-object.component';
 
-describe('TObjectComponent', () => {
-  let component: TObjectComponent;
-  let fixture: ComponentFixture<TObjectComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [TObjectComponent],
-    }).compileComponents();
+describe('InspectorTabComponent', () => {
+  let spectator: Spectator<TObjectComponent>;
+  const createComponent = createComponentFactory({
+    component: TObjectComponent,
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TObjectComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent({
+      props: {
+        formControl: new FormControl(''),
+      },
+    });
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator.component).toBeTruthy();
   });
 });
