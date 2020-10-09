@@ -20,6 +20,7 @@ export class TypeSelectorComponent implements OnInit {
   @Input() showTypeSelector = false;
   @Input() className = '';
   @Input() appendButton: string;
+  @Input() inputId: string;
   @Output() appendButtonClick = new EventEmitter();
   @ViewChild(FieldHostDirective, { static: true }) adHost: FieldHostDirective;
 
@@ -67,12 +68,14 @@ export class TypeSelectorComponent implements OnInit {
       const componentRef = viewContainerRef.createComponent<InputComponent>(componentFactory);
 
       componentRef.instance.formControl = this.inputFormControl;
+      componentRef.instance.inputId = this.inputId;
       componentRef.instance.addClass('ngneat-field-host');
     }
   }
 }
 
 export interface InputComponent {
+  inputId: string;
   formControl: FormControl;
   addClass: (className: string) => void;
 }

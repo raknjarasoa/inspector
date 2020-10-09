@@ -19,6 +19,7 @@
             [showTypeSelector]="type === TabType.functions || type === TabType.outputs"
             [appendButton]="type === TabType.functions || type === TabType.outputs ? '&#10060;' : ''"
             (appendButtonClick)="removeArgument(i)"
+            [inputId]="type + '-argument' + i"
           ></ngneat-type-selector>
         </div>
         <button

@@ -15,7 +15,11 @@ describe('TypeSelectorComponent', () => {
 
   beforeEach(() => {
     spectator = createComponent({
-      props: { inputFormControl: new FormControl(''), typeSelectorFormControl: new FormControl('') },
+      props: {
+        inputFormControl: new FormControl(''),
+        typeSelectorFormControl: new FormControl(''),
+        inputId: 'dummyId',
+      },
     });
   });
 

@@ -9,6 +9,8 @@ import { InputComponent } from '../../type-selector/type-selector.component';
 })
 export class TObjectComponent implements OnInit, InputComponent {
   @Input() formControl: FormControl;
+  @Input() inputId: string;
+
   constructor(private elementRef: ElementRef) {}
 
   ngOnInit(): void {}

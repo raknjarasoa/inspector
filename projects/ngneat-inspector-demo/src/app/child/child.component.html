@@ -1,3 +1,5 @@
-<p>{{ text }}</p>
-<button (click)="fun()">button</button>
-<p>number {{ number }}</p>
+<div [ngStyle]="{ 'background-color': bool ? 'red' : 'white' }">
+  <p>{{ text }}</p>
+  <button (click)="fun()">button</button>
+  <p>number {{ number }}</p>
+</div>

@@ -23,6 +23,7 @@ export class InspectorTabComponent implements OnInit, TabComponent {
     valueType: new FormArray([]),
   });
   readonly TabType = TabType;
+  readonly PropertyValueType = PropertyValueType;
   constructor() {}
 
   ngOnInit(): void {
