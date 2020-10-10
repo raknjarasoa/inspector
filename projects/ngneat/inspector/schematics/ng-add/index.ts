@@ -2,8 +2,11 @@ import { Rule, Tree, SchematicsException, SchematicContext, chain } from '@angul
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import {
   addModuleImportToRootModule,
+  addPackageJsonDependency,
   getProjectFromWorkspace,
   getWorkspace,
+  NodeDependency,
+  NodeDependencyType,
   WorkspaceProject,
 } from 'schematics-utilities';
 
@@ -16,7 +19,18 @@ export function ngAdd(options: Schema): Rule {
       throw new SchematicsException('Could not find Angular workspace configuration');
     }
 
-    return chain([installPackageJsonDependencies(), addModuleToImports(options)]);
+    return chain([addDependencies(), installPackageJsonDependencies(), addModuleToImports(options)]);
+  };
+}
+
+function addDependencies(): Rule {
+  return (host: Tree) => {
+    const dependencies: NodeDependency[] = [{ type: NodeDependencyType.Dev, version: '1.21.0', name: 'prismjs' }];
+
+    // 2. Just use it whenever you need :)
+    dependencies.forEach((dependency) => addPackageJsonDependency(host, dependency));
+
+    return host;
   };
 }
 

@@ -1,10 +1,9 @@
-<textarea
-  [id]="inputId"
-  rows="5"
-  [formControl]="formControl"
-  class="form-control"
+<pre
+  contenteditable
+  class="form-control-prism language-javascript"
   [ngClass]="{ 'is-invalid': formControl.invalid }"
-></textarea>
+  (input)="setValue($event.target.innerText)"
+><code [innerHTML]="codeHtml"></code></pre>
 <div class="invalid-feedback" *ngIf="formControl.invalid" [ngClass]="{ 'd-block': formControl.invalid }">
   Invalid JSON
 </div>

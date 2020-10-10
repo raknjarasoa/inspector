@@ -2,7 +2,6 @@ import { Component, Input, OnInit, ComponentFactoryResolver, ViewChild, EventEmi
 import { FormControl } from '@angular/forms';
 import { FieldHostDirective } from '../../../../directives/field-host.directive';
 import { PropertyValueType } from '../../../../inspector.model';
-import { TArrayComponent } from '../types/t-array/t-array.component';
 import { TBooleanComponent } from '../types/t-boolean/t-boolean.component';
 import { TNotSupportedComponent } from '../types/t-not-supported/t-not-supported.component';
 import { TNumberComponent } from '../types/t-number/t-number.component';
@@ -26,7 +25,7 @@ export class TypeSelectorComponent implements OnInit {
 
   typesToSelect: { [key in PropertyValueType]: { component: any } } = {
     [PropertyValueType.array]: {
-      component: TArrayComponent,
+      component: TObjectComponent,
     },
     [PropertyValueType.boolean]: {
       component: TBooleanComponent,

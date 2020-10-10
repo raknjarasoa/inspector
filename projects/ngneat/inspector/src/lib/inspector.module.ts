@@ -9,12 +9,12 @@ import { TypeSelectorComponent } from './components/inspector-panel/form-fields/
 import { TStringComponent } from './components/inspector-panel/form-fields/types/t-string/t-string.component';
 import { TNumberComponent } from './components/inspector-panel/form-fields/types/t-number/t-number.component';
 import { TBooleanComponent } from './components/inspector-panel/form-fields/types/t-boolean/t-boolean.component';
-import { TObjectComponent } from './components/inspector-panel/form-fields/types/t-object/t-object.component';
-import { TArrayComponent } from './components/inspector-panel/form-fields/types/t-array/t-array.component';
 import { TNotSupportedComponent } from './components/inspector-panel/form-fields/types/t-not-supported/t-not-supported.component';
+import { InspectorTabComponent } from './components/inspector-panel/inspector-tab/inspector-tab.component';
+import { TObjectComponent } from './components/inspector-panel/form-fields/types/t-object/t-object.component';
+
 import { FieldHostDirective } from './directives/field-host.directive';
 import { TabHostDirective } from './directives/tab-host.directive';
-import { InspectorTabComponent } from './components/inspector-panel/inspector-tab/inspector-tab.component';
 import { DragNDropDirective } from './directives/drag-n-drop.directive';
 import { DragHandleDirective } from './directives/drag-handle.directive';
 
@@ -27,7 +27,6 @@ import { DragHandleDirective } from './directives/drag-handle.directive';
     TNumberComponent,
     TBooleanComponent,
     TObjectComponent,
-    TArrayComponent,
     TNotSupportedComponent,
     FieldHostDirective,
     TabHostDirective,

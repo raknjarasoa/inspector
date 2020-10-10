@@ -3,7 +3,7 @@ import { Spectator, createComponentFactory } from '@ngneat/spectator';
 
 import { TObjectComponent } from './t-object.component';
 
-describe('InspectorTabComponent', () => {
+describe('TObjectComponent', () => {
   let spectator: Spectator<TObjectComponent>;
   const createComponent = createComponentFactory({
     component: TObjectComponent,
