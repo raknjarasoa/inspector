@@ -8,50 +8,54 @@
 [![commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)]()
 [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)]()
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 [![ngneat](https://img.shields.io/badge/@-ngneat-383636?style=flat-square&labelColor=8f68d4)](https://github.com/ngneat/)
 [![spectator](https://img.shields.io/badge/tested%20with-spectator-2196F3.svg?style=flat-square)]()
 
-> The Library Slogan
+> An angular library that lets you inspect and change Angular component properties
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid assumenda atque blanditiis cum delectus eligendi ipsam iste iure, maxime modi molestiae nihil obcaecati odit officiis pariatur quibusdam suscipit temporibus unde.
-Accusantium aliquid corporis cupiditate dolores eum exercitationem illo iure laborum minus nihil numquam odit officiis possimus quas quasi quos similique, temporibus veritatis? Exercitationem, iure magni nulla quo sapiente soluta. Esse?
+## Features <!-- omit in toc -->
 
-## Features
+- ✅ Inspect Angular components on the fly
+- ✅ Change component properties without touching the code
+- ✅ Simulate Angular events
+- ✅ See the results in realtime
 
-- ✅ One
-- ✅ Two
-- ✅ Three
-
-## Table of Contents
+## Table of Contents <!-- omit in toc -->
 
 - [Installation](#installation)
+  - [Angular CLI](#angular-cli)
 - [Usage](#usage)
-- [FAQ](#faq)
+- [Contributors ✨](#contributors-)
 
 ## Installation
 
-### NPM
+### Angular CLI
 
-`npm install @ngneat/inspector --save-dev`
+`ng add @ngneat/inspector`
 
-### Yarn
+Above command will do following for you:
 
-`yarn add @ngneat/inspector --dev`
+1. Add and install following dev dependencies:
+   1. @ngneat/inspector
+   2. prismjs (used for code highlighting)
+2. Import `InspectorModule` from `@ngneat/inspector` in your project's root module. You can skip this by giving `--skipImport`.
 
 ## Usage
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid assumenda atque blanditiis cum delectus eligendi ipsam iste iure, maxime modi molestiae nihil obcaecati odit officiis pariatur quibusdam suscipit temporibus unde.
+Once it's installed, you can use it simply calling component in your template. Ideally, you should do this only once in your root component
 
-```ts
-function helloWorld() {}
+```html
+<!-- app.component.html -->
+
+<ngneat-inspector></ngneat-inspector>
 ```
 
-## FAQ
+<!-- ## FAQ
 
 ## How to ...
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid assumenda atque blanditiis cum delectus eligendi ips
+Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid assumenda atque blanditiis cum delectus eligendi ips -->
 
 ## Contributors ✨
 
