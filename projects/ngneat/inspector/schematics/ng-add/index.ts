@@ -27,7 +27,6 @@ function addDependencies(): Rule {
   return (host: Tree) => {
     const dependencies: NodeDependency[] = [{ type: NodeDependencyType.Dev, version: '1.21.0', name: 'prismjs' }];
 
-    // 2. Just use it whenever you need :)
     dependencies.forEach((dependency) => addPackageJsonDependency(host, dependency));
 
     return host;

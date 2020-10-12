@@ -8,6 +8,7 @@ import { DragHandleDirective } from './drag-handle.directive';
 })
 export class DragNDropDirective implements AfterViewInit, AfterContentChecked {
   private readonly DEFAULT_DROP_TARGET_QUERY = 'body';
+  private readonly SPACE_MARGIN = 10; // this is same as $host-spacing at projects\ngneat\inspector\src\styles\_variables.scss
 
   private _dropTarget: any;
   private _startEvents = false;
@@ -25,6 +26,8 @@ export class DragNDropDirective implements AfterViewInit, AfterContentChecked {
   drag$: Subscription;
   handleElement: HTMLElement;
   element: HTMLElement;
+  prevHandleElement: HTMLElement;
+  dropTargetBoundaries: DOMRect;
 
   @Input()
   set ngneatDragDisabled(disabled: boolean) {
@@ -41,18 +44,22 @@ export class DragNDropDirective implements AfterViewInit, AfterContentChecked {
     if (!this._dropTarget) {
       throw new Error("Couldn't find any element with query: " + this.ngneatDropTarget);
     } else {
+      this.dropTargetBoundaries = (this._dropTarget as HTMLElement | HTMLBodyElement).getClientRects()[0];
       this.element = this.elementRef.nativeElement as HTMLElement;
       this.handleElement = (this._handle && this._handle.element) || this.element;
+      this.prevHandleElement = this.handleElement;
       this.startDragOperations();
     }
   }
 
   ngAfterContentChecked(): void {
-    if (this._handle && this.handleElement !== this._handle.element) {
+    if (this._handle && this.prevHandleElement !== this._handle.element) {
       this.handleElement = this._handle.element;
+      this.prevHandleElement = this.handleElement;
       this.resetDragOperations();
-    } else if (this.handleElement !== this.element) {
+    } else if (!this._handle && this.prevHandleElement !== this.element) {
       this.handleElement = this.element;
+      this.prevHandleElement = this.handleElement;
       this.resetDragOperations();
     }
   }
@@ -65,11 +72,9 @@ export class DragNDropDirective implements AfterViewInit, AfterContentChecked {
   }
 
   private startDragOperations(): void {
-    const dropTargetBoundaries = (this._dropTarget as HTMLElement | HTMLBodyElement).getClientRects()[0];
-    const elementTargetBoundaries = this.element.getClientRects()[0].toJSON();
     const dragStart = fromEvent<MouseEvent>(this.handleElement, 'mousedown');
-    const dragEnd = fromEvent<MouseEvent>(this.handleElement, 'mouseup');
-    const drag = fromEvent<MouseEvent>(this.handleElement, 'mousemove');
+    const dragEnd = fromEvent<MouseEvent>(this.document, 'mouseup');
+    const drag = fromEvent<MouseEvent>(this.document, 'mousemove');
 
     this.dragStart$ = dragStart.subscribe((event: MouseEvent) => {
       this.initialX = event.clientX - this.xOffset;
@@ -88,25 +93,24 @@ export class DragNDropDirective implements AfterViewInit, AfterContentChecked {
     this.drag$ = drag.subscribe((event: MouseEvent) => {
       if (this._startEvents && !this._dragDisabled) {
         event.preventDefault();
-        this.currentX = event.clientX - this.initialX;
-        this.currentY = event.clientY - this.initialY;
-        this.xOffset = this.currentX;
-        this.yOffset = this.currentY;
-
-        elementTargetBoundaries.left += this.currentX;
-        elementTargetBoundaries.right -= this.currentX;
-        elementTargetBoundaries.top -= this.currentY;
-        elementTargetBoundaries.bottom += this.currentY;
-
-        // if (
-        //   elementTargetBoundaries.left >= dropTargetBoundaries.left &&
-        //   elementTargetBoundaries.right <= dropTargetBoundaries.right &&
-        //   elementTargetBoundaries.top >= dropTargetBoundaries.top &&
-        //   elementTargetBoundaries.bottom <= dropTargetBoundaries.bottom
-        // ) {
-        this.element.style.transform = 'translate3d(' + this.currentX + 'px, ' + this.currentY + 'px, 0)';
-        // }
+        this.updatePosition(event.clientX - this.initialX, event.clientY - this.initialY);
       }
     });
+  }
+
+  private updatePosition(x: number, y: number): void {
+    this.currentX = x;
+    this.currentY = y;
+    this.xOffset = this.currentX;
+    this.yOffset = this.currentY;
+
+    if (
+      this.currentX <= this.dropTargetBoundaries.left - this.SPACE_MARGIN &&
+      this.element.offsetWidth - this.currentX <= this.dropTargetBoundaries.right - this.SPACE_MARGIN &&
+      this.currentY >= this.dropTargetBoundaries.top - this.SPACE_MARGIN &&
+      this.currentY + this.element.offsetHeight <= this.dropTargetBoundaries.bottom - this.SPACE_MARGIN
+    ) {
+      this.element.style.transform = 'translate3d(' + this.currentX + 'px, ' + this.currentY + 'px, 0)';
+    }
   }
 }
