@@ -1,13 +1,14 @@
-import { Component, ElementRef, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { fromEvent, Observable, Subject, Subscription } from 'rxjs';
 import { filter, takeUntil, takeWhile } from 'rxjs/operators';
+import { DragNDropDirective } from './directives/drag-n-drop.directive';
 import { NgComponent } from './inspector.model';
 import { getNgComponent } from './shared/helpers';
 
 @Component({
   selector: 'ngneat-inspector',
   templateUrl: 'inspector.component.html',
-  styleUrls: ['../styles.scss', 'inspector.component.scss'],
+  styleUrls: ['../styles/main.scss', 'inspector.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
 export class InspectorComponent implements OnInit {
@@ -19,6 +20,8 @@ export class InspectorComponent implements OnInit {
   private mouseOver$: Subscription;
 
   activeComponent: NgComponent;
+
+  @ViewChild(DragNDropDirective) ngneatDrag: DragNDropDirective;
 
   constructor(private host: ElementRef<HTMLElement>) {}
 
@@ -116,6 +119,7 @@ export class InspectorComponent implements OnInit {
 
   collapseInspectorPanel(): void {
     this.isExpanded = false;
+    this.ngneatDrag.resetPosition();
   }
 
   escapeKeyDown(target: HTMLElement | Document): Observable<KeyboardEvent> {

@@ -1,7 +1,7 @@
 <div
   class="inspector-host"
   ngneatDragNDrop
-  [ngneatDragDisabled]="isEnabled"
+  [ngneatDragDisabled]="isEnabled || !isExpanded"
   *ngIf="!isHidden"
   [ngClass]="{ expanded: isExpanded }"
   [ngStyle]="{ 'pointer-events': isEnabled ? 'none' : 'auto' }"

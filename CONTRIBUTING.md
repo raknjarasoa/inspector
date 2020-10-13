@@ -37,6 +37,8 @@ Go to another Angular project, preferred https://github.com/trungk18/jira-clone-
 ng add path/to/dist/ngneat/inspector
 ```
 
+If you get an error: `inject() must be called from an injection context`, try again by setting `preserveSymlinks` to `true`. More [info](https://github.com/angular/angular/issues/25813#issuecomment-440283483).
+
 ## <a name="rules"></a> Coding Rules
 
 To ensure consistency throughout the source code, keep these rules in mind as you are working:

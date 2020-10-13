@@ -99,18 +99,29 @@ export class DragNDropDirective implements AfterViewInit, AfterContentChecked {
   }
 
   private updatePosition(x: number, y: number): void {
-    this.currentX = x;
-    this.currentY = y;
-    this.xOffset = this.currentX;
-    this.yOffset = this.currentY;
-
     if (
-      this.currentX <= this.dropTargetBoundaries.left - this.SPACE_MARGIN &&
-      this.element.offsetWidth - this.currentX <= this.dropTargetBoundaries.right - this.SPACE_MARGIN &&
-      this.currentY >= this.dropTargetBoundaries.top - this.SPACE_MARGIN &&
-      this.currentY + this.element.offsetHeight <= this.dropTargetBoundaries.bottom - this.SPACE_MARGIN
+      x <= this.dropTargetBoundaries.left &&
+      this.element.offsetWidth - x <= this.dropTargetBoundaries.right &&
+      y >= this.dropTargetBoundaries.top &&
+      y + this.element.offsetHeight <= this.dropTargetBoundaries.bottom
     ) {
+      this.currentX = x;
+      this.currentY = y;
+      this.xOffset = this.currentX;
+      this.yOffset = this.currentY;
       this.element.style.transform = 'translate3d(' + this.currentX + 'px, ' + this.currentY + 'px, 0)';
     }
+  }
+
+  resetPosition(): void {
+    this.element.style.transition = 'transform 0.2s ease-in-out';
+    this.currentX = 0;
+    this.currentY = 0;
+    this.xOffset = this.currentX;
+    this.yOffset = this.currentY;
+    this.element.style.transform = 'translate3d(' + this.currentX + 'px, ' + this.currentY + 'px, 0)';
+    setTimeout(() => {
+      this.element.style.transition = 'none';
+    }, 201);
   }
 }

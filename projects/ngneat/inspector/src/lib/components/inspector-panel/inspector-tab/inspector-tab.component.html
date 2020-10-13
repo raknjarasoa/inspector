@@ -10,7 +10,7 @@
           </select>
         </div>
       </div>
-      <div class="col-7">
+      <div class="col">
         <div class="mx-1" *ngFor="let control of formValue.controls; index as i; let last = last">
           <ngneat-type-selector
             [className]="'mb-2'"
@@ -30,7 +30,7 @@
           Add Argument
         </button>
       </div>
-      <div class="col-2">
+      <div class="col-auto">
         <div class="ml-1">
           <button class="btn btn-outline-primary" [disabled]="form.invalid" (click)="callEmitter()">
             {{ type === TabType.functions ? 'Call' : type === TabType.outputs ? 'Emit' : 'Update' }}
