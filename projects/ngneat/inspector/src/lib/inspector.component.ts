@@ -8,7 +8,7 @@ import { getNgComponent } from './shared/helpers';
 @Component({
   selector: 'ngneat-inspector',
   templateUrl: 'inspector.component.html',
-  styleUrls: ['../styles/main.scss', 'inspector.component.scss'],
+  styleUrls: ['../styles/main.scss'],
   encapsulation: ViewEncapsulation.None,
 })
 export class InspectorComponent implements OnInit {
@@ -18,6 +18,7 @@ export class InspectorComponent implements OnInit {
 
   private escKeySub$: Subscription;
   private mouseOver$: Subscription;
+  private mouseClick$: Subscription;
 
   activeComponent: NgComponent;
 
@@ -36,6 +37,8 @@ export class InspectorComponent implements OnInit {
 
     let element: HTMLElement;
     let originalOutline: string;
+    const endMouseClick$ = new Subject();
+    const endMouseOut$ = new Subject();
 
     this.escKeySub$ = this.escapeKeyDown(document).subscribe(() => {
       if (element) {
@@ -48,45 +51,33 @@ export class InspectorComponent implements OnInit {
       if (ev.target instanceof HTMLElement) {
         element = ev.target as HTMLElement;
         originalOutline = element.style.outline;
-        this.highlightElement(element, originalOutline);
+        this.highlightElement(element, originalOutline, endMouseOut$);
       }
     });
+
+    this.mouseClick$ = this.documentMouseClick(this.origin)
+      .pipe(takeUntil(endMouseClick$))
+      .subscribe((ev: MouseEvent) => {
+        if (ev.target instanceof HTMLElement && ev.target === element) {
+          ev.preventDefault();
+          ev.stopImmediatePropagation();
+          ev.stopPropagation();
+          element.style.outline = originalOutline;
+          endMouseClick$.next();
+          endMouseOut$.next();
+
+          // read component
+          this.activeComponent = getNgComponent(element);
+          this.stopInspecting();
+          this.expandInspectorPanel();
+        }
+      });
   }
 
-  private highlightElement(element: HTMLElement, originalOutline: string): void {
+  private highlightElement(element: HTMLElement, originalOutline: string, endMouseOut$: Subject<any>): void {
     element.style.outline = '2px solid red';
-    const endMouseOut$ = new Subject();
-    const endMouseClick$ = new Subject();
 
     this.listenElementMouseOut(element, endMouseOut$, originalOutline);
-
-    this.listenElementClick(element, endMouseClick$, originalOutline, endMouseOut$);
-  }
-
-  private listenElementClick(
-    element: HTMLElement,
-    endMouseClick$: Subject<unknown>,
-    originalOutline: string,
-    endMouseOut$: Subject<unknown>
-  ): void {
-    fromEvent<MouseEvent>(element, 'click')
-      .pipe(
-        takeUntil(endMouseClick$),
-        takeWhile(() => this.isEnabled)
-      )
-      .subscribe((clickEvent) => {
-        clickEvent.stopPropagation();
-        clickEvent.stopImmediatePropagation();
-        clickEvent.preventDefault();
-        element.style.outline = originalOutline;
-        endMouseOut$.next();
-        endMouseClick$.next();
-
-        // read component
-        this.activeComponent = getNgComponent(element);
-        this.stopInspecting();
-        this.expandInspectorPanel();
-      });
   }
 
   private listenElementMouseOut(element: HTMLElement, endMouseOut$: Subject<unknown>, originalOutline: string): void {
@@ -133,6 +124,18 @@ export class InspectorComponent implements OnInit {
 
   documentMouseOver(origin: HTMLElement): Observable<MouseEvent> {
     return fromEvent<MouseEvent>(document, 'mouseover').pipe(
+      filter((ev: MouseEvent) => {
+        const overTarget = ev.target as HTMLElement;
+        const notBody = overTarget.tagName.toUpperCase() !== 'BODY';
+        const notOrigin = overTarget !== origin; // the inspector
+        return notOrigin && notBody;
+      }),
+      takeWhile(() => this.isEnabled)
+    );
+  }
+
+  documentMouseClick(origin: HTMLElement): Observable<MouseEvent> {
+    return fromEvent<MouseEvent>(document, 'click', { capture: true }).pipe(
       filter((ev: MouseEvent) => {
         const overTarget = ev.target as HTMLElement;
         const notBody = overTarget.tagName.toUpperCase() !== 'BODY';

@@ -1,40 +1,43 @@
 <form [formGroup]="form" novalidate>
   <div class="container-fluid px-0">
-    <div class="row no-gutters">
-      <div class="col-3">
-        <div class="mr-1">
-          <select class="custom-select" formControlName="name">
-            <option *ngFor="let item of members; let i = index" [value]="item.name">
-              {{ item.name }}
-            </option>
-          </select>
-        </div>
+    <div class="row no-gutters align-items-center">
+      <div class="col-auto mb-3 mr-1">
+        Selected {{ type === TabType.properties ? 'Property' : type === TabType.outputs ? 'Output' : 'Function' }}
       </div>
+      <div class="col-auto mb-3 mx-1">
+        <select class="custom-select" formControlName="name">
+          <option *ngFor="let item of members; let i = index" [value]="item.name">
+            {{ item.name }}
+          </option>
+        </select>
+      </div>
+      <div class="col-auto mb-3 mx-1" *ngIf="type !== TabType.properties">
+        <button class="btn btn-outline-primary" [disabled]="form.invalid" (click)="callEmitter()">
+          {{ type === TabType.functions ? 'Call' : 'Emit' }}
+        </button>
+      </div>
+      <div class="col-auto mb-3 ml-1" *ngIf="type !== TabType.properties">with it below arguments.</div>
+    </div>
+    <div class="row no-gutters">
       <div class="col">
-        <div class="mx-1" *ngFor="let control of formValue.controls; index as i; let last = last">
+        <div class="mr-1" *ngFor="let control of formValue.controls; index as i; let last = last">
           <ngneat-type-selector
             [className]="'mb-2'"
             [inputFormControl]="formValue.at(i)"
             [typeSelectorFormControl]="formValueType.at(i)"
-            [showTypeSelector]="type === TabType.functions || type === TabType.outputs"
-            [appendButton]="type === TabType.functions || type === TabType.outputs ? '&#10060;' : ''"
+            [showTypeSelector]="type !== TabType.properties"
+            [appendButton]="type !== TabType.properties ? '&#10060;' : ''"
             (appendButtonClick)="removeArgument(i)"
             [inputId]="type + '-argument' + i"
           ></ngneat-type-selector>
         </div>
-        <button
-          class="btn btn-link btn-sm"
-          (click)="addArgument()"
-          *ngIf="type === TabType.functions || type === TabType.outputs"
-        >
+        <button class="btn btn-link btn-sm" (click)="addArgument()" *ngIf="type !== TabType.properties">
           Add Argument
         </button>
       </div>
-      <div class="col-auto">
+      <div class="col-auto" *ngIf="type === TabType.properties">
         <div class="ml-1">
-          <button class="btn btn-outline-primary" [disabled]="form.invalid" (click)="callEmitter()">
-            {{ type === TabType.functions ? 'Call' : type === TabType.outputs ? 'Emit' : 'Update' }}
-          </button>
+          <button class="btn btn-outline-primary" [disabled]="form.invalid" (click)="callEmitter()">Update</button>
         </div>
       </div>
     </div>
