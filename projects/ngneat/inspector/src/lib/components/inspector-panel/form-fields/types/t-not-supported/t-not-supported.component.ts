@@ -10,7 +10,7 @@ import { InputComponent } from '../../type-selector/type-selector.component';
 export class TNotSupportedComponent implements OnInit, InputComponent {
   @Input() formControl: FormControl;
   @Input() inputId: string;
-  @Input() type: string;
+  @Input() fieldType: string;
   constructor(private elementRef: ElementRef) {}
 
   ngOnInit(): void {}

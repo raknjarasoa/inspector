@@ -1,24 +1,27 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { BrowserTestingModule } from '@angular/platform-browser/testing';
+import { Spectator, createComponentFactory } from '@ngneat/spectator';
 
 import { TBooleanComponent } from './t-boolean.component';
 
 describe('TBooleanComponent', () => {
-  let component: TBooleanComponent;
-  let fixture: ComponentFixture<TBooleanComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [TBooleanComponent],
-    }).compileComponents();
+  let spectator: Spectator<TBooleanComponent>;
+  const createComponent = createComponentFactory({
+    component: TBooleanComponent,
+    imports: [BrowserTestingModule, ReactiveFormsModule],
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TBooleanComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent({
+      props: {
+        fieldType: '',
+        formControl: new FormControl(''),
+        inputId: '',
+      },
+    });
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator.component).toBeTruthy();
   });
 });

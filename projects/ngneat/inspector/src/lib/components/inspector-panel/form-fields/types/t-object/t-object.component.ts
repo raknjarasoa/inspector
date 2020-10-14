@@ -11,6 +11,7 @@ import Prism from 'prismjs';
 export class TObjectComponent implements OnInit, InputComponent {
   @Input() formControl: FormControl;
   @Input() inputId: string;
+  @Input() fieldType: string;
   codeHtml = '';
   constructor(private elementRef: ElementRef) {}
 

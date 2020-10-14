@@ -69,7 +69,7 @@ export class TypeSelectorComponent implements OnInit {
       componentRef.instance.formControl = this.inputFormControl;
       componentRef.instance.inputId = this.inputId;
       componentRef.instance.addClass('ngneat-field-host');
-      componentRef.instance.type = fieldType;
+      componentRef.instance.fieldType = fieldType;
     }
   }
 }
@@ -78,5 +78,5 @@ export interface InputComponent {
   inputId: string;
   formControl: FormControl;
   addClass: (className: string) => void;
-  type?: string;
+  fieldType: string;
 }
