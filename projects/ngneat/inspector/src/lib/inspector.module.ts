@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -18,6 +18,11 @@ import { TabHostDirective } from './directives/tab-host.directive';
 import { DragNDropDirective } from './directives/drag-n-drop.directive';
 import { DragHandleDirective } from './directives/drag-handle.directive';
 
+import { InspectorConfig } from './inspector.model';
+
+import { InspectorService } from './services/inspector.service';
+import { init } from './init';
+
 @NgModule({
   declarations: [
     InspectorComponent,
@@ -36,5 +41,21 @@ import { DragHandleDirective } from './directives/drag-handle.directive';
   ],
   imports: [BrowserModule, BrowserAnimationsModule, ReactiveFormsModule],
   exports: [InspectorComponent],
+  providers: [InspectorService],
 })
-export class InspectorModule {}
+export class InspectorModule {
+  static forRoot(config?: Partial<InspectorConfig>): ModuleWithProviders<InspectorModule> {
+    return {
+      ngModule: InspectorModule,
+      providers: [
+        { provide: InspectorConfig, useValue: config },
+        {
+          provide: APP_INITIALIZER,
+          useFactory: init,
+          deps: [InspectorService],
+          multi: true,
+        },
+      ],
+    };
+  }
+}

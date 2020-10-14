@@ -2,7 +2,6 @@ import { EventEmitter } from '@angular/core';
 
 export class InspectorConfig {
   enabled = true;
-  hidden = false;
 }
 
 export interface NG {

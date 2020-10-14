@@ -5,10 +5,11 @@ import { InspectorModule } from '@ngneat/inspector';
 
 import { AppComponent } from './app.component';
 import { ChildComponent } from './child/child.component';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [AppComponent, ChildComponent],
-  imports: [BrowserModule, InspectorModule, BrowserAnimationsModule],
+  imports: [BrowserModule, environment.production ? [] : InspectorModule.forRoot(), BrowserAnimationsModule],
   providers: [],
   bootstrap: [AppComponent],
 })

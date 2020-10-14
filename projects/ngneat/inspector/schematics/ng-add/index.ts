@@ -1,16 +1,21 @@
-import { Rule, Tree, SchematicsException, SchematicContext, chain } from '@angular-devkit/schematics';
+import { Rule, Tree, SchematicsException, chain, SchematicContext } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import {
-  addModuleImportToRootModule,
-  addPackageJsonDependency,
   getProjectFromWorkspace,
   getWorkspace,
+  getAppModulePath,
+  addPackageJsonDependency,
   NodeDependency,
   NodeDependencyType,
+  addModuleImportToRootModule,
   WorkspaceProject,
 } from 'schematics-utilities';
+import { getProjectMainFile } from 'schematics-utilities/dist/cdk';
+import { insertImport, isImported } from '@schematics/angular/utility/ast-utils';
+import { InsertChange } from '@schematics/angular/utility/change';
 
 import { Schema } from './schema';
+import { getTsSourceFile } from './utils';
 
 export function ngAdd(options: Schema): Rule {
   return (tree: Tree) => {
@@ -19,15 +24,24 @@ export function ngAdd(options: Schema): Rule {
       throw new SchematicsException('Could not find Angular workspace configuration');
     }
 
-    return chain([addDependencies(), installPackageJsonDependencies(), addModuleToImports(options)]);
+    return chain([
+      addDependencies(),
+      installPackageJsonDependencies(),
+      injectImports(options),
+      addModuleToImports(options),
+    ]);
   };
 }
 
 function addDependencies(): Rule {
-  return (host: Tree) => {
-    const dependencies: NodeDependency[] = [{ type: NodeDependencyType.Dev, version: '1.21.0', name: 'prismjs' }];
+  return (host: Tree, context: SchematicContext) => {
+    const dependencies: NodeDependency[] = [{ type: NodeDependencyType.Dev, version: '^1.21.0', name: 'prismjs' }];
 
-    dependencies.forEach((dependency) => addPackageJsonDependency(host, dependency));
+    dependencies.forEach((dependency) => {
+      addPackageJsonDependency(host, dependency);
+      context.logger.log('info', `✅️ Added "${dependency.name}" into ${dependency.type}`);
+    });
+    context.logger.log('info', '✅️ Added "@ngneat/inspector" into devDependencies');
 
     return host;
   };
@@ -36,6 +50,45 @@ function addDependencies(): Rule {
 function installPackageJsonDependencies(): Rule {
   return (host: Tree, context: SchematicContext) => {
     context.addTask(new NodePackageInstallTask());
+    context.logger.log('info', `🔍 Installing packages...`);
+
+    return host;
+  };
+}
+
+function injectImports(options: Schema): Rule {
+  return (host: Tree, context: SchematicContext) => {
+    if (!options.skipImport) {
+      const workspace = getWorkspace(host);
+      const project = getProjectFromWorkspace(
+        workspace,
+        options.project ? options.project : Object.keys(workspace.projects)[0]
+      );
+
+      const modulePath = getAppModulePath(host, getProjectMainFile(project));
+      const moduleSource = getTsSourceFile(host, modulePath);
+      const importModule = 'environment';
+      const importPath = '../environments/environment';
+
+      if (!isImported(moduleSource, importModule, importPath)) {
+        const change = insertImport(moduleSource, modulePath, importModule, importPath);
+
+        if (change) {
+          const recorder = host.beginUpdate(modulePath);
+          recorder.insertLeft((change as InsertChange).pos, (change as InsertChange).toAdd);
+          host.commitUpdate(recorder);
+          context.logger.log('info', '✅ Written import statement for "environments"');
+        }
+      }
+
+      const inspectorModuleChange = insertImport(moduleSource, modulePath, 'InspectorModule', '@ngneat/inspector');
+      if (inspectorModuleChange) {
+        const recorder = host.beginUpdate(modulePath);
+        recorder.insertLeft((inspectorModuleChange as InsertChange).pos, (inspectorModuleChange as InsertChange).toAdd);
+        host.commitUpdate(recorder);
+        context.logger.log('info', '✅ Written import statement for "InspectorModule"');
+      }
+    }
 
     return host;
   };
@@ -50,14 +103,11 @@ function addModuleToImports(options: Schema): Rule {
         options.project ? options.project : Object.keys(workspace.projects)[0]
       );
 
-      if (project.projectType === 'library') {
-        throw new SchematicsException('This library should only be added to application type of projects.');
-      }
+      const importInspectorModule = 'environment.production ? [] : InspectorModule.forRoot()';
 
-      const moduleName = 'InspectorModule';
+      addModuleImportToRootModule(host, importInspectorModule, null as any, project as WorkspaceProject);
 
-      addModuleImportToRootModule(host, moduleName, '@ngneat/inspector', project as WorkspaceProject);
-      context.logger.log('info', `✅️ "${moduleName}" is imported`);
+      context.logger.log('info', '✅ Imported "InspectorModule" as non-production in imports');
     }
 
     return host;
