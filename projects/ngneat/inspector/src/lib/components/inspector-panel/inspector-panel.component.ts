@@ -33,7 +33,7 @@ export class InspectorPanelComponent implements OnInit {
   constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
 
   ngOnInit(): void {
-    console.log('ngComponent', this.ngComponent);
+    // console.log('ngComponent', this.ngComponent);
     this.tabsToShow = this.allTabs.filter((tab) => {
       return this.ngComponent[tab.value].length;
     });

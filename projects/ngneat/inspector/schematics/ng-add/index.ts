@@ -9,8 +9,8 @@ import {
   NodeDependencyType,
   addModuleImportToRootModule,
   WorkspaceProject,
+  targetBuildNotFoundError,
 } from 'schematics-utilities';
-import { getProjectMainFile } from 'schematics-utilities/dist/cdk';
 import { insertImport, isImported } from '@schematics/angular/utility/ast-utils';
 import { InsertChange } from '@schematics/angular/utility/change';
 
@@ -65,7 +65,20 @@ function injectImports(options: Schema): Rule {
         options.project ? options.project : Object.keys(workspace.projects)[0]
       );
 
-      const modulePath = getAppModulePath(host, getProjectMainFile(project));
+      if (!project || project.projectType !== 'application') {
+        throw new SchematicsException(`A client project type of "application" is required.`);
+      }
+
+      if (
+        !project.architect ||
+        !project.architect.build ||
+        !project.architect.build.options ||
+        !project.architect.build.options.main
+      ) {
+        throw targetBuildNotFoundError();
+      }
+
+      const modulePath = getAppModulePath(host, project.architect.build.options.main);
       const moduleSource = getTsSourceFile(host, modulePath);
       const importModule = 'environment';
       const importPath = '../environments/environment';
@@ -88,9 +101,8 @@ function injectImports(options: Schema): Rule {
         host.commitUpdate(recorder);
         context.logger.log('info', '✅ Written import statement for "InspectorModule"');
       }
+      return host;
     }
-
-    return host;
   };
 }
 
@@ -102,6 +114,10 @@ function addModuleToImports(options: Schema): Rule {
         workspace,
         options.project ? options.project : Object.keys(workspace.projects)[0]
       );
+
+      if (!project || project.projectType !== 'application') {
+        throw new SchematicsException(`A client project type of "application" is required.`);
+      }
 
       const importInspectorModule = 'environment.production ? [] : InspectorModule.forRoot()';
 
