@@ -29,14 +29,23 @@ npm start
 npm run build:prod
 ```
 
-After successful build, it will also run `postbuild` script, which will build and copy `schematics` folder in `dist` directory.
+After successful build, it will also run `postbuild:prod` script, which will build and copy `README.md` and `projects/ngneat/inspector/schematics` folder in `dist/ngneat/inspector` directory.
+
+Please pack the library locally:
+
+```bash
+cd dist/ngneat/inspector
+npm pack
+```
+
+Above should generate a `.tgz` file successfully.
 
 ## Usage
 
 Go to another Angular project, preferred https://github.com/trungk18/jira-clone-angular and run...
 
 ```bash
-ng add path/to/dist/ngneat/inspector
+ng add path/to/dist/ngneat/inspector/ngneat-inspector-x.y.z.tgz
 ```
 
 If you get an error: `inject() must be called from an injection context`, try again by setting `preserveSymlinks` to `true`. More [info](https://github.com/angular/angular/issues/25813#issuecomment-440283483).

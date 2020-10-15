@@ -35,12 +35,18 @@ export function ngAdd(options: Schema): Rule {
 
 function addDependencies(): Rule {
   return (host: Tree, context: SchematicContext) => {
+    // we don't need to add bootstrap in this, cz we are purely using scss format so it is bundled in our lib
     const dependencies: NodeDependency[] = [{ type: NodeDependencyType.Dev, version: '^1.21.0', name: 'prismjs' }];
 
     dependencies.forEach((dependency) => {
       addPackageJsonDependency(host, dependency);
       context.logger.log('info', `✅️ Added "${dependency.name}" into ${dependency.type}`);
     });
+
+    // @ngneat/inspector is added automatically in package.json, cz we have added below section in our package.json:
+    // "ng-add": {
+    // "save": "devDependencies"
+    // }
     context.logger.log('info', '✅️ Added "@ngneat/inspector" into devDependencies');
 
     return host;
