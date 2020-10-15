@@ -4,8 +4,8 @@
   "schematics": "./schematics/collection.json",
   "scripts": {
     "build": "tsc -p tsconfig.schematics.json",
-    "copy:schemas": "cp --parents schematics/*/schema.json ../../../dist/ngneat/inspector/",
-    "copy:collection": "cp schematics/collection.json ../../../dist/ngneat/inspector/schematics/collection.json",
+    "copy:schemas": "cpx schematics/ng-add ../../../dist/ngneat/inspector/",
+    "copy:collection": "cpx schematics/collection.json ../../../dist/ngneat/inspector/schematics",
     "postbuild": "npm run copy:schemas && npm run copy:collection"
   },
   "peerDependencies": {
