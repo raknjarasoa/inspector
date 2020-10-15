@@ -25,7 +25,6 @@
 
 - [Installation](#installation)
   - [Angular CLI](#angular-cli)
-- [Usage](#usage)
 - [Contributors ✨](#contributors-)
 
 ## Installation
@@ -39,17 +38,8 @@ Above command will do following for you:
 1. Add and install following dev dependencies:
    1. @ngneat/inspector
    2. prismjs (used for code highlighting)
-2. Import `InspectorModule` from `@ngneat/inspector` in your project's root module. You can skip this by giving `--skipImport`.
-
-## Usage
-
-Once it's installed, you can use it simply calling component in your template. Ideally, you should do this only once in your root component
-
-```html
-<!-- app.component.html -->
-
-<ngneat-inspector></ngneat-inspector>
-```
+2. Import `environments` from `../environments/environment.ts` in projects root module. *This can be skipped with `--skipImport`.*
+3. Import `InspectorModule` from `@ngneat/inspector` in your project's root module's `imports` section. This is a conditional import, it shouldn't be part of your production build. *This can be skipped with `--skipImport`.*
 
 <!-- ## FAQ
 

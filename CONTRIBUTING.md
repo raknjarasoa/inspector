@@ -26,8 +26,10 @@ npm start
 ## Building
 
 ```bash
-npm run build -- --prod
+npm run build:prod
 ```
+
+After successful build, it will also run `postbuild` script, which will build and copy `schematics` folder in `dist` directory.
 
 ## Usage
 
