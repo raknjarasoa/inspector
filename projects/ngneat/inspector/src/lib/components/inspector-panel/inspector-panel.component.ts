@@ -24,7 +24,7 @@ export class InspectorPanelComponent implements OnInit {
   allTabs: { value: TabType; label: string }[] = [
     { value: TabType.properties, label: 'Properties' },
     { value: TabType.outputs, label: 'Outputs' },
-    { value: TabType.functions, label: 'Functions' },
+    // { value: TabType.functions, label: 'Functions' }, // TODO: Use AST to get functions
   ];
   tabsToShow: { value: TabType; label: string }[] = [];
   @ViewChild(TabHostDirective, { static: true }) tabHost: TabHostDirective;

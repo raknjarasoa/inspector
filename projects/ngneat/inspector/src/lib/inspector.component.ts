@@ -15,6 +15,7 @@ export class InspectorComponent implements OnInit {
   isEnabled = false;
   isHidden = false;
   isExpanded = false;
+  isErrored = false;
 
   private escKeySub$: Subscription;
   private mouseOver$: Subscription;
@@ -67,7 +68,11 @@ export class InspectorComponent implements OnInit {
           endMouseOut$.next();
 
           // read component
-          this.activeComponent = getNgComponent(element);
+          try {
+            this.activeComponent = getNgComponent(element);
+          } catch (e) {
+            this.isErrored = true;
+          }
           this.stopInspecting();
           this.expandInspectorPanel();
         }

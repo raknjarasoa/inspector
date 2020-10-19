@@ -25,12 +25,13 @@ export function getNgComponent(element: HTMLElement): NgComponent {
   const hostElement = ng.getHostElement(ngRawComponent);
   const functions: FunctionOrOutput[] = [];
 
-  Object.getOwnPropertyNames(ngRawComponent.constructor.prototype)
-    .filter((v) => !nonFunctionNames.includes(v))
-    .forEach((functionName) => {
-      const actualFunction = ngRawComponent.constructor.prototype[functionName];
-      functions.push({ name: functionName, actualFunction });
-    });
+  // TODO: Use AST to get functions
+  // Object.getOwnPropertyNames(ngRawComponent.constructor.prototype)
+  //   .filter((v) => !nonFunctionNames.includes(v))
+  //   .forEach((functionName) => {
+  //     const actualFunction = ngRawComponent.constructor.prototype[functionName];
+  //     functions.push({ name: functionName, actualFunction });
+  //   });
 
   const properties: { name: string; value: any }[] = [];
   const outputs: FunctionOrOutput[] = [];

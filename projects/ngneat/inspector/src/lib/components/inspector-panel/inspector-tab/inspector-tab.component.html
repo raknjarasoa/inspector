@@ -11,9 +11,12 @@
           </option>
         </select>
       </div>
-      <div class="col-auto mb-3 mx-1" *ngIf="type !== TabType.properties">
+      <div
+        class="col-auto mb-3"
+        [ngClass]="{ 'mx-1': type !== TabType.properties, 'ml-auto': type === TabType.properties }"
+      >
         <button class="btn btn-outline-primary" [disabled]="form.invalid" (click)="callEmitter()">
-          {{ type === TabType.functions ? 'Call' : 'Emit' }}
+          {{ type === TabType.functions ? 'Call' : type === TabType.outputs ? 'Emit' : 'Update' }}
         </button>
       </div>
       <div class="col-auto mb-3 ml-1" *ngIf="type !== TabType.properties">with it below arguments.</div>
@@ -35,11 +38,11 @@
           Add Argument
         </button>
       </div>
-      <div class="col-auto" *ngIf="type === TabType.properties">
+      <!-- <div class="col-auto" *ngIf="type === TabType.properties">
         <div class="ml-1">
           <button class="btn btn-outline-primary" [disabled]="form.invalid" (click)="callEmitter()">Update</button>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </form>
