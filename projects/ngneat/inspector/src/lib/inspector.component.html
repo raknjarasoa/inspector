@@ -5,6 +5,7 @@
   *ngIf="!isHidden"
   [ngClass]="{ expanded: isExpanded }"
   [ngStyle]="{ 'pointer-events': isEnabled ? 'none' : 'auto' }"
+  #inspectorHost
 >
   <div
     class="inspector-container"

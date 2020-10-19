@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Optional, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { fromEvent, Observable, Subject, Subscription } from 'rxjs';
 import { filter, takeUntil, takeWhile } from 'rxjs/operators';
 import { DragNDropDirective } from './directives/drag-n-drop.directive';
@@ -11,7 +11,7 @@ import { getNgComponent } from './shared/helpers';
   styleUrls: ['../styles/main.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class InspectorComponent implements OnInit {
+export class InspectorComponent implements OnInit, AfterViewInit {
   isEnabled = false;
   isHidden = false;
   isExpanded = false;
@@ -29,13 +29,16 @@ export class InspectorComponent implements OnInit {
   activeComponent: NgComponent;
 
   @ViewChild(DragNDropDirective) ngneatDrag: DragNDropDirective;
+  @ViewChild('inspectorHost') inspectorHost: ElementRef<HTMLElement>;
 
   constructor(private host: ElementRef<HTMLElement>) {}
 
-  ngOnInit(): void {
-    this.origin.style.zIndex = this.zIndex.toString();
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
+    this.inspectorHost.nativeElement.style.zIndex = this.zIndex.toString();
     Object.keys(this.position).forEach((p) => {
-      this.origin.style[p] = this.position[p];
+      this.inspectorHost.nativeElement.style[p] = this.position[p];
     });
   }
 
