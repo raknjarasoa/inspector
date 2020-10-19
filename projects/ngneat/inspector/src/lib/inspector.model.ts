@@ -1,7 +1,27 @@
 import { EventEmitter } from '@angular/core';
 
+export type InspectorConfigOutline = {
+  color?: string;
+  width?: string;
+  style?: string;
+};
+
+export type InspectorConfigPosition = {
+  top?: string;
+  right?: string;
+  bottom?: string;
+  left?: string;
+};
+
 export class InspectorConfig {
   enabled = true;
+  zIndex = 1;
+  outline: InspectorConfigOutline = {
+    color: '#ad1fe3',
+    width: '2px',
+    style: 'solid',
+  };
+  position: InspectorConfigPosition = { top: '20px', right: '20px' };
 }
 
 export interface NG {

@@ -1,8 +1,8 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit, Optional, ViewChild, ViewEncapsulation } from '@angular/core';
 import { fromEvent, Observable, Subject, Subscription } from 'rxjs';
 import { filter, takeUntil, takeWhile } from 'rxjs/operators';
 import { DragNDropDirective } from './directives/drag-n-drop.directive';
-import { NgComponent } from './inspector.model';
+import { InspectorConfigOutline, InspectorConfigPosition, NgComponent } from './inspector.model';
 import { getNgComponent } from './shared/helpers';
 
 @Component({
@@ -17,6 +17,11 @@ export class InspectorComponent implements OnInit {
   isExpanded = false;
   isErrored = false;
 
+  // styles
+  zIndex: number;
+  outline: InspectorConfigOutline;
+  position: InspectorConfigPosition = {};
+
   private escKeySub$: Subscription;
   private mouseOver$: Subscription;
   private mouseClick$: Subscription;
@@ -27,7 +32,12 @@ export class InspectorComponent implements OnInit {
 
   constructor(private host: ElementRef<HTMLElement>) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.origin.style.zIndex = this.zIndex.toString();
+    Object.keys(this.position).forEach((p) => {
+      this.origin.style[p] = this.position[p];
+    });
+  }
 
   private get origin(): HTMLElement {
     return this.host.nativeElement;
@@ -80,7 +90,7 @@ export class InspectorComponent implements OnInit {
   }
 
   private highlightElement(element: HTMLElement, originalOutline: string, endMouseOut$: Subject<any>): void {
-    element.style.outline = '2px solid red';
+    element.style.outline = `${this.outline.width} ${this.outline.style} ${this.outline.color}`;
 
     this.listenElementMouseOut(element, endMouseOut$, originalOutline);
   }

@@ -25,13 +25,17 @@
 
 - [Installation](#installation)
   - [Angular CLI](#angular-cli)
+- [Usage](#usage)
+  - [Options](#options)
 - [Contributors ✨](#contributors-)
 
 ## Installation
 
 ### Angular CLI
 
-`ng add @ngneat/inspector`
+```bash
+ng add @ngneat/inspector
+```
 
 Above command will do following for you:
 
@@ -40,6 +44,25 @@ Above command will do following for you:
    2. prismjs (used for code highlighting)
 2. Import `environments` from `../environments/environment.ts` in projects root module. *This can be skipped with `--skipImport`.*
 3. Import `InspectorModule` from `@ngneat/inspector` in your project's root module's `imports` section. This is a conditional import, it shouldn't be part of your production build. *This can be skipped with `--skipImport`.*
+
+## Usage
+
+When you ran `ng add @ngneat/inspector`, it should ideally add below statement in your imports array:
+
+```typescript
+imports: [environment.production ? [] : InspectorModule.forRoot()]
+```
+
+### Options
+
+Now, you can pass below config options to change inspector behavior in the `.forRoot()` method. All the options are optional.:
+
+| Option   | Type                                                                                                                                                                                                                      | Description                                                                                                                                                                                                                                                              |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| enabled  | `boolean`                                                                                                                                                                                                                 | Enable or disable the inspector<br>*Default value: `true`*                                                                                                                                                                                                               |
+| zIndex   | `number`                                                                                                                                                                                                                  | Gives the CSS `z-index` to inspector host element. Useful in-case it's not visible by default.<br>*Default value: `1`*                                                                                                                                                   |
+| outline  | `InspectorConfigOutline`<br>`{`<br>&nbsp;&nbsp;&nbsp;&nbsp;`color?: string;`<br>&nbsp;&nbsp;&nbsp;&nbsp;`width?: string;`<br>&nbsp;&nbsp;&nbsp;&nbsp;`style?: string;`<br>`}`                                             | Applies style to outline, when you're hovering over elements after starting inspector.<br>*Default value:<br>`{`<br>&nbsp;&nbsp;&nbsp;&nbsp;`color: '#ad1fe3',`<br>&nbsp;&nbsp;&nbsp;&nbsp;`width: '2px',`<br>&nbsp;&nbsp;&nbsp;&nbsp;`style: 'solid'`<br>`}`*           |
+| position | `InspectorConfigPosition`<br>`{`<br>&nbsp;&nbsp;&nbsp;&nbsp;`top?: string;`<br>&nbsp;&nbsp;&nbsp;&nbsp;`right?: string;`<br>&nbsp;&nbsp;&nbsp;&nbsp;`bottom?: string;`<br>&nbsp;&nbsp;&nbsp;&nbsp;`left?: string;`<br>`}` | Applies CSS Style position co-ordinates to inspector host element. Please note inspector host element has `position: fixed` for better usability.<br>*Default value:<br>`{`<br>&nbsp;&nbsp;&nbsp;&nbsp;`top: '20px',`<br>&nbsp;&nbsp;&nbsp;&nbsp;`right: '20px'`<br>`}`* |
 
 <!-- ## FAQ
 

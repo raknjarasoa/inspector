@@ -1,6 +1,17 @@
 import { DOCUMENT } from '@angular/common';
-import { AfterContentChecked, AfterViewInit, ContentChild, Directive, ElementRef, Inject, Input } from '@angular/core';
+import {
+  AfterContentChecked,
+  AfterViewInit,
+  ContentChild,
+  Directive,
+  ElementRef,
+  Inject,
+  Input,
+  Optional,
+} from '@angular/core';
 import { fromEvent, Subscription } from 'rxjs';
+import { InspectorConfig } from '../inspector.model';
+import { InspectorService } from '../services/inspector.service';
 import { DragHandleDirective } from './drag-handle.directive';
 
 @Directive({
@@ -8,7 +19,6 @@ import { DragHandleDirective } from './drag-handle.directive';
 })
 export class DragNDropDirective implements AfterViewInit, AfterContentChecked {
   private readonly DEFAULT_DROP_TARGET_QUERY = 'body';
-  private readonly SPACE_MARGIN = 10; // this is same as $host-spacing at projects\ngneat\inspector\src\styles\_variables.scss
 
   private _dropTarget: any;
   private _startEvents = false;
