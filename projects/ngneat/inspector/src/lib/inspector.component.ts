@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { fromEvent, Observable, Subject, Subscription } from 'rxjs';
 import { filter, takeUntil, takeWhile } from 'rxjs/operators';
+import tinykeys, { KeyBindingMap } from 'tinykeys';
 import { DragNDropDirective } from './directives/drag-n-drop.directive';
 import { InspectorConfigOutline, InspectorConfigPosition, NgComponent } from './inspector.model';
 import { getNgComponent } from './shared/helpers';
@@ -17,10 +18,12 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   isExpanded = false;
   isErrored = false;
 
-  // styles
+  // inspector config
   zIndex: number;
   outline: InspectorConfigOutline;
   position: InspectorConfigPosition = {};
+  keyCombo: string;
+  closeOnEsc: boolean;
 
   private escKeySub$: Subscription;
   private mouseOver$: Subscription;
@@ -33,7 +36,9 @@ export class InspectorComponent implements OnInit, AfterViewInit {
 
   constructor(private host: ElementRef<HTMLElement>) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.listenForKeyboardShortcut();
+  }
 
   ngAfterViewInit(): void {
     this.inspectorHost.nativeElement.style.zIndex = this.zIndex.toString();
@@ -55,10 +60,14 @@ export class InspectorComponent implements OnInit, AfterViewInit {
     const endMouseOut$ = new Subject();
 
     this.escKeySub$ = this.escapeKeyDown(document).subscribe(() => {
-      if (element) {
-        element.style.outline = originalOutline;
+      if (this.isEnabled) {
+        if (element && originalOutline !== undefined) {
+          element.style.outline = originalOutline;
+        }
+        this.stopInspecting();
+      } else {
+        this.collapseInspectorPanel();
       }
-      this.stopInspecting();
     });
 
     this.mouseOver$ = this.documentMouseOver(this.origin).subscribe((ev: MouseEvent) => {
@@ -129,6 +138,7 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   collapseInspectorPanel(): void {
     this.isExpanded = false;
     this.ngneatDrag.resetPosition();
+    this.activeComponent = null;
   }
 
   escapeKeyDown(target: HTMLElement | Document): Observable<KeyboardEvent> {
@@ -136,7 +146,7 @@ export class InspectorComponent implements OnInit, AfterViewInit {
       filter((ev: KeyboardEvent) => {
         return ev.key === 'Escape';
       }),
-      takeWhile(() => this.isEnabled)
+      takeWhile(() => !this.closeOnEsc)
     );
   }
 
@@ -162,5 +172,15 @@ export class InspectorComponent implements OnInit, AfterViewInit {
       }),
       takeWhile(() => this.isEnabled)
     );
+  }
+
+  listenForKeyboardShortcut(): void {
+    tinykeys(window, {
+      [this.keyCombo]: () => {
+        if (!this.isEnabled) {
+          this.startInspecting();
+        }
+      },
+    });
   }
 }

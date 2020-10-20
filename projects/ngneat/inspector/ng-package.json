@@ -5,5 +5,5 @@
     "entryFile": "src/public-api.ts",
     "cssUrl": "inline"
   },
-  "whitelistedNonPeerDependencies": ["tslib", "bootstrap", "prismjs"]
+  "whitelistedNonPeerDependencies": ["tslib", "bootstrap", "prismjs", "tinykeys"]
 }

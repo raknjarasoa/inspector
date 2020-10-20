@@ -36,7 +36,10 @@ export function ngAdd(options: Schema): Rule {
 function addDependencies(): Rule {
   return (host: Tree, context: SchematicContext) => {
     // we don't need to add bootstrap in this, cz we are purely using scss format so it is bundled in our lib
-    const dependencies: NodeDependency[] = [{ type: NodeDependencyType.Dev, version: '^1.21.0', name: 'prismjs' }];
+    const dependencies: NodeDependency[] = [
+      { type: NodeDependencyType.Dev, version: '^1.21.0', name: 'prismjs' },
+      { type: NodeDependencyType.Dev, version: '^1.1.0', name: 'tinykeys' },
+    ];
 
     dependencies.forEach((dependency) => {
       addPackageJsonDependency(host, dependency);

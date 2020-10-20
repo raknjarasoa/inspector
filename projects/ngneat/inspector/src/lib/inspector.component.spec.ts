@@ -14,7 +14,13 @@ describe('InspectorComponent', () => {
   it('should create', () => {
     const defaultConfig = new InspectorConfig();
     spectator = createComponent({
-      props: { zIndex: defaultConfig.zIndex, outline: defaultConfig.outline, position: defaultConfig.position },
+      props: {
+        zIndex: defaultConfig.zIndex,
+        outline: defaultConfig.outline,
+        position: defaultConfig.position,
+        keyCombo: defaultConfig.keyCombo,
+        closeOnEsc: defaultConfig.closeOnEsc,
+      },
     });
 
     expect(spectator.component).toBeTruthy();

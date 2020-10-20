@@ -22,6 +22,8 @@ export class InspectorConfig {
     style: 'solid',
   };
   position: InspectorConfigPosition = { top: '20px', right: '20px' };
+  keyCombo = 'Shift+I';
+  closeOnEsc = true;
 }
 
 export interface NG {

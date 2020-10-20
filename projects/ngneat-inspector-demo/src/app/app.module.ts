@@ -11,7 +11,7 @@ import { environment } from '../environments/environment';
   declarations: [AppComponent, ChildComponent],
   imports: [
     BrowserModule,
-    environment.production ? [] : InspectorModule.forRoot({ outline: { color: 'red' } }),
+    environment.production ? [] : InspectorModule.forRoot({ closeOnEsc: false }),
     BrowserAnimationsModule,
   ],
   providers: [],

@@ -16,6 +16,8 @@ export class InspectorService {
   private _zIndex = this._defaultConfig.zIndex;
   private _outline = this._defaultConfig.outline;
   private _position = this._defaultConfig.position;
+  private _keyCombo = this._defaultConfig.keyCombo;
+  private _closeOnEsc = this._defaultConfig.closeOnEsc;
 
   constructor(private injector: Injector, @Optional() config: InspectorConfig) {
     if (config) {
@@ -27,6 +29,10 @@ export class InspectorService {
       this._position = Object.prototype.hasOwnProperty.call(config, 'position')
         ? Object.assign(this._position, config.position)
         : this._position;
+      this._keyCombo = Object.prototype.hasOwnProperty.call(config, 'keyCombo') ? config.keyCombo : this._keyCombo;
+      this._closeOnEsc = Object.prototype.hasOwnProperty.call(config, 'closeOnEsc')
+        ? config.closeOnEsc
+        : this._closeOnEsc;
     }
   }
 
@@ -39,6 +45,8 @@ export class InspectorService {
       componentRef.instance.zIndex = this._zIndex;
       componentRef.instance.outline = this._outline;
       componentRef.instance.position = this._position;
+      componentRef.instance.keyCombo = this._keyCombo;
+      componentRef.instance.closeOnEsc = this._closeOnEsc;
 
       // 2. Attach component to the appRef so that it's inside the ng component tree
       appRef.attachView(componentRef.hostView);

@@ -15,7 +15,18 @@
         class="col-auto mb-3"
         [ngClass]="{ 'mx-1': type !== TabType.properties, 'ml-auto': type === TabType.properties }"
       >
-        <button class="btn btn-outline-primary" [disabled]="form.invalid" (click)="callEmitter()">
+        <button
+          class="btn btn-outline-primary"
+          [disabled]="form.invalid"
+          (click)="callEmitter()"
+          *ngIf="
+            !(
+              type === TabType.properties &&
+              formValueType.at(0).value !== PropertyValueType.array &&
+              formValueType.at(0).value !== PropertyValueType.object
+            )
+          "
+        >
           {{ type === TabType.functions ? 'Call' : type === TabType.outputs ? 'Emit' : 'Update' }}
         </button>
       </div>
@@ -38,11 +49,18 @@
           Add Argument
         </button>
       </div>
-      <!-- <div class="col-auto" *ngIf="type === TabType.properties">
+      <div
+        class="col-auto"
+        *ngIf="
+          type === TabType.properties &&
+          formValueType.at(0).value !== PropertyValueType.array &&
+          formValueType.at(0).value !== PropertyValueType.object
+        "
+      >
         <div class="ml-1">
           <button class="btn btn-outline-primary" [disabled]="form.invalid" (click)="callEmitter()">Update</button>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 </form>
