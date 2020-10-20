@@ -41,7 +41,9 @@ Above command will do following for you:
 
 1. Add and install following dev dependencies:
    1. @ngneat/inspector
-   2. prismjs (used for code highlighting)
+   2. @ngstack/code-editor
+   3. monaco-editor
+   4. tinykeys
 2. Import `environments` from `../environments/environment.ts` in projects root module. *This can be skipped with `--skipImport`.*
 3. Import `InspectorModule` from `@ngneat/inspector` in your project's root module's `imports` section. This is a conditional import, it shouldn't be part of your production build. *This can be skipped with `--skipImport`.*
 
