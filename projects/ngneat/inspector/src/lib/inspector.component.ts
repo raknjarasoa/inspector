@@ -146,7 +146,7 @@ export class InspectorComponent implements OnInit, AfterViewInit {
       filter((ev: KeyboardEvent) => {
         return ev.key === 'Escape';
       }),
-      takeWhile(() => !this.closeOnEsc)
+      takeWhile(() => this.closeOnEsc)
     );
   }
 
@@ -179,6 +179,9 @@ export class InspectorComponent implements OnInit, AfterViewInit {
       [this.keyCombo]: () => {
         if (!this.isEnabled) {
           this.startInspecting();
+        } else {
+          this.collapseInspectorPanel();
+          this.stopInspecting();
         }
       },
     });
