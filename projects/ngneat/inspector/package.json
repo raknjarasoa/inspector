@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "bootstrap": "^4.5.2",
-    "prismjs": "^1.21.0",
+    "@ngstack/code-editor": "^2.1.0",
     "tslib": "^2.0.0",
     "tinykeys": "^1.1.0"
   },

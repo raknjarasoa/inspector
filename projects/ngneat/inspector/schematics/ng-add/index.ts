@@ -37,7 +37,7 @@ function addDependencies(): Rule {
   return (host: Tree, context: SchematicContext) => {
     // we don't need to add bootstrap in this, cz we are purely using scss format so it is bundled in our lib
     const dependencies: NodeDependency[] = [
-      { type: NodeDependencyType.Dev, version: '^1.21.0', name: 'prismjs' },
+      { type: NodeDependencyType.Dev, version: '^2.1.0', name: '@ngstack/code-editor' },
       { type: NodeDependencyType.Dev, version: '^1.1.0', name: 'tinykeys' },
     ];
 

@@ -1,9 +1,4 @@
-<pre
-  contenteditable
-  class="form-control-prism language-javascript"
-  [ngClass]="{ 'is-invalid': formControl.invalid }"
-  (input)="setValue($event.target.innerText)"
-><code [innerHTML]="codeHtml"></code></pre>
-<div class="invalid-feedback" *ngIf="formControl.invalid" [ngClass]="{ 'd-block': formControl.invalid }">
-  Invalid JSON
+<div class="border">
+  <ngs-code-editor [codeModel]="codeModel" [options]="editorOptions" (valueChanged)="setValue($event)" *ngIf="show">
+  </ngs-code-editor>
 </div>

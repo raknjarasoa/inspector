@@ -2,6 +2,7 @@ import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CodeEditorModule } from '@ngstack/code-editor';
 
 import { InspectorPanelComponent } from './components/inspector-panel/inspector-panel.component';
 import { InspectorComponent } from './inspector.component';
@@ -39,7 +40,7 @@ import { init } from './init';
     DragNDropDirective,
     DragHandleDirective,
   ],
-  imports: [BrowserModule, BrowserAnimationsModule, ReactiveFormsModule],
+  imports: [BrowserModule, BrowserAnimationsModule, ReactiveFormsModule, CodeEditorModule.forRoot()],
   exports: [InspectorComponent],
   providers: [InspectorService],
 })

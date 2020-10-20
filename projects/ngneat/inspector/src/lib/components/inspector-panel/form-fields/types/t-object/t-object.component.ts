@@ -1,7 +1,8 @@
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { InputComponent } from '../../type-selector/type-selector.component';
-import Prism from 'prismjs';
+import { CodeModel } from '@ngstack/code-editor';
+import { editor } from 'monaco-editor';
 
 @Component({
   selector: 'ngneat-t-array',
@@ -12,11 +13,19 @@ export class TObjectComponent implements OnInit, InputComponent {
   @Input() formControl: FormControl;
   @Input() inputId: string;
   @Input() fieldType: string;
-  codeHtml = '';
+  codeModel: CodeModel = { language: 'json', uri: '', value: '{}' };
+  editorOptions: editor.IEditorOptions = {};
+  show = false;
   constructor(private elementRef: ElementRef) {}
 
   ngOnInit(): void {
-    this.codeHtml = Prism.highlight(this.formControl.value, Prism.languages.javascript, 'javascript');
+    this.codeModel.value = this.formControl.value;
+    this.codeModel.uri = 'main' + this.inputId + '.json';
+
+    // a tick's delay is needed to properly render editor
+    setTimeout(() => {
+      this.show = true;
+    });
   }
 
   addClass(className: string): void {
@@ -24,14 +33,6 @@ export class TObjectComponent implements OnInit, InputComponent {
   }
 
   setValue(text: string): void {
-    // we need to replace all white space characters between html tags
-    // generated due to prism.js/
-    // thanks to https://stackoverflow.com/a/48632166
-    const jsonString = text.replace(/("[^"]*")|([ \s]+)/g, (x) => {
-      return x.charCodeAt(0) === 34 ? x : '';
-    });
-
-    this.formControl.setValue(jsonString);
-    Prism.highlightAll();
+    this.formControl.setValue(text);
   }
 }
