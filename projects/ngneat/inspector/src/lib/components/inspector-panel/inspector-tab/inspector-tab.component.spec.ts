@@ -1,6 +1,6 @@
 import { BrowserTestingModule } from '@angular/platform-browser/testing';
 import { Spectator, createComponentFactory } from '@ngneat/spectator';
-import { TabType } from '../../../inspector.model';
+import { Property, TabType } from '../../../inspector.model';
 
 import { InspectorTabComponent } from './inspector-tab.component';
 

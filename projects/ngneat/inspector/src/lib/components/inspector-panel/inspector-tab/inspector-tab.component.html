@@ -22,7 +22,9 @@
           *ngIf="
             !(
               type === TabType.properties &&
+              formValueType.at(0) &&
               formValueType.at(0).value !== PropertyValueType.array &&
+              formValueType.at(0) &&
               formValueType.at(0).value !== PropertyValueType.object
             )
           "
@@ -53,7 +55,9 @@
         class="col-auto"
         *ngIf="
           type === TabType.properties &&
+          formValueType.at(0) &&
           formValueType.at(0).value !== PropertyValueType.array &&
+          formValueType.at(0) &&
           formValueType.at(0).value !== PropertyValueType.object
         "
       >
