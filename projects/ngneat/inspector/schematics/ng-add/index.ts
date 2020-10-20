@@ -1,21 +1,44 @@
 import { Rule, Tree, SchematicsException, chain, SchematicContext } from '@angular-devkit/schematics';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
-import {
-  getProjectFromWorkspace,
-  getWorkspace,
-  getAppModulePath,
-  addPackageJsonDependency,
-  NodeDependency,
-  NodeDependencyType,
-  addModuleImportToRootModule,
-  WorkspaceProject,
-  targetBuildNotFoundError,
-} from 'schematics-utilities';
 import { insertImport, isImported } from '@schematics/angular/utility/ast-utils';
 import { InsertChange } from '@schematics/angular/utility/change';
+import { getWorkspace } from '@schematics/angular/utility/config';
+import { getAppModulePath } from '@schematics/angular/utility/ng-ast-utils';
 
 import { Schema } from './schema';
-import { getTsSourceFile } from './utils';
+import { addModuleImportToRootModule, addPackageToPackageJson, getProjectFromWorkspace, getSourceFile } from './utils';
+import { hasNgModuleImport } from './utils/ng-module-imports';
+import { targetBuildNotFoundError } from './utils/project-targets';
+
+// we don't need to add bootstrap in this, cz we are purely using scss format so it is bundled in our lib
+// @ngneat/inspector is added automatically in package.json, cz we have added below section in our package.json:
+// "ng-add": {
+// "save": "devDependencies"
+// }
+const dependencies = [
+  { version: '^2.1.0', name: '@ngstack/code-editor' },
+  { version: '^0.21.2', name: 'monaco-editor' },
+  { version: '^1.1.0', name: 'tinykeys' },
+];
+
+const importModuleSet = [
+  {
+    moduleName: 'environment',
+    importModuleStatement: 'environment',
+    importPath: '../environments/environment',
+    staticFile: true,
+  },
+  {
+    moduleName: 'InspectorModule',
+    importModuleStatement: 'environment.production ? [] : InspectorModule.forRoot()',
+    importPath: '@ngneat/inspector',
+  },
+  // {
+  //   moduleName: 'CodeEditorModule',
+  //   importModuleStatement: 'environment.production ? [] : CodeEditorModule.forRoot()',
+  //   importPath: '@ngstack/code-editor',
+  // },
+];
 
 export function ngAdd(options: Schema): Rule {
   return (tree: Tree) => {
@@ -35,22 +58,12 @@ export function ngAdd(options: Schema): Rule {
 
 function addDependencies(): Rule {
   return (host: Tree, context: SchematicContext) => {
-    // we don't need to add bootstrap in this, cz we are purely using scss format so it is bundled in our lib
-    const dependencies: NodeDependency[] = [
-      { type: NodeDependencyType.Dev, version: '^2.1.0', name: '@ngstack/code-editor' },
-      { type: NodeDependencyType.Dev, version: '^1.1.0', name: 'tinykeys' },
-    ];
+    context.logger.log('info', '✅️ Added "@ngneat/inspector" into devDependencies');
 
     dependencies.forEach((dependency) => {
-      addPackageJsonDependency(host, dependency);
-      context.logger.log('info', `✅️ Added "${dependency.name}" into ${dependency.type}`);
+      addPackageToPackageJson(host, dependency.name, `${dependency.version}`);
+      context.logger.log('info', `✅️ Added "${dependency.name}" into devDependencies`);
     });
-
-    // @ngneat/inspector is added automatically in package.json, cz we have added below section in our package.json:
-    // "ng-add": {
-    // "save": "devDependencies"
-    // }
-    context.logger.log('info', '✅️ Added "@ngneat/inspector" into devDependencies');
 
     return host;
   };
@@ -88,28 +101,22 @@ function injectImports(options: Schema): Rule {
       }
 
       const modulePath = getAppModulePath(host, project.architect.build.options.main);
-      const moduleSource = getTsSourceFile(host, modulePath);
-      const importModule = 'environment';
-      const importPath = '../environments/environment';
+      const moduleSource = getSourceFile(host, modulePath);
 
-      if (!isImported(moduleSource, importModule, importPath)) {
-        const change = insertImport(moduleSource, modulePath, importModule, importPath);
+      importModuleSet.forEach((item) => {
+        if (isImported(moduleSource, item.moduleName, item.importPath)) {
+          context.logger.warn(`Could not import "${item.moduleName}" because it's already imported.`);
+        } else {
+          const change = insertImport(moduleSource, modulePath, item.moduleName, item.importPath);
 
-        if (change) {
-          const recorder = host.beginUpdate(modulePath);
-          recorder.insertLeft((change as InsertChange).pos, (change as InsertChange).toAdd);
-          host.commitUpdate(recorder);
-          context.logger.log('info', '✅ Written import statement for "environments"');
+          if (change) {
+            const recorder = host.beginUpdate(modulePath);
+            recorder.insertLeft((change as InsertChange).pos, (change as InsertChange).toAdd);
+            host.commitUpdate(recorder);
+            context.logger.log('info', '✅ Written import statement for "' + item.moduleName + '"');
+          }
         }
-      }
-
-      const inspectorModuleChange = insertImport(moduleSource, modulePath, 'InspectorModule', '@ngneat/inspector');
-      if (inspectorModuleChange) {
-        const recorder = host.beginUpdate(modulePath);
-        recorder.insertLeft((inspectorModuleChange as InsertChange).pos, (inspectorModuleChange as InsertChange).toAdd);
-        host.commitUpdate(recorder);
-        context.logger.log('info', '✅ Written import statement for "InspectorModule"');
-      }
+      });
       return host;
     }
   };
@@ -127,12 +134,28 @@ function addModuleToImports(options: Schema): Rule {
       if (!project || project.projectType !== 'application') {
         throw new SchematicsException(`A client project type of "application" is required.`);
       }
+      if (!project.architect) {
+        throw new SchematicsException(`Architect options not present for project.`);
+      }
+      if (!project.architect.build) {
+        throw new SchematicsException(`Architect:Build options not present for project.`);
+      }
 
-      const importInspectorModule = 'environment.production ? [] : InspectorModule.forRoot()';
+      const modulePath = getAppModulePath(host, project.architect.build.options.main);
 
-      addModuleImportToRootModule(host, importInspectorModule, null as any, project as WorkspaceProject);
-
-      context.logger.log('info', '✅ Imported "InspectorModule" as non-production in imports');
+      importModuleSet.forEach((item) => {
+        if (!item.staticFile) {
+          if (
+            hasNgModuleImport(host, modulePath, item.importModuleStatement) ||
+            hasNgModuleImport(host, modulePath, item.moduleName)
+          ) {
+            context.logger.warn(`Could not set up "${item.moduleName}" in "imports[]" because it's already imported.`);
+          } else {
+            addModuleImportToRootModule(host, item.importModuleStatement, null as any, project);
+            context.logger.log('info', '✅ Imported "' + item.moduleName + '" as non-production in imports');
+          }
+        }
+      });
     }
 
     return host;
