@@ -19,6 +19,7 @@ import { InspectorTabComponent } from './inspector-tab/inspector-tab.component';
 })
 export class InspectorPanelComponent implements OnInit {
   @Input() ngComponent: NgComponent;
+  @Input() hideNonSupportedProps: boolean;
 
   activeTab: TabType;
   allTabs: { value: TabType; label: string }[] = [
@@ -61,6 +62,7 @@ export class InspectorPanelComponent implements OnInit {
 
     componentRef.instance.type = this.activeTab;
     componentRef.instance.members = this.ngComponent[this.activeTab];
+    componentRef.instance.hideNonSupportedProps = this.hideNonSupportedProps;
     const tabEmitter = componentRef.instance.emitter;
     this.tabEmitter$ = tabEmitter.subscribe((val: TabOutput) => {
       if (this.activeTab === TabType.properties) {

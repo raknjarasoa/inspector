@@ -24,6 +24,8 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   position: InspectorConfigPosition = {};
   keyCombo: string;
   closeOnEsc: boolean;
+  enableKeyCombo: boolean;
+  hideNonSupportedProps: boolean;
 
   private escKeySub$: Subscription;
   private mouseOver$: Subscription;
@@ -37,7 +39,9 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   constructor(private host: ElementRef<HTMLElement>) {}
 
   ngOnInit(): void {
-    this.listenForKeyboardShortcut();
+    if (this.enableKeyCombo) {
+      this.listenForKeyboardShortcut();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -177,7 +181,7 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   listenForKeyboardShortcut(): void {
     tinykeys(window, {
       [this.keyCombo]: () => {
-        if (!this.isEnabled) {
+        if (!this.isEnabled && !this.isExpanded) {
           this.startInspecting();
         } else {
           this.collapseInspectorPanel();

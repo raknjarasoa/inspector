@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-child',
@@ -12,6 +13,7 @@ export class ChildComponent implements OnInit {
   bool = false;
   arr = ['a', 'b'];
   obj = { a: 'a', b: 'b' };
+  sub = new Subject();
   @Output() callParent = new EventEmitter();
   constructor() {}
 

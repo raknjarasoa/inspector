@@ -20,6 +20,8 @@ describe('InspectorComponent', () => {
         position: defaultConfig.position,
         keyCombo: defaultConfig.keyCombo,
         closeOnEsc: defaultConfig.closeOnEsc,
+        enableKeyCombo: defaultConfig.enableKeyCombo,
+        hideNonSupportedProps: defaultConfig.hideNonSupportedProps,
       },
     });
 

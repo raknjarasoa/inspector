@@ -23,7 +23,9 @@ export class InspectorConfig {
   };
   position: InspectorConfigPosition = { top: '20px', right: '20px' };
   keyCombo = 'Shift+I';
+  enableKeyCombo = true;
   closeOnEsc = true;
+  hideNonSupportedProps = true;
 }
 
 export interface NG {

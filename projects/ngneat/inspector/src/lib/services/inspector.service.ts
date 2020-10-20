@@ -18,6 +18,8 @@ export class InspectorService {
   private _position = this._defaultConfig.position;
   private _keyCombo = this._defaultConfig.keyCombo;
   private _closeOnEsc = this._defaultConfig.closeOnEsc;
+  private _enableKeyCombo = this._defaultConfig.enableKeyCombo;
+  private _hideNonSupportedProps = this._defaultConfig.hideNonSupportedProps;
 
   constructor(private injector: Injector, @Optional() config: InspectorConfig) {
     if (config) {
@@ -33,6 +35,12 @@ export class InspectorService {
       this._closeOnEsc = Object.prototype.hasOwnProperty.call(config, 'closeOnEsc')
         ? config.closeOnEsc
         : this._closeOnEsc;
+      this._enableKeyCombo = Object.prototype.hasOwnProperty.call(config, 'enableKeyCombo')
+        ? config.enableKeyCombo
+        : this._enableKeyCombo;
+      this._hideNonSupportedProps = Object.prototype.hasOwnProperty.call(config, 'hideNonSupportedProps')
+        ? config.hideNonSupportedProps
+        : this._hideNonSupportedProps;
     }
   }
 
@@ -47,6 +55,8 @@ export class InspectorService {
       componentRef.instance.position = this._position;
       componentRef.instance.keyCombo = this._keyCombo;
       componentRef.instance.closeOnEsc = this._closeOnEsc;
+      componentRef.instance.enableKeyCombo = this._enableKeyCombo;
+      componentRef.instance.hideNonSupportedProps = this._hideNonSupportedProps;
 
       // 2. Attach component to the appRef so that it's inside the ng component tree
       appRef.attachView(componentRef.hostView);
