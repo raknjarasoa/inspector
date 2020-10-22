@@ -15,7 +15,7 @@ export type InspectorConfigPosition = {
 
 export class InspectorConfig {
   enabled = true;
-  zIndex = 1;
+  zIndex = 100000000;
   outline: InspectorConfigOutline = {
     color: '#ad1fe3',
     width: '2px',
