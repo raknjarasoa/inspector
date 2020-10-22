@@ -16,8 +16,7 @@ import { targetBuildNotFoundError } from './utils/project-targets';
 // "save": "devDependencies"
 // }
 const dependencies = [
-  { version: '^2.1.0', name: '@ngstack/code-editor' },
-  { version: '^0.21.2', name: 'monaco-editor' },
+  { version: '^1.4.12', name: 'ace-builds' },
   { version: '^1.1.0', name: 'tinykeys' },
 ];
 
@@ -32,11 +31,6 @@ const importModuleSet = [
     moduleName: 'InspectorModule',
     importModuleStatement: 'environment.production ? [] : InspectorModule.forRoot()',
     importPath: '@ngneat/inspector',
-  },
-  {
-    moduleName: 'CodeEditorModule',
-    importModuleStatement: 'environment.production ? [] : CodeEditorModule.forRoot()',
-    importPath: '@ngstack/code-editor',
   },
 ];
 

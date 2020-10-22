@@ -15,11 +15,5 @@
     "paths": {
       "@ngneat/inspector": ["projects/ngneat/inspector/src/public-api.ts"]
     }
-  },
-  "angularCompilerOptions": {
-    // https://github.com/angular/angular/issues/23609#issuecomment-386876693
-    "skipTemplateCodegen": true,
-    "strictMetadataEmit": true,
-    "fullTemplateTypeCheck": true
   }
 }

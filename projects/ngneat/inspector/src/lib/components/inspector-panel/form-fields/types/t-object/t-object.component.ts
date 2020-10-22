@@ -1,25 +1,34 @@
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { InputComponent } from '../../type-selector/type-selector.component';
-import { CodeModel } from '@ngstack/code-editor';
-import { editor } from 'monaco-editor';
+import * as ace from 'ace-builds';
 
 @Component({
   selector: 'ngneat-t-array',
   templateUrl: './t-object.component.html',
   styles: [],
 })
-export class TObjectComponent implements OnInit, InputComponent {
+export class TObjectComponent implements OnInit, InputComponent, AfterViewInit {
   @Input() formControl: FormControl;
   @Input() inputId: string;
   @Input() fieldType: string;
-  codeModel: CodeModel = { language: 'json', uri: '', value: '{}' };
-  editorOptions: editor.IEditorOptions = { automaticLayout: true };
+  @ViewChild('editor') editor: ElementRef<HTMLElement>;
   constructor(private elementRef: ElementRef) {}
 
-  ngOnInit(): void {
-    this.codeModel.value = this.formControl.value;
-    this.codeModel.uri = 'main' + this.inputId + '.json';
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
+    const editorElement = this.editor.nativeElement;
+    ace.config.set('basePath', 'https://unpkg.com/ace-builds@1.4.12/src-noconflict');
+    const aceEditor = ace.edit(editorElement);
+    aceEditor.setTheme('ace/theme/tomorrow');
+    aceEditor.session.setMode('ace/mode/javascript');
+    aceEditor.setOption('hScrollBarAlwaysVisible', true);
+    aceEditor.setOption('vScrollBarAlwaysVisible', true);
+    aceEditor.session.setValue(this.formControl.value);
+    aceEditor.on('change', () => {
+      this.formControl.setValue(aceEditor.getValue());
+    });
   }
 
   addClass(className: string): void {
