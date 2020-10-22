@@ -21,7 +21,7 @@ export class TypeSelectorComponent implements OnInit {
   @Input() appendButton: string;
   @Input() inputId: string;
   @Output() appendButtonClick = new EventEmitter();
-  @ViewChild(FieldHostDirective, { static: true }) adHost: FieldHostDirective;
+  @ViewChild(FieldHostDirective, { static: true }) fieldHost: FieldHostDirective;
 
   typesToSelect: { [key in PropertyValueType]: { component: any } } = {
     [PropertyValueType.array]: {
@@ -61,7 +61,7 @@ export class TypeSelectorComponent implements OnInit {
 
       const componentFactory = this.componentFactoryResolver.resolveComponentFactory<InputComponent>(component);
 
-      const viewContainerRef = this.adHost.viewContainerRef;
+      const viewContainerRef = this.fieldHost.viewContainerRef;
       viewContainerRef.clear();
 
       const componentRef = viewContainerRef.createComponent<InputComponent>(componentFactory);

@@ -14,18 +14,12 @@ export class TObjectComponent implements OnInit, InputComponent {
   @Input() inputId: string;
   @Input() fieldType: string;
   codeModel: CodeModel = { language: 'json', uri: '', value: '{}' };
-  editorOptions: editor.IEditorOptions = {};
-  show = false;
+  editorOptions: editor.IEditorOptions = { automaticLayout: true };
   constructor(private elementRef: ElementRef) {}
 
   ngOnInit(): void {
     this.codeModel.value = this.formControl.value;
     this.codeModel.uri = 'main' + this.inputId + '.json';
-
-    // a tick's delay is needed to properly render editor
-    setTimeout(() => {
-      this.show = true;
-    });
   }
 
   addClass(className: string): void {

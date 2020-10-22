@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = new Subject();
+  title = {};
 
   callParent(): void {
     console.log('Parent called');

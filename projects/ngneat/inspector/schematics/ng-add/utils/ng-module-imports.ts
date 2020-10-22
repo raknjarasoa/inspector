@@ -49,7 +49,7 @@ export function hasNgModuleImport(tree: Tree, modulePath: string, className: str
     }
 
     /* tslint:disable-next-line: no-any */
-    if (property.initializer.elements.some((element: any) => element.getText() === className)) {
+    if (property.initializer.elements.some((element: ts.Identifier) => element.getText().includes(className))) {
       return true;
     }
   }

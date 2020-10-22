@@ -33,11 +33,11 @@ const importModuleSet = [
     importModuleStatement: 'environment.production ? [] : InspectorModule.forRoot()',
     importPath: '@ngneat/inspector',
   },
-  // {
-  //   moduleName: 'CodeEditorModule',
-  //   importModuleStatement: 'environment.production ? [] : CodeEditorModule.forRoot()',
-  //   importPath: '@ngstack/code-editor',
-  // },
+  {
+    moduleName: 'CodeEditorModule',
+    importModuleStatement: 'environment.production ? [] : CodeEditorModule.forRoot()',
+    importPath: '@ngstack/code-editor',
+  },
 ];
 
 export function ngAdd(options: Schema): Rule {
@@ -145,10 +145,7 @@ function addModuleToImports(options: Schema): Rule {
 
       importModuleSet.forEach((item) => {
         if (!item.staticFile) {
-          if (
-            hasNgModuleImport(host, modulePath, item.importModuleStatement) ||
-            hasNgModuleImport(host, modulePath, item.moduleName)
-          ) {
+          if (hasNgModuleImport(host, modulePath, item.moduleName)) {
             context.logger.warn(`Could not set up "${item.moduleName}" in "imports[]" because it's already imported.`);
           } else {
             addModuleImportToRootModule(host, item.importModuleStatement, null as any, project);

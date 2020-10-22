@@ -40,7 +40,7 @@ import { init } from './init';
     DragNDropDirective,
     DragHandleDirective,
   ],
-  imports: [BrowserModule, BrowserAnimationsModule, ReactiveFormsModule, CodeEditorModule.forRoot()],
+  imports: [BrowserModule, BrowserAnimationsModule, ReactiveFormsModule, CodeEditorModule.forChild()],
   exports: [InspectorComponent],
   providers: [InspectorService],
 })

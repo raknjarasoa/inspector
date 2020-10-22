@@ -39,36 +39,39 @@ export class InspectorTabComponent implements OnInit, TabComponent {
       this.membersToShow = this.members.slice();
     }
     if (this.membersToShow.length) {
-      const { selectedPropertyName, selectedPropertyValueList } = this.getFormData(this.membersToShow[0]);
-      if (selectedPropertyName && selectedPropertyValueList.length) {
-        this.formName.setValue(selectedPropertyName);
-        selectedPropertyValueList.forEach((i) => {
-          this.formValue.push(new FormControl(i));
-          this.formValueType.push(new FormControl(i.constructor.name));
-        });
-      }
+      setTimeout(() => {
+        const { selectedPropertyName, selectedPropertyValueList } = this.getFormData(this.membersToShow[0]);
+        if (selectedPropertyName && selectedPropertyValueList.length) {
+          this.formName.setValue(selectedPropertyName);
+          this.updateFormData(selectedPropertyValueList);
+        }
 
-      this.formName.valueChanges.subscribe((name: string) => {
-        this.formValue.clear();
-        this.formValueType.clear();
-        const { selectedPropertyValueList: updatedValueList } = this.getFormData(
-          this.members.filter((item) => item.name === name)[0]
-        );
-
-        updatedValueList.forEach((i) => {
-          const valueType: PropertyValueType = i.constructor.name;
-          this.formValue.push(
-            new FormControl(
-              valueType === PropertyValueType.array || valueType === PropertyValueType.object
-                ? JSON.stringify(i, null, 2)
-                : i,
-              valueType === PropertyValueType.array || valueType === PropertyValueType.object ? jsonValidator : null
-            )
+        this.formName.valueChanges.subscribe((name: string) => {
+          const { selectedPropertyValueList: updatedValueList } = this.getFormData(
+            this.members.filter((item) => item.name === name)[0]
           );
-          this.formValueType.push(new FormControl(valueType));
+
+          this.updateFormData(updatedValueList);
         });
       });
     }
+  }
+
+  private updateFormData(updatedValueList: any[]): void {
+    this.formValue.clear();
+    this.formValueType.clear();
+    updatedValueList.forEach((i) => {
+      const valueType: PropertyValueType = i.constructor.name;
+      this.formValue.push(
+        new FormControl(
+          valueType === PropertyValueType.array || valueType === PropertyValueType.object
+            ? JSON.stringify(i, null, 2)
+            : i,
+          valueType === PropertyValueType.array || valueType === PropertyValueType.object ? jsonValidator : null
+        )
+      );
+      this.formValueType.push(new FormControl(valueType));
+    });
   }
 
   private getFormData(
