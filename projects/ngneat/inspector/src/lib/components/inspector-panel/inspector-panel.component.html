@@ -12,6 +12,9 @@
         </li>
       </ng-container>
     </ul>
+    <p *ngIf="!tabsToShow.length" class="mt-3">
+      <i>There are no supported properties in this component, which can be changed by inspector.</i>
+    </p>
     <div class="tab-content">
       <ng-template ngneatTabHost></ng-template>
     </div>

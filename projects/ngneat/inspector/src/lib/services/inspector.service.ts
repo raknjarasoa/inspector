@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { InspectorComponent } from '../inspector.component';
 import { InspectorConfig } from '../inspector.model';
+import { config } from 'ace-builds';
 
 @Injectable()
 export class InspectorService {
@@ -20,6 +21,7 @@ export class InspectorService {
   private _closeOnEsc = this._defaultConfig.closeOnEsc;
   private _enableKeyCombo = this._defaultConfig.enableKeyCombo;
   private _hideNonSupportedProps = this._defaultConfig.hideNonSupportedProps;
+  private _filterProps = this._defaultConfig.filterProps;
 
   constructor(private injector: Injector, @Optional() config: InspectorConfig) {
     if (config) {
@@ -41,11 +43,16 @@ export class InspectorService {
       this._hideNonSupportedProps = Object.prototype.hasOwnProperty.call(config, 'hideNonSupportedProps')
         ? config.hideNonSupportedProps
         : this._hideNonSupportedProps;
+      this._filterProps = Object.prototype.hasOwnProperty.call(config, 'filterProps')
+        ? config.filterProps
+        : this._filterProps;
     }
   }
 
   init(): void {
     if (this._enabled) {
+      config.set('basePath', 'https://unpkg.com/ace-builds@1.4.12/src-noconflict');
+
       const appRef = this.injector.get(ApplicationRef);
       const componentFactoryResolver = this.injector.get(ComponentFactoryResolver);
 
@@ -57,6 +64,7 @@ export class InspectorService {
       componentRef.instance.closeOnEsc = this._closeOnEsc;
       componentRef.instance.enableKeyCombo = this._enableKeyCombo;
       componentRef.instance.hideNonSupportedProps = this._hideNonSupportedProps;
+      componentRef.instance.filterProps = this._filterProps;
 
       // 2. Attach component to the appRef so that it's inside the ng component tree
       appRef.attachView(componentRef.hostView);

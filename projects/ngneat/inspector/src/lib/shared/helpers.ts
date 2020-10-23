@@ -1,25 +1,16 @@
-import { FunctionOrOutput, NG, NgComponent, Property, TabType } from '../inspector.model';
+import { FunctionOrOutput, NG, NgComponent, Property, PropertyValueType, TabType } from '../inspector.model';
 
 declare const ng: NG;
 
-const nonFunctionNames = [
-  'constructor',
-  'ngOnChanges',
-  'ngOnInit',
-  'ngDoCheck',
-  'ngAfterContentInit',
-  'ngAfterContentChecked',
-  'ngAfterViewInit',
-  'ngAfterViewChecked',
-  'ngOnDestroy',
-];
+const supportedTypes: any[] = Object.values(PropertyValueType);
+supportedTypes.push('EventEmitter_');
 
 /**
  * Get processed component from ng.getComponent or ng.getOwningComponent
  *
  * @export
  */
-export function getNgComponent(element: HTMLElement): NgComponent {
+export function getNgComponent(element: HTMLElement, hideNonSupportedProps: boolean, filterProps: RegExp): NgComponent {
   const ngRawComponent = ng.getComponent(element) || ng.getOwningComponent(element);
   const componentName = ngRawComponent.constructor.name;
   const hostElement = ng.getHostElement(ngRawComponent);
@@ -37,7 +28,11 @@ export function getNgComponent(element: HTMLElement): NgComponent {
   const outputs: FunctionOrOutput[] = [];
 
   Object.keys(ngRawComponent)
-    .filter((v) => v !== '__ngContext__')
+    .filter(
+      (v) =>
+        (filterProps ? v.search(filterProps) < 0 : true) &&
+        (hideNonSupportedProps ? supportedTypes.includes(ngRawComponent[v].constructor.name) : true)
+    )
     .forEach((propName) => {
       const componentPropValueOrFunction = ngRawComponent[propName];
       const propType: 'input' | 'output' =

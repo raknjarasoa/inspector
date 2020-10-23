@@ -26,6 +26,7 @@ export class InspectorConfig {
   enableKeyCombo = true;
   closeOnEsc = true;
   hideNonSupportedProps = true;
+  filterProps = /(^__)\w*/g;
 }
 
 export interface NG {

@@ -21,10 +21,7 @@
         </button>
       </div>
       <ng-container *ngIf="!isErrored; else errorTemplate">
-        <ngneat-inspector-panel
-          [ngComponent]="activeComponent"
-          [hideNonSupportedProps]="hideNonSupportedProps"
-        ></ngneat-inspector-panel>
+        <ngneat-inspector-panel [ngComponent]="activeComponent"></ngneat-inspector-panel>
       </ng-container>
       <ng-template #errorTemplate>
         <h3 class="ml-2 text-danger">Error while generating component!</h3>

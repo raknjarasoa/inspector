@@ -1,7 +1,7 @@
-<p *ngIf="!membersToShow.length">
+<p *ngIf="!members.length">
   <i>There are no supported properties in this component, which can be changed by inspector.</i>
 </p>
-<form [formGroup]="form" novalidate *ngIf="membersToShow.length">
+<form [formGroup]="form" novalidate *ngIf="members.length">
   <div class="container-fluid px-0">
     <div class="row no-gutters align-items-center">
       <div class="col-auto mb-3 mr-1">
@@ -9,7 +9,7 @@
       </div>
       <div class="col-auto mb-3 mx-1">
         <select class="custom-select" formControlName="name">
-          <option *ngFor="let item of membersToShow; let i = index" [value]="item.name">
+          <option *ngFor="let item of members; let i = index" [value]="item.name">
             {{ item.name }}
           </option>
         </select>

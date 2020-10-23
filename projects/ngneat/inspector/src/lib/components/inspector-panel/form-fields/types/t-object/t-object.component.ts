@@ -19,7 +19,6 @@ export class TObjectComponent implements OnInit, InputComponent, AfterViewInit {
 
   ngAfterViewInit(): void {
     const editorElement = this.editor.nativeElement;
-    ace.config.set('basePath', 'https://unpkg.com/ace-builds@1.4.12/src-noconflict');
     const aceEditor = ace.edit(editorElement);
     aceEditor.setTheme('ace/theme/tomorrow');
     aceEditor.session.setMode('ace/mode/javascript');

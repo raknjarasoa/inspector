@@ -26,6 +26,7 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   closeOnEsc: boolean;
   enableKeyCombo: boolean;
   hideNonSupportedProps: boolean;
+  filterProps: RegExp;
 
   activeElement: HTMLElement;
   activeElementOriginalOutline: string;
@@ -83,7 +84,7 @@ export class InspectorComponent implements OnInit, AfterViewInit {
 
         // read component
         try {
-          this.activeComponent = getNgComponent(this.activeElement);
+          this.activeComponent = getNgComponent(this.activeElement, this.hideNonSupportedProps, this.filterProps);
         } catch (e) {
           this.isErrored = true;
         }

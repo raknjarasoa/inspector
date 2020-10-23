@@ -16,8 +16,6 @@ import { jsonValidator } from '../../../shared/json-validator';
 })
 export class InspectorTabComponent implements OnInit, TabComponent {
   members: (Property | FunctionOrOutput)[];
-  membersToShow: (Property | FunctionOrOutput)[];
-  hideNonSupportedProps: boolean;
   type: TabType;
   emitter: EventEmitter<TabOutput> = new EventEmitter();
   form = new FormGroup({
@@ -30,29 +28,19 @@ export class InspectorTabComponent implements OnInit, TabComponent {
   constructor() {}
 
   ngOnInit(): void {
-    if (this.hideNonSupportedProps) {
-      this.membersToShow = this.members.filter(
-        (i) =>
-          !((i as Property).value && !Object.values(PropertyValueType).includes((i as Property).value.constructor.name))
-      );
-    } else {
-      this.membersToShow = this.members.slice();
-    }
-    if (this.membersToShow.length) {
-      setTimeout(() => {
-        const { selectedPropertyName, selectedPropertyValueList } = this.getFormData(this.membersToShow[0]);
-        if (selectedPropertyName && selectedPropertyValueList.length) {
-          this.formName.setValue(selectedPropertyName);
-          this.updateFormData(selectedPropertyValueList);
-        }
+    if (this.members.length) {
+      const { selectedPropertyName, selectedPropertyValueList } = this.getFormData(this.members[0]);
+      if (selectedPropertyName && selectedPropertyValueList.length) {
+        this.formName.setValue(selectedPropertyName);
+        this.updateFormData(selectedPropertyValueList);
+      }
 
-        this.formName.valueChanges.subscribe((name: string) => {
-          const { selectedPropertyValueList: updatedValueList } = this.getFormData(
-            this.members.filter((item) => item.name === name)[0]
-          );
+      this.formName.valueChanges.subscribe((name: string) => {
+        const { selectedPropertyValueList: updatedValueList } = this.getFormData(
+          this.members.filter((item) => item.name === name)[0]
+        );
 
-          this.updateFormData(updatedValueList);
-        });
+        this.updateFormData(updatedValueList);
       });
     }
   }
