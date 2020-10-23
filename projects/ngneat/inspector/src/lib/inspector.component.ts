@@ -27,9 +27,13 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   enableKeyCombo: boolean;
   hideNonSupportedProps: boolean;
 
+  activeElement: HTMLElement;
+  activeElementOriginalOutline: string;
+
   private escKeySub$: Subscription;
   private mouseOver$: Subscription;
   private mouseClick$: Subscription;
+  private mouseOut$: Subscription;
 
   activeComponent: NgComponent;
 
@@ -58,68 +62,70 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   startInspecting(): void {
     this.isEnabled = true;
 
-    let element: HTMLElement;
-    let originalOutline: string;
-    const endMouseClick$ = new Subject();
-    const endMouseOut$ = new Subject();
-
     this.escKeySub$ = this.escapeKeyDown(document).subscribe(() => {
-      if (this.isEnabled) {
-        if (element && originalOutline !== undefined) {
-          element.style.outline = originalOutline;
-        }
-        this.stopInspecting();
-      } else {
-        this.collapseInspectorPanel();
-      }
+      this.closeInspector();
     });
 
     this.mouseOver$ = this.documentMouseOver(this.origin).subscribe((ev: MouseEvent) => {
       if (ev.target instanceof HTMLElement) {
-        element = ev.target as HTMLElement;
-        originalOutline = element.style.outline;
-        this.highlightElement(element, originalOutline, endMouseOut$);
+        this.activeElement = ev.target as HTMLElement;
+        this.activeElementOriginalOutline = this.activeElement.style.outline;
+        this.highlightElement();
       }
     });
 
-    this.mouseClick$ = this.documentMouseClick(this.origin)
-      .pipe(takeUntil(endMouseClick$))
-      .subscribe((ev: MouseEvent) => {
-        if (ev.target instanceof HTMLElement && ev.target === element) {
-          ev.preventDefault();
-          ev.stopImmediatePropagation();
-          ev.stopPropagation();
-          element.style.outline = originalOutline;
-          endMouseClick$.next();
-          endMouseOut$.next();
+    this.mouseClick$ = this.documentMouseClick(this.origin).subscribe((ev: MouseEvent) => {
+      if (ev.target instanceof HTMLElement && ev.target === this.activeElement) {
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+        ev.stopPropagation();
+        this.activeElement.style.outline = this.activeElementOriginalOutline;
 
-          // read component
-          try {
-            this.activeComponent = getNgComponent(element);
-          } catch (e) {
-            this.isErrored = true;
-          }
-          this.stopInspecting();
-          this.expandInspectorPanel();
+        // read component
+        try {
+          this.activeComponent = getNgComponent(this.activeElement);
+        } catch (e) {
+          this.isErrored = true;
         }
-      });
+        this.stopInspecting();
+        this.expandInspectorPanel();
+      }
+    });
   }
 
-  private highlightElement(element: HTMLElement, originalOutline: string, endMouseOut$: Subject<any>): void {
-    element.style.outline = `${this.outline.width} ${this.outline.style} ${this.outline.color}`;
-
-    this.listenElementMouseOut(element, endMouseOut$, originalOutline);
+  closeInspector(): void {
+    if (this.isEnabled) {
+      if (this.activeElement && this.activeElementOriginalOutline !== undefined) {
+        this.activeElement.style.outline = this.activeElementOriginalOutline;
+      }
+      this.stopInspecting();
+    }
+    this.reset();
   }
 
-  private listenElementMouseOut(element: HTMLElement, endMouseOut$: Subject<unknown>, originalOutline: string): void {
-    fromEvent(element, 'mouseout')
-      .pipe(
-        takeUntil(endMouseOut$),
-        takeWhile(() => this.isEnabled)
-      )
+  private reset(): void {
+    this.mouseOver$.unsubscribe();
+    this.mouseOut$.unsubscribe();
+    this.mouseClick$.unsubscribe();
+    this.escKeySub$.unsubscribe();
+    this.isExpanded = false;
+    this.ngneatDrag.resetPosition();
+    this.activeComponent = null;
+    this.activeElement = null;
+    this.activeElementOriginalOutline = undefined;
+  }
+
+  private highlightElement(): void {
+    this.activeElement.style.outline = `${this.outline.width} ${this.outline.style} ${this.outline.color}`;
+
+    this.mouseOut$ = this.listenElementMouseOut();
+  }
+
+  private listenElementMouseOut(): Subscription {
+    return fromEvent(this.activeElement, 'mouseout', { once: true })
+      .pipe(takeWhile(() => this.isEnabled))
       .subscribe(() => {
-        element.style.outline = originalOutline;
-        endMouseOut$.next();
+        this.activeElement.style.outline = this.activeElementOriginalOutline;
       });
   }
 
@@ -137,12 +143,6 @@ export class InspectorComponent implements OnInit, AfterViewInit {
 
   expandInspectorPanel(): void {
     this.isExpanded = true;
-  }
-
-  collapseInspectorPanel(): void {
-    this.isExpanded = false;
-    this.ngneatDrag.resetPosition();
-    this.activeComponent = null;
   }
 
   escapeKeyDown(target: HTMLElement | Document): Observable<KeyboardEvent> {
@@ -167,7 +167,7 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   }
 
   documentMouseClick(origin: HTMLElement): Observable<MouseEvent> {
-    return fromEvent<MouseEvent>(document, 'click', { capture: true }).pipe(
+    return fromEvent<MouseEvent>(document, 'click', { capture: true, once: true }).pipe(
       filter((ev: MouseEvent) => {
         const overTarget = ev.target as HTMLElement;
         const notBody = overTarget.tagName.toUpperCase() !== 'BODY';
@@ -181,11 +181,13 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   listenForKeyboardShortcut(): void {
     tinykeys(window, {
       [this.keyCombo]: () => {
-        if (!this.isEnabled && !this.isExpanded) {
+        if (!this.isEnabled && !this.activeComponent) {
+          this.startInspecting();
+        } else if (this.isExpanded) {
+          this.closeInspector();
           this.startInspecting();
         } else {
-          this.collapseInspectorPanel();
-          this.stopInspecting();
+          this.closeInspector();
         }
       },
     });
