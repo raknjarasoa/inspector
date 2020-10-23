@@ -26,7 +26,6 @@ describe('InspectorPanelComponent', () => {
     spectator = createComponent({
       props: {
         ngComponent: dummyNgComponent,
-        hideNonSupportedProps: true,
       },
     });
   });

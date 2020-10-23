@@ -16,7 +16,6 @@ describe('InspectorTabComponent', () => {
       props: {
         members: [],
         type: TabType.properties,
-        hideNonSupportedProps: true,
       },
     });
   });
