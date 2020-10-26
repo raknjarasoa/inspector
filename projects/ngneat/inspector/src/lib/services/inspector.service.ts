@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { InspectorComponent } from '../inspector.component';
 import { InspectorConfig } from '../inspector.model';
-import { config } from 'ace-builds';
+import { config as aceConfig } from 'ace-builds';
 
 @Injectable()
 export class InspectorService {
@@ -51,8 +51,8 @@ export class InspectorService {
 
   init(): void {
     if (this._enabled) {
-      config.set('basePath', 'https://unpkg.com/ace-builds@1.4.12/src-noconflict');
-
+      aceConfig.set('basePath', 'https://unpkg.com/ace-builds@1.4.12/src-noconflict');
+      aceConfig.set('fontSize', '14px');
       const appRef = this.injector.get(ApplicationRef);
       const componentFactoryResolver = this.injector.get(ComponentFactoryResolver);
 
