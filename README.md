@@ -14,6 +14,10 @@
 
 > An angular library that lets you inspect and change Angular component properties
 
+<p align="center">
+ <img src="./inspector.gif">
+</p>
+
 ## Features <!-- omit in toc -->
 
 - ✅ Inspect Angular components on the fly

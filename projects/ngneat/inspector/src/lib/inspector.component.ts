@@ -184,12 +184,13 @@ export class InspectorComponent implements OnInit, AfterViewInit {
       [this.keyCombo]: () => {
         if (!this.isEnabled && !this.activeComponent) {
           this.startInspecting();
-        } else if (this.isExpanded) {
-          this.closeInspector();
-          this.startInspecting();
-        } else {
-          this.closeInspector();
         }
+        // else if (this.isExpanded) {
+        //   this.closeInspector();
+        //   this.startInspecting();
+        // } else {
+        //   this.closeInspector();
+        // }
       },
     });
   }
