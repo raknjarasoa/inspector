@@ -1,3 +1,4 @@
+<!-- markdownlint-disable -->
 <p align="center">
  <img width="20%" height="20%" src="./logo.svg">
 </p>
@@ -15,8 +16,13 @@
 > An angular library that lets you inspect and change Angular component properties
 
 <p align="center">
- <img src="./inspector.gif">
+  <video autoplay loop style="max-width: 100%; height: auto">
+    <source src="./inspector.mp4" type="video/mp4" />
+  </video>
 </p>
+
+
+<!-- markdownlint-restore -->
 
 ## Features <!-- omit in toc -->
 

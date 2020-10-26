@@ -17,7 +17,7 @@
     "release": "cd projects/ngneat/inspector && standard-version --infile ../../../CHANGELOG.md",
     "test:lib:headless": "cross-env CI=true npm run test:lib",
     "e2e": "ng e2e",
-    "copy:readme-assets": "cpx \"{README.md,logo.svg}\" ./dist/ngneat/inspector",
+    "copy:readme-assets": "cpx \"{README.md,logo.svg,inspector.gif,inspector.mp4}\" ./dist/ngneat/inspector",
     "postbuild": "npm run copy:readme-assets && npm run build --prefix ./projects/ngneat/inspector",
     "postbuild:prod": "npm run copy:readme-assets && npm run build --prefix ./projects/ngneat/inspector"
   },
