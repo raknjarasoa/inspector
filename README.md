@@ -48,9 +48,9 @@ ng add @ngneat/inspector
 Above command will do following for you:
 
 1. Add and install following dev dependencies:
-   1. @ngneat/inspector
-   2. ace-builds
-   3. tinykeys
+   1. [@ngneat/inspector](https://www.npmjs.com/package/@ngneat/inspector)
+   2. [ace-builds](https://www.npmjs.com/package/ace-builds)
+   3. [tinykeys](https://www.npmjs.com/package/tinykeys)
 2. Import `environments` from `../environments/environment.ts` in projects root module. *This can be skipped with `--skipImport`.*
 3. Import `InspectorModule` from `@ngneat/inspector` in your project's root module's `imports` section. This is a conditional import, it shouldn't be part of your production build. *This can be skipped with `--skipImport`.*
 
