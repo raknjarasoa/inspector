@@ -6,20 +6,9 @@ import { getWorkspace } from '@schematics/angular/utility/config';
 import { getAppModulePath } from '@schematics/angular/utility/ng-ast-utils';
 
 import { Schema } from './schema';
-import { addModuleImportToRootModule, addPackageToPackageJson, getProjectFromWorkspace, getSourceFile } from './utils';
+import { addModuleImportToRootModule, getProjectFromWorkspace, getSourceFile } from './utils';
 import { hasNgModuleImport } from './utils/ng-module-imports';
 import { targetBuildNotFoundError } from './utils/project-targets';
-
-// we don't need to add bootstrap in this, cz we are purely using scss format so it is bundled in our lib
-// @ngneat/inspector is added automatically in package.json, cz we have added below section in our package.json:
-// "ng-add": {
-// "save": "devDependencies"
-// }
-const dependencies = [
-  { version: '^1.4.12', name: 'ace-builds' },
-  { version: '^1.1.0', name: 'tinykeys' },
-];
-
 const importModuleSet = [
   {
     moduleName: 'environment',
@@ -41,25 +30,7 @@ export function ngAdd(options: Schema): Rule {
       throw new SchematicsException('Could not find Angular workspace configuration');
     }
 
-    return chain([
-      addDependencies(),
-      installPackageJsonDependencies(),
-      injectImports(options),
-      addModuleToImports(options),
-    ]);
-  };
-}
-
-function addDependencies(): Rule {
-  return (host: Tree, context: SchematicContext) => {
-    context.logger.log('info', '✅️ Added "@ngneat/inspector" into devDependencies');
-
-    dependencies.forEach((dependency) => {
-      addPackageToPackageJson(host, dependency.name, `${dependency.version}`);
-      context.logger.log('info', `✅️ Added "${dependency.name}" into devDependencies`);
-    });
-
-    return host;
+    return chain([installPackageJsonDependencies(), injectImports(options), addModuleToImports(options)]);
   };
 }
 
