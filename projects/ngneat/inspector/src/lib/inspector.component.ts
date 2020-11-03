@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { fromEvent, Observable, Subject, Subscription } from 'rxjs';
-import { filter, takeUntil, takeWhile } from 'rxjs/operators';
-import tinykeys, { KeyBindingMap } from 'tinykeys';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { fromEvent, Observable, Subscription } from 'rxjs';
+import { filter, takeWhile } from 'rxjs/operators';
+import tinykeys from 'tinykeys';
 import { DragNDropDirective } from './directives/drag-n-drop.directive';
 import { InspectorConfigOutline, InspectorConfigPosition, NgComponent } from './inspector.model';
 import { getNgComponent } from './shared/helpers';
@@ -12,7 +12,7 @@ import { getNgComponent } from './shared/helpers';
   styleUrls: ['../styles/main.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class InspectorComponent implements OnInit, AfterViewInit {
+export class InspectorComponent implements OnInit, AfterViewInit, OnDestroy {
   isEnabled = false;
   isHidden = false;
   isExpanded = false;
@@ -31,10 +31,10 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   activeElement: HTMLElement;
   activeElementOriginalOutline: string;
 
-  private escKeySub$: Subscription;
-  private mouseOver$: Subscription;
-  private mouseClick$: Subscription;
-  private mouseOut$: Subscription;
+  private escKeySub: Subscription;
+  private mouseOverSub: Subscription;
+  private mouseClickSub: Subscription;
+  private mouseOutSub: Subscription;
 
   activeComponent: NgComponent;
 
@@ -63,11 +63,11 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   startInspecting(): void {
     this.isEnabled = true;
 
-    this.escKeySub$ = this.escapeKeyDown(document).subscribe(() => {
+    this.escKeySub = this.escapeKeyDown(document).subscribe(() => {
       this.closeInspector();
     });
 
-    this.mouseOver$ = this.documentMouseOver(this.origin).subscribe((ev: MouseEvent) => {
+    this.mouseOverSub = this.documentMouseOver(this.origin).subscribe((ev: MouseEvent) => {
       if (ev.target instanceof HTMLElement) {
         this.activeElement = ev.target as HTMLElement;
         this.activeElementOriginalOutline = this.activeElement.style.outline;
@@ -75,7 +75,7 @@ export class InspectorComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.mouseClick$ = this.documentMouseClick(this.origin).subscribe((ev: MouseEvent) => {
+    this.mouseClickSub = this.documentMouseClick(this.origin).subscribe((ev: MouseEvent) => {
       if (ev.target instanceof HTMLElement && ev.target === this.activeElement) {
         ev.preventDefault();
         ev.stopImmediatePropagation();
@@ -105,10 +105,10 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   }
 
   private reset(): void {
-    this.mouseOver$.unsubscribe();
-    this.mouseOut$.unsubscribe();
-    this.mouseClick$.unsubscribe();
-    this.escKeySub$.unsubscribe();
+    this.mouseOverSub.unsubscribe();
+    this.mouseOutSub.unsubscribe();
+    this.mouseClickSub.unsubscribe();
+    this.escKeySub.unsubscribe();
     this.isExpanded = false;
     this.ngneatDrag.resetPosition();
     this.activeComponent = null;
@@ -119,7 +119,7 @@ export class InspectorComponent implements OnInit, AfterViewInit {
   private highlightElement(): void {
     this.activeElement.style.outline = `${this.outline.width} ${this.outline.style} ${this.outline.color}`;
 
-    this.mouseOut$ = this.listenElementMouseOut();
+    this.mouseOutSub = this.listenElementMouseOut();
   }
 
   private listenElementMouseOut(): Subscription {
@@ -193,5 +193,12 @@ export class InspectorComponent implements OnInit, AfterViewInit {
         // }
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.mouseOutSub.unsubscribe();
+    this.escKeySub.unsubscribe();
+    this.mouseOverSub.unsubscribe();
+    this.mouseClickSub.unsubscribe();
   }
 }

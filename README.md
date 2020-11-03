@@ -16,7 +16,7 @@
 > An angular library that lets you inspect and change Angular component properties
 
 <p align="center">
-  <img style="max-width: 100%;height: auto;" src="./inspector.gif" alt="Inspector demo">
+  <img style="max-width: 100%;height: auto;" src="./demo.gif" alt="Inspector demo">
 </p>
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@ngneat/inspector",
-  "version": "1.0.0-beta.21",
+  "version": "1.0.0-beta.22",
   "schematics": "./schematics/collection.json",
   "scripts": {
     "build": "tsc -p tsconfig.schematics.json",
