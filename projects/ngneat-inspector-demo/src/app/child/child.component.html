@@ -1,0 +1,13 @@
+<div [ngStyle]="{ 'background-color': bool ? 'red' : 'white' }">
+  <p>{{ text }}</p>
+  <button (click)="fun()">button</button>
+  <p>number {{ number }}</p>
+  <hr />
+  Array:
+  <ol *ngFor="let item of arr">
+    <li>{{ item }}</li>
+  </ol>
+  <hr />
+  Object:
+  {{ obj | json }}
+</div>

@@ -1,0 +1,157 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "@ngneat/inspector": {
+      "projectType": "library",
+      "root": "projects/ngneat/inspector",
+      "sourceRoot": "projects/ngneat/inspector/src",
+      "prefix": "ngneat",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/ngneat/inspector/tsconfig.lib.json",
+            "project": "projects/ngneat/inspector/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngneat/inspector/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngneat/inspector/src/test.ts",
+            "tsConfig": "projects/ngneat/inspector/tsconfig.spec.json",
+            "karmaConfig": "projects/ngneat/inspector/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["projects/ngneat/inspector/tsconfig.lib.json", "projects/ngneat/inspector/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "ngneat-inspector-demo": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/ngneat-inspector-demo",
+      "sourceRoot": "projects/ngneat-inspector-demo/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/ngneat-inspector-demo",
+            "index": "projects/ngneat-inspector-demo/src/index.html",
+            "main": "projects/ngneat-inspector-demo/src/main.ts",
+            "polyfills": "projects/ngneat-inspector-demo/src/polyfills.ts",
+            "tsConfig": "projects/ngneat-inspector-demo/tsconfig.app.json",
+            "aot": true,
+            "assets": ["projects/ngneat-inspector-demo/src/favicon.ico", "projects/ngneat-inspector-demo/src/assets"],
+            "styles": ["projects/ngneat-inspector-demo/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/ngneat-inspector-demo/src/environments/environment.ts",
+                  "with": "projects/ngneat-inspector-demo/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ngneat-inspector-demo:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ngneat-inspector-demo:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ngneat-inspector-demo:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngneat-inspector-demo/src/test.ts",
+            "polyfills": "projects/ngneat-inspector-demo/src/polyfills.ts",
+            "tsConfig": "projects/ngneat-inspector-demo/tsconfig.spec.json",
+            "karmaConfig": "projects/ngneat-inspector-demo/karma.conf.js",
+            "assets": [
+              "projects/ngneat-inspector-demo/src/favicon.ico",
+              "projects/ngneat-inspector-demo/src/assets",
+              "projects/ngneat-inspector-demo/src/assets",
+              "projects/ngneat/inspector/src/assets"
+            ],
+            "styles": ["projects/ngneat-inspector-demo/src/styles.scss"],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngneat-inspector-demo/tsconfig.app.json",
+              "projects/ngneat-inspector-demo/tsconfig.spec.json",
+              "projects/ngneat-inspector-demo/e2e/tsconfig.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/ngneat-inspector-demo/e2e/protractor.conf.js",
+            "devServerTarget": "ngneat-inspector-demo:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ngneat-inspector-demo:serve:production"
+            }
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "@ngneat/inspector"
+}

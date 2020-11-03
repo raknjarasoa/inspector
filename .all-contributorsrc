@@ -1,6 +1,6 @@
 {
-  "projectName": "ngneat-inspector",
-  "projectOwner": "shhdharmen",
+  "projectName": "inspector",
+  "projectOwner": "@ngneat",
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
@@ -17,8 +17,9 @@
       "profile": "https://github.com/shhdharmen",
       "contributions": [
         "code",
-        "doc",
-        "ideas"
+        "content",
+        "ideas",
+        "maintenance"
       ]
     },
     {
@@ -27,6 +28,9 @@
       "avatar_url": "https://avatars1.githubusercontent.com/u/6745730?v=4",
       "profile": "https://www.netbasal.com/",
       "contributions": [
+        "bug",
+        "content",
+        "doc",
         "ideas",
         "mentoring"
       ]

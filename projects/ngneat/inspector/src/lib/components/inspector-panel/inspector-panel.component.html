@@ -1,0 +1,22 @@
+<div class="inspector-panel py-2 px-3">
+  <h3 class="ml-2">
+    {{ ngComponent.name }}&nbsp;<code>&lt;{{ ngComponent.selector }}&gt;</code>
+  </h3>
+  <div>
+    <ul class="nav nav-tabs" *ngIf="tabsToShow.length">
+      <ng-container *ngFor="let tab of tabsToShow">
+        <li class="nav-item" *ngIf="ngComponent[tab.value].length">
+          <a class="nav-link" [ngClass]="{ active: activeTab === tab.value }" (click)="loadTab(tab.value)">{{
+            tab.label
+          }}</a>
+        </li>
+      </ng-container>
+    </ul>
+    <p *ngIf="!tabsToShow.length" class="mt-3">
+      <i>There are no supported properties in this component, which can be changed by inspector.</i>
+    </p>
+    <div class="tab-content">
+      <ng-template ngneatTabHost></ng-template>
+    </div>
+  </div>
+</div>

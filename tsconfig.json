@@ -1,26 +1,19 @@
 {
-    "compilerOptions": {
-        "sourceMap": true,
-        "module": "commonjs",
-        "esModuleInterop": true,
-        "resolveJsonModule": true,
-        "experimentalDecorators": true,
-        "target": "es5",
-        "jsx": "react",
-        "lib": [
-            "dom",
-            "es6"
-        ],
-        "strict": true,
-        "typeRoots": [
-            "src/types"
-        ],
-        "types": [
-            "chrome"
-        ]
-    },
-    "include": [
-        "src"
-    ],
-    "compileOnSave": false
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "es2020",
+    "lib": ["es2018", "dom"],
+    "paths": {
+      "@ngneat/inspector": ["projects/ngneat/inspector/src/public-api.ts"]
+    }
+  }
 }

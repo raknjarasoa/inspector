@@ -1,0 +1,30 @@
+.nav-tabs {
+  .nav-link {
+    border-radius: 0;
+    border-bottom-width: 2px;
+    color: $gray-700;
+    cursor: pointer;
+    transition-property: border-color, color, background-color;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    &.active {
+      border-color: #fff #fff $primary;
+      color: $primary;
+      &:hover,
+      &:focus {
+        border-bottom-color: $primary;
+      }
+    }
+    &:hover,
+    &:focus {
+      border-color: #fff #fff $gray-300;
+      background-color: $light;
+    }
+  }
+}
+
+.tab-content {
+  padding: 0.5rem;
+  max-height: 400px;
+  overflow: auto;
+}

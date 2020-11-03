@@ -1,0 +1,48 @@
+.input-group > .ngneat-field-host {
+  position: relative;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  width: 1%;
+  min-width: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+  &:not(:first-child) {
+    > .form-control,
+    > .custom-select {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+  &:not(:last-child) {
+    > .form-control,
+    > .custom-select {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+}
+
+.form-control-prism {
+  font-size: 100%;
+  resize: vertical;
+  min-height: 150px;
+  border: 1px solid $border-color;
+  border-radius: $input-border-radius;
+  &:focus {
+    outline: 0;
+    border-color: $input-focus-border-color;
+    box-shadow: 0 0 0 $input-focus-width rgba($input-focus-border-color, 0.25);
+  }
+  &.is-invalid {
+    border-color: $form-feedback-invalid-color;
+    padding-right: $input-height-inner;
+    background-image: escape-svg($form-feedback-icon-invalid);
+    background-repeat: no-repeat;
+    background-position: top $input-height-inner-quarter right $input-height-inner-quarter;
+    background-size: $input-height-inner-half $input-height-inner-half;
+    &:focus {
+      border-color: $form-feedback-invalid-color;
+      box-shadow: 0 0 0 $input-focus-width rgba($form-feedback-invalid-color, 0.25);
+    }
+  }
+}

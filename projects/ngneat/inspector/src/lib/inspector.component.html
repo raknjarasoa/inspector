@@ -1,0 +1,49 @@
+<div
+  class="inspector-host"
+  ngneatDragNDrop
+  [ngneatDragDisabled]="isEnabled || !isExpanded"
+  *ngIf="!isHidden"
+  [ngClass]="{ expanded: isExpanded }"
+  [ngStyle]="{ 'pointer-events': isEnabled ? 'none' : 'auto' }"
+  #inspectorHost
+>
+  <div
+    class="inspector-container"
+    [ngClass]="{ expanded: isExpanded, 'pointer-events-none pointer-events-none-all': isEnabled }"
+  >
+    <ng-container *ngIf="isExpanded && activeComponent; else collapsedPanel">
+      <div class="inspector-actions">
+        <button class="close inspector-drag-handle" ngneatDragHandle>
+          <div class="inspector-drag-handle-icon"></div>
+        </button>
+        <button type="button" class="close inspector-close-btn" aria-label="Close" (click)="closeInspector()">
+          <div class="inspector-close-btn-icon"></div>
+        </button>
+      </div>
+      <ng-container *ngIf="!isErrored; else errorTemplate">
+        <ngneat-inspector-panel [ngComponent]="activeComponent"></ngneat-inspector-panel>
+      </ng-container>
+      <ng-template #errorTemplate>
+        <h3 class="ml-2 text-danger">Error while generating component!</h3>
+      </ng-template>
+      <div class="inspector-credit text-right px-2 py-1 border-top">
+        <a href="https://github.com/ngneat/inspector" target="_blank" title="ngneat/inspector">
+          <span class="inspector-credit-ngneat-logo mr-1"></span>
+          <span class="inspector-credit-logo mr-1"></span>
+          <small><b>inspector</b></small>
+        </a>
+      </div>
+    </ng-container>
+    <ng-template #collapsedPanel>
+      <button
+        class="btn btn-light rounded-circle inspector-btn"
+        aria-label="Button with inspector svg icon"
+        title="Inspect with ngneat inspector"
+        (click)="startInspecting()"
+        [disabled]="isEnabled"
+      >
+        <div class="inspector-btn-icon"></div>
+      </button>
+    </ng-template>
+  </div>
+</div>
