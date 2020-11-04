@@ -13,7 +13,7 @@
 [![ngneat](https://img.shields.io/badge/@-ngneat-383636?style=flat-square&labelColor=8f68d4)](https://github.com/ngneat/)
 [![spectator](https://img.shields.io/badge/tested%20with-spectator-2196F3.svg?style=flat-square)]()
 
-> An angular library that lets you inspect and change Angular component properties
+> An angular library that lets you inspect and change Angular 9+ component properties
 
 <p align="center">
   <img style="max-width: 100%;height: auto;" src="assets/demo.gif" alt="Inspector demo">
@@ -24,7 +24,7 @@
 
 ## Features <!-- omit in toc -->
 
-- ✅ Inspect Angular components on the fly
+- ✅ Inspect Angular 9+ components on the fly
 - ✅ Change component properties without touching the code
 - ✅ Simulate Angular events
 - ✅ See the results in realtime
@@ -39,7 +39,7 @@
 
 ## Installation
 
-This library should only be installed using Angular CLI.
+This library supports Angular 9+ projects and should only be installed using Angular CLI.
 
 ### Angular CLI
 
