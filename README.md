@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
 <p align="center">
- <img width="20%" height="20%" src="./logo.svg" alt="inspector logo">
+ <img width="20%" height="20%" src="assets/logo.svg" alt="inspector logo">
 </p>
 
 <br />
@@ -16,7 +16,7 @@
 > An angular library that lets you inspect and change Angular component properties
 
 <p align="center">
-  <img style="max-width: 100%;height: auto;" src="./demo.gif" alt="Inspector demo">
+  <img style="max-width: 100%;height: auto;" src="assets/demo.gif" alt="Inspector demo">
 </p>
 
 
@@ -34,10 +34,12 @@
 - [Installation](#installation)
   - [Angular CLI](#angular-cli)
 - [Usage](#usage)
-  - [Options](#options)
+- [Options](#options)
 - [Contributors ✨](#contributors-)
 
 ## Installation
+
+This library should only be installed using Angular CLI.
 
 ### Angular CLI
 
@@ -52,21 +54,42 @@ Above command will do following for you:
    2. [ace-builds](https://www.npmjs.com/package/ace-builds)
    3. [tinykeys](https://www.npmjs.com/package/tinykeys)
 2. Import `environments` from `../environments/environment.ts` in projects root module. *This can be skipped with `--skipImport`.*
-3. Import `InspectorModule` from `@ngneat/inspector` in your project's root module's `imports` section. This is a conditional import, it shouldn't be part of your production build. *This can be skipped with `--skipImport`.*
+3. Import `InspectorModule` from `@ngneat/inspector` in your project's root module's `imports` section. *This can be skipped with `--skipImport`.*
+
+> 👉 Please note: @ngneat/inspector is a debugging tool and it helps you to develop faster. So, it shouldn't be part of your production deployment. When you install it using `ng add @ngneat/inspector` it is already taken care for you, as it writes import statement like this: `imports: [environment.production ? [] : InspectorModule.forRoot()]`
 
 ## Usage
 
-When you ran `ng add @ngneat/inspector`, it should ideally add below statement in your imports array:
+<!-- markdownlint-disable -->
+1. Click on Inspector button ![inspector button](assets/inspector-button.png)
+2. Then hover over the component which you want to inspect, you will see purple colored outline on the currently hovered element<br>![purple outline](assets/purple-outline.png)
+3. Click on the element and inspector will expand with component's details like name, selector, properties (with inputs), and outputs (if any)<br>![expanded inspector](assets/expanded-inspector.png)
+4. You can change the property/outputs from select<br>![select property](assets/select-property.png)
+5. Data types: Below are the supported data types and how it will render in inspector:
+   1. String - input[type=text]<br>![string data type](assets/data-string.png)
+   2. Number - input[type=text]<br>![number data type](assets/data-number.png)
+   3. Boolean - input[type=checkbox]<br>![boolean data type](assets/data-boolean.png)
+   4. Object - ace-editor<br>![object data type](assets/data-object.png)
+6. Properties - To update any property, after updating value, you will need to click on `Update` button to see the effect ![update button](assets/update-button.png)
+7. Outputs<br>![output](assets/output.png)
+   1. To call the output, you will need to click on `Emit` button.
+   2. By default, 1 argument with string type will be shown. You can change the type by change value from type select.
+   3. You can also add/remove arguments by clicking on respective buttons
+<!-- markdownlint-restore -->
+
+## Options
+
+When you ran `ng add @ngneat/inspector`, it added below statement in your imports array:
 
 ```typescript
 imports: [environment.production ? [] : InspectorModule.forRoot()]
 ```
 
-### Options
+Now, you can pass below config options to change inspector behavior in the `.forRoot()` method, like: `InspectorModule.forRoot({ zIndex: 100000000 })`.
+
+All the options are optional.:
 
 <!-- markdownlint-disable -->
-
-Now, you can pass below config options to change inspector behavior in the `.forRoot()` method. All the options are optional.:
 
 | Option                | Type                                                                                                                                                                                                                      | Description                                                                                                                                                                                                                                                              |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
