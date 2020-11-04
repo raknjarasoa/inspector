@@ -70,7 +70,7 @@ Above command will do following for you:
    2. Number - input[type=text]<br>![number data type](assets/data-number.png)
    3. Boolean - input[type=checkbox]<br>![boolean data type](assets/data-boolean.png)
    4. Object - ace-editor<br>![object data type](assets/data-object.png)
-6. Properties - To update any property, after updating value, you will need to click on `Update` button to see the effect ![update button](assets/update-button.png)
+6. Properties - To update any property, after updating value, you will need to click on `Update` button to see the effect<br>![update button](assets/update-button.png)
 7. Outputs<br>![output](assets/output.png)
    1. To call the output, you will need to click on `Emit` button.
    2. By default, 1 argument with string type will be shown. You can change the type by change value from type select.
