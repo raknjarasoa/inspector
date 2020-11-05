@@ -80,7 +80,7 @@ export enum TabType {
 export interface TabComponent {
   members: (Property | FunctionOrOutput)[];
   type: TabType;
-  emitter: EventEmitter<Property | CallFunctionOrOutput>;
+  emitter: EventEmitter<TabOutput>;
 }
 
 export interface TabOutput {

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/ngneat/inspector/compare/v1.0.0...v1.0.1) (2020-11-05)
+
+
+### Bug Fixes
+
+* 🐛 type fix for --strict mode ([57b1241](https://github.com/ngneat/inspector/commit/57b124171c901976eac06b53ace203008d34ac73))
+
 ## 1.0.0 (2020-11-03)
 
 
