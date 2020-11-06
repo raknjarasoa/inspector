@@ -5,7 +5,6 @@ import tinykeys from 'tinykeys';
 import { DragNDropDirective } from './directives/drag-n-drop.directive';
 import { InspectorConfigOutline, InspectorConfigPosition, NgComponent } from './inspector.model';
 import { getNgComponent } from './shared/helpers';
-import { version } from '../../package.json';
 
 @Component({
   selector: 'ngneat-inspector',
@@ -43,7 +42,6 @@ export class InspectorComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('inspectorHost') inspectorHost: ElementRef<HTMLElement>;
 
   error: any;
-  version = version;
 
   constructor(private host: ElementRef<HTMLElement>) {}
 
