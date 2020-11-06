@@ -41,8 +41,6 @@ export class InspectorComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(DragNDropDirective) ngneatDrag: DragNDropDirective;
   @ViewChild('inspectorHost') inspectorHost: ElementRef<HTMLElement>;
 
-  error: any;
-
   constructor(private host: ElementRef<HTMLElement>) {}
 
   ngOnInit(): void {
@@ -87,7 +85,6 @@ export class InspectorComponent implements OnInit, AfterViewInit, OnDestroy {
         // read component
         try {
           this.activeComponent = getNgComponent(this.activeElement, this.hideNonSupportedProps, this.filterProps);
-          this.error = null;
           this.isErrored = false;
         } catch (e) {
           console.error('Path: projects/ngneat/inspector/src/lib/inspector.component.ts\nError: ', e);
