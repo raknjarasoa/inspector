@@ -1,0 +1,18 @@
+<mat-form-field [appearance]="'outline'">
+  <mat-label *ngIf="ddlConfig.label">{{ ddlConfig.label }}</mat-label>
+  <mat-select
+    [required]="ddlConfig.required"
+    (selectionChange)="selectionChange()"
+    [formControl]="control"
+    matTooltip="{{ ddlConfig.tooltip }}"
+    [id]="ddlConfig.id"
+    placeholder="{{ ddlConfig.placeholder }}"
+  >
+    <mat-option *ngIf="ddlConfig.withNone">{{ 'None' }}</mat-option>
+    <mat-option *ngFor="let val of list" [value]="val[ddlConfig.valueField]">
+      <ng-container *ngFor="let fl of ddlConfig.optionLabels; let i = index">
+        {{ val[fl] }}
+      </ng-container>
+    </mat-option>
+  </mat-select>
+</mat-form-field>

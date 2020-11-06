@@ -85,7 +85,9 @@ export class InspectorComponent implements OnInit, AfterViewInit, OnDestroy {
         // read component
         try {
           this.activeComponent = getNgComponent(this.activeElement, this.hideNonSupportedProps, this.filterProps);
+          this.isErrored = false;
         } catch (e) {
+          console.error('Path: projects/ngneat/inspector/src/lib/inspector.component.ts\nError: ', e);
           this.isErrored = true;
         }
         this.stopInspecting();

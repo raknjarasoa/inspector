@@ -49,7 +49,8 @@ export class InspectorTabComponent implements OnInit, TabComponent {
     this.formValue.clear();
     this.formValueType.clear();
     updatedValueList.forEach((i) => {
-      const valueType: PropertyValueType = i.constructor.name;
+      const valueType: PropertyValueType =
+        i !== undefined && i !== null && i.constructor && i.constructor.name ? i.constructor.name : i + "'s type";
       this.formValue.push(
         new FormControl(
           valueType === PropertyValueType.array || valueType === PropertyValueType.object

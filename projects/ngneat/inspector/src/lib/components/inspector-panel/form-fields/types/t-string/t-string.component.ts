@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { InputComponent } from '../../type-selector/type-selector.component';
+import { InputComponent } from '../../../../../inspector.model';
 
 @Component({
   selector: 'ngneat-t-string',

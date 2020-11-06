@@ -6,10 +6,19 @@ import { InspectorModule } from '@ngneat/inspector';
 import { AppComponent } from './app.component';
 import { ChildComponent } from './child/child.component';
 import { environment } from '../environments/environment';
+import { MaterialModule } from './material/material.module';
+import { MatDropdownComponent } from './mat-dropdown/mat-dropdown.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AppComponent, ChildComponent],
-  imports: [BrowserModule, environment.production ? [] : InspectorModule.forRoot(), BrowserAnimationsModule],
+  declarations: [AppComponent, ChildComponent, MatDropdownComponent],
+  imports: [
+    BrowserModule,
+    environment.production ? [] : InspectorModule.forRoot(),
+    BrowserAnimationsModule,
+    MaterialModule,
+    ReactiveFormsModule,
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })

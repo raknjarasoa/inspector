@@ -28,15 +28,25 @@ export function getNgComponent(element: HTMLElement, hideNonSupportedProps: bool
   const outputs: FunctionOrOutput[] = [];
 
   Object.keys(ngRawComponent)
-    .filter(
-      (v) =>
+    .filter((v) => {
+      const constructorName =
+        ngRawComponent[v] !== undefined &&
+        ngRawComponent[v] !== null &&
+        ngRawComponent[v].constructor &&
+        ngRawComponent[v].constructor.name;
+      return (
         (filterProps ? v.search(filterProps) < 0 : true) &&
-        (hideNonSupportedProps ? supportedTypes.includes(ngRawComponent[v].constructor.name) : true)
-    )
+        (hideNonSupportedProps ? supportedTypes.includes(constructorName) : true)
+      );
+    })
     .forEach((propName) => {
       const componentPropValueOrFunction = ngRawComponent[propName];
-      const propType: 'input' | 'output' =
-        componentPropValueOrFunction.constructor.name === 'EventEmitter_' ? 'output' : 'input';
+      const constructorName =
+        ngRawComponent[propName] !== undefined &&
+        ngRawComponent[propName] !== null &&
+        ngRawComponent[propName].constructor &&
+        ngRawComponent[propName].constructor.name;
+      const propType: 'input' | 'output' = constructorName === 'EventEmitter_' ? 'output' : 'input';
 
       if (propType === 'output') {
         outputs.push({

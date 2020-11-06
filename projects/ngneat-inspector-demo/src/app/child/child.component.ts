@@ -15,6 +15,7 @@ export class ChildComponent implements OnInit {
   obj = { a: 'a', b: 'b' };
   sub = new Subject();
   @Output() callParent = new EventEmitter();
+  @Output() callParent2 = new EventEmitter();
   constructor() {}
 
   fun(arg1 = 'hi'): void {

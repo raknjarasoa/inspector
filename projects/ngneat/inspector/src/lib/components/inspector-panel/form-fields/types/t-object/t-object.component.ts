@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { InputComponent } from '../../type-selector/type-selector.component';
+import { InputComponent } from '../../../../../inspector.model';
 import * as ace from 'ace-builds';
 
 @Component({
