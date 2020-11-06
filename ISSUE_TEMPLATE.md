@@ -7,15 +7,13 @@ ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION.
 ## I'm submitting a...
 
 <!-- Check one of the following options with "x" -->
-<pre><code>
-[ ] Regression (a behavior that used to work and stopped working in a new release)
-[ ] Bug report  <!-- Please search GitHub for a similar issue or PR before submitting -->
-[ ] Performance issue
-[ ] Feature request
-[ ] Documentation issue or request
-[ ] Support request
-[ ] Other... Please describe:
-</code></pre>
+- [ ] Regression (a behavior that used to work and stopped working in a new release)
+- [ ] Bug report  <!-- Please search GitHub for a similar issue or PR before submitting -->
+- [ ] Performance issue
+- [ ] Feature request
+- [ ] Documentation issue or request
+- [ ] Support request
+- [ ] Other... Please describe:
 
 ## Current behavior
 
@@ -33,11 +31,11 @@ ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION.
 
 ## Environment
 
-<pre><code>
-Angular version: X.Y.Z
+### Angular version: X.Y.Z
 <!-- Check whether this is still an issue in the most recent Angular version -->
 
-Browser:
+### Browser:
+
 - [ ] Chrome (desktop) version XX
 - [ ] Chrome (Android) version XX
 - [ ] Chrome (iOS) version XX
@@ -47,10 +45,9 @@ Browser:
 - [ ] IE version XX
 - [ ] Edge version XX
  
-For Tooling issues:
-- Node version: XX  <!-- run `node --version` -->
-- Platform:  <!-- Mac, Linux, Windows -->
+### For Tooling issues:
+- Node version: XX 
+- OS: 
 
-Others:
+### Others:
 <!-- Anything else relevant?  Operating system version, IDE, package manager, HTTP server, ... -->
-</code></pre>
