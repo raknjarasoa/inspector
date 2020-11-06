@@ -11,7 +11,7 @@
     class="inspector-container"
     [ngClass]="{ expanded: isExpanded, 'pointer-events-none pointer-events-none-all': isEnabled }"
   >
-    <ng-container *ngIf="isExpanded && activeComponent; else collapsedPanel">
+    <ng-container *ngIf="isExpanded; else collapsedPanel">
       <div class="inspector-actions">
         <button class="close inspector-drag-handle" ngneatDragHandle>
           <div class="inspector-drag-handle-icon"></div>
@@ -20,17 +20,14 @@
           <div class="inspector-close-btn-icon"></div>
         </button>
       </div>
-      <ng-container *ngIf="!isErrored; else errorTemplate">
-        <ngneat-inspector-panel [ngComponent]="activeComponent"></ngneat-inspector-panel>
-      </ng-container>
-      <ng-template #errorTemplate>
-        <h3 class="ml-2 text-danger">Error while generating component!</h3>
-      </ng-template>
+      <ngneat-inspector-panel [isErrored]="isErrored" [ngComponent]="activeComponent"></ngneat-inspector-panel>
       <div class="inspector-credit text-right px-2 py-1 border-top">
-        <a href="https://github.com/ngneat/inspector" target="_blank" title="ngneat/inspector">
+        <a href="https://github.com/ngneat/inspector" target="_blank" title="https://github.com/ngneat/inspector">
           <span class="inspector-credit-ngneat-logo mr-1"></span>
           <span class="inspector-credit-logo mr-1"></span>
-          <small><b>inspector</b></small>
+          <small
+            ><b>inspector v{{ version }}</b></small
+          >
         </a>
       </div>
     </ng-container>

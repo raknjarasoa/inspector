@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ComponentFactoryResolver, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FieldHostDirective } from '../../../../directives/field-host.directive';
-import { PropertyValueType } from '../../../../inspector.model';
+import { InputComponent, PropertyValueType } from '../../../../inspector.model';
 import { TBooleanComponent } from '../types/t-boolean/t-boolean.component';
 import { TNotSupportedComponent } from '../types/t-not-supported/t-not-supported.component';
 import { TNumberComponent } from '../types/t-number/t-number.component';
@@ -53,30 +53,23 @@ export class TypeSelectorComponent implements OnInit {
   }
 
   loadComponent(fieldType: PropertyValueType): void {
-    if (fieldType) {
-      const component =
-        this.typesToSelect[fieldType] && this.typesToSelect[fieldType].component
-          ? this.typesToSelect[fieldType].component
-          : this.typesToSelect['Not Supported'].component;
+    const component =
+      this.typesToSelect[fieldType] && this.typesToSelect[fieldType].component
+        ? this.typesToSelect[fieldType].component
+        : this.typesToSelect['Not Supported'].component;
 
-      const componentFactory = this.componentFactoryResolver.resolveComponentFactory<InputComponent>(component);
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory<InputComponent>(component);
 
-      const viewContainerRef = this.fieldHost.viewContainerRef;
-      viewContainerRef.clear();
+    const viewContainerRef = this.fieldHost.viewContainerRef;
+    viewContainerRef.clear();
 
-      const componentRef = viewContainerRef.createComponent<InputComponent>(componentFactory);
+    const componentRef = viewContainerRef.createComponent<InputComponent>(componentFactory);
 
-      componentRef.instance.formControl = this.inputFormControl;
-      componentRef.instance.inputId = this.inputId;
-      componentRef.instance.addClass('ngneat-field-host');
-      componentRef.instance.fieldType = fieldType;
-    }
+    componentRef.instance.formControl = this.inputFormControl;
+    componentRef.instance.inputId = this.inputId;
+    componentRef.instance.addClass('ngneat-field-host');
+
+    const fieldTypeString = fieldType + '' ?? 'TYPE_NOT_FOUND';
+    componentRef.instance.fieldType = fieldTypeString;
   }
-}
-
-export interface InputComponent {
-  inputId: string;
-  formControl: FormControl;
-  addClass: (className: string) => void;
-  fieldType: string;
 }

@@ -18,7 +18,9 @@ import { InspectorTabComponent } from './inspector-tab/inspector-tab.component';
   templateUrl: './inspector-panel.component.html',
 })
 export class InspectorPanelComponent implements OnInit {
+  @Input() isErrored: boolean;
   @Input() ngComponent: NgComponent;
+  @Input() errorMessage: string;
 
   activeTab: TabType;
   allTabs: { value: TabType; label: string }[] = [
@@ -33,13 +35,15 @@ export class InspectorPanelComponent implements OnInit {
   constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
 
   ngOnInit(): void {
-    // console.log('ngComponent', this.ngComponent);
-    this.tabsToShow = this.allTabs.filter((tab) => {
-      return this.ngComponent[tab.value].length;
-    });
-    if (this.tabsToShow.length) {
-      this.activeTab = this.tabsToShow[0].value;
-      this.loadTab(this.activeTab);
+    if (!this.isErrored) {
+      // console.log('ngComponent', this.ngComponent);
+      this.tabsToShow = this.allTabs.filter((tab) => {
+        return this.ngComponent[tab.value].length;
+      });
+      if (this.tabsToShow.length) {
+        this.activeTab = this.tabsToShow[0].value;
+        this.loadTab(this.activeTab);
+      }
     }
   }
 
@@ -61,6 +65,7 @@ export class InspectorPanelComponent implements OnInit {
 
     componentRef.instance.type = this.activeTab;
     componentRef.instance.members = this.ngComponent[this.activeTab];
+
     const tabEmitter = componentRef.instance.emitter;
     this.tabEmitter$ = tabEmitter.subscribe((val: TabOutput) => {
       if (this.activeTab === TabType.properties) {

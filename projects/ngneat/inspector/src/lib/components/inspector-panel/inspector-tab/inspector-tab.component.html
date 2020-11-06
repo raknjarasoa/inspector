@@ -27,7 +27,6 @@
               type === TabType.properties &&
               formValueType.at(0) &&
               formValueType.at(0).value !== PropertyValueType.array &&
-              formValueType.at(0) &&
               formValueType.at(0).value !== PropertyValueType.object
             )
           "
@@ -59,9 +58,9 @@
         *ngIf="
           type === TabType.properties &&
           formValueType.at(0) &&
-          formValueType.at(0).value !== PropertyValueType.array &&
-          formValueType.at(0) &&
-          formValueType.at(0).value !== PropertyValueType.object
+          (formValueType.at(0).value == PropertyValueType.boolean ||
+            formValueType.at(0).value == PropertyValueType.number ||
+            formValueType.at(0).value == PropertyValueType.string)
         "
       >
         <div class="ml-1">

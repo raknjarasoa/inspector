@@ -59,7 +59,10 @@
             "tsConfig": "projects/ngneat-inspector-demo/tsconfig.app.json",
             "aot": true,
             "assets": ["projects/ngneat-inspector-demo/src/favicon.ico", "projects/ngneat-inspector-demo/src/assets"],
-            "styles": ["projects/ngneat-inspector-demo/src/styles.scss"],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "projects/ngneat-inspector-demo/src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -123,7 +126,10 @@
               "projects/ngneat-inspector-demo/src/assets",
               "projects/ngneat/inspector/src/assets"
             ],
-            "styles": ["projects/ngneat-inspector-demo/src/styles.scss"],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "projects/ngneat-inspector-demo/src/styles.scss"
+            ],
             "scripts": []
           }
         },

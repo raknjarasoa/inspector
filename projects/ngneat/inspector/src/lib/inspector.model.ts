@@ -1,4 +1,5 @@
 import { EventEmitter } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 export type InspectorConfigOutline = {
   color?: string;
@@ -96,4 +97,11 @@ export enum PropertyValueType {
   'boolean' = 'Boolean',
   'object' = 'Object',
   'not-supported' = 'Not Supported',
+}
+
+export interface InputComponent {
+  inputId: string;
+  formControl: FormControl;
+  addClass: (className: string) => void;
+  fieldType: string;
 }

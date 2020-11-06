@@ -5,6 +5,7 @@ import tinykeys from 'tinykeys';
 import { DragNDropDirective } from './directives/drag-n-drop.directive';
 import { InspectorConfigOutline, InspectorConfigPosition, NgComponent } from './inspector.model';
 import { getNgComponent } from './shared/helpers';
+import { version } from '../../package.json';
 
 @Component({
   selector: 'ngneat-inspector',
@@ -40,6 +41,9 @@ export class InspectorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(DragNDropDirective) ngneatDrag: DragNDropDirective;
   @ViewChild('inspectorHost') inspectorHost: ElementRef<HTMLElement>;
+
+  error: any;
+  version = version;
 
   constructor(private host: ElementRef<HTMLElement>) {}
 
@@ -85,7 +89,10 @@ export class InspectorComponent implements OnInit, AfterViewInit, OnDestroy {
         // read component
         try {
           this.activeComponent = getNgComponent(this.activeElement, this.hideNonSupportedProps, this.filterProps);
+          this.error = null;
+          this.isErrored = false;
         } catch (e) {
+          console.error('Path: projects/ngneat/inspector/src/lib/inspector.component.ts\nError: ', e);
           this.isErrored = true;
         }
         this.stopInspecting();

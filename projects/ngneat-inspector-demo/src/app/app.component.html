@@ -1,3 +1,11 @@
+<app-mat-dropdown
+  [ddlConfig]="{ withNone: true, id: 'id', label: 'Type', optionLabels: ['label'], valueField: 'id' }"
+  [list]="typeList"
+  [control]="formCtrl.get('type')"
+></app-mat-dropdown>
+
+{{ title | json }}
+
 app-root component
 
 <p>Hi, I am p;</p>
