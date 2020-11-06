@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/ngneat/inspector/compare/v1.0.1...v1.1.0) (2020-11-06)
+
+
+### Features
+
+* 🎸 show error in console, handle undefined types ([f5a6d99](https://github.com/ngneat/inspector/commit/f5a6d99cea274e8e2355e6620a38862713b02d12))
+
 ### [1.0.1](https://github.com/ngneat/inspector/compare/v1.0.0...v1.0.1) (2020-11-05)
 
 
